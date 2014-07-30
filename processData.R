@@ -27,8 +27,8 @@ fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
   ##        data.frame ( start chron, mid chron, stop chron )
   ## ------------------------------------------------------------
   ## datetime chron vector
-  begin.start <- fChronStr(start.str, "d-m-y", "h:m:s")
-  end.start <- fChronStr(stop.str, "d-m-y", "h:m:s")
+  begin.start <- fChronStr(start.str, "d-m-y h:m:s")
+  end.start <- fChronStr(stop.str, "d-m-y h:m:s")
   ## time step and interval in fraction of day
   tstep.fd <- fConvTime(as.numeric(tstep.str), "min", "day")
   inter.fd <- fConvTime(as.numeric(inter.str), "min", "day")

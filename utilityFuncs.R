@@ -5,7 +5,7 @@
 ###  3. find point in vector greater/less than value
 ###  4. convert date/time string to chron
 ###
-### version 1.1, Jan 2014
+### version 1.2, Jul 2014
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -113,35 +113,47 @@ fFindPnt <- function(vecd, ops, xval, xst) {
   return(xv)
 }
 
-fChronStr <- function(dt.str, d.fmt, t.fmt) {
-  ## 4. convert date, time, datetime strings in given format to
-  ## chron vectors with format "d-m-y h:m:s"
+fChronStr <- function(dt.str, dt.fmt) {
+  ## 4. convert date, time, datetime string in given format to chron
+  ## vector with format "d-m-y h:m:s"
   ##
   ## input:
   ##       dt.str = date/time string
-  ##       d.fmt = format of date string ("d/m/y" OR "")
-  ##       t.fmt = format of time string ("h:m:s" OR "")
+  ##       dt.fmt = format of date/time string ("d/m/y h:m:s" OR
+  ##                                            "d/m/y" OR "h:m:s")
   ## output:
   ##        chron ( d-m-y h:m:s )
   ## ------------------------------------------------------------
-  ## split date and time strings
-  dt.lst <- sapply( as.character(dt.str),
-                    function(x) unlist(strsplit(x, " ")) )
-  dt.lst <- t(dt.lst)
-  rownames(dt.lst) <- NULL
-  ## convert strings to chron
-  if (d.fmt == "") {         # time only
-    dt.chron <- chron(times=dt.lst[1,], format=t.fmt,
-                      out.format="h:m:s")
-  } else if (t.fmt == "") {  # date only
-    dt.chron <- chron(dates=dt.lst[1,], format=d.fmt,
-                      out.format="d-m-y")
-  } else {                   # date and time
-    dt.lst <- t(dt.lst)
-    dt.chron <- chron(dates=dt.lst[1,], times=dt.lst[2,],
-                      format=c(d.fmt,t.fmt),
-                      out.format=c("d-m-y","h:m:s"))
+  ## date/time format flag
+  if (grepl("d", dt.fmt)) {
+      dt.flag <- "date"
   }
+  if (grepl("h", dt.fmt)) {
+      dt.flag <- "time"
+  }
+  if (grepl("d", dt.fmt) & grepl("h", dt.fmt)) {
+      dt.flag <- "datetime"
+  }
+  ## convert date/time string to chron
+  switch(dt.flag,
+         "date" = {      # date only
+           dt.chron <- chron(dates=as.character(dt.str),
+                             format=dt.fmt, out.format="d-m-y")
+         },
+         "time" = {      # time only
+           dt.chron <- chron(times=as.character(dt.str),
+                             format=dt.fmt, out.format="h:m:s")
+         },
+         "datetime" = {  # date and time
+           dt.lst <- sapply( as.character(dt.str),
+                            function(x) unlist(strsplit(x, " ")) )
+           colnames(dt.lst) <- NULL
+           dt.chron <- chron(dates=dt.lst[1,], times=dt.lst[2,],
+                             format=unlist(strsplit(dt.fmt, " ")),
+                             out.format=c("d-m-y","h:m:s"))
+         },              # invalid date/time format
+         stop("date/time format not valid")
+         )
   ## output chron vector
   return(dt.chron)
 }

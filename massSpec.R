@@ -8,7 +8,7 @@
 ###  7. run CIMS diagnostics
 ###  8. process CIMS data
 ###
-### version 2.5, May 2014
+### version 2.6, Jul 2014
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -144,9 +144,9 @@ fLoadCIMS <- function(cims.dir, cims.fn) {
   tst.d <- paste(cims1$yr, cims1$mo, cims1$dm, sep="-")
   tst.t <- paste(cims1$hr, cims1$mn, cims1$sc, sep=":")
   tst.dt <- paste(tst.d, tst.t, sep=" ")
-  cims.d <- fChronStr(tst.d , "y-m-d", "")
-  cims.t <- fChronStr(tst.t , "", "h:m:s")
-  cims.dt <- fChronStr(tst.dt , "y-m-d", "h:m:s")
+  cims.d <- fChronStr(tst.d , "y-m-d")
+  cims.t <- fChronStr(tst.t , "h:m:s")
+  cims.dt <- fChronStr(tst.dt , "y-m-d h:m:s")
   cims.time <- cbind.data.frame(cims.dt, cims.d, cims.t)
   rownames(cims.time) <- NULL
   colnames(cims.time) <- c("Datetime", "Date", "Time")
