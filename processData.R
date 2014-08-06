@@ -1,15 +1,64 @@
 ### ---------------------------------------------------------------- ###
 ### functions for data processing and analysis:
-###  1. start/mid/stop chron vectors
-###  2. average data using start/stop
-###  3. average data.frame using start/stop
+###  1. load data from text file
+###  2. start/mid/stop chron vectors
+###  3. average data using start/stop
+###  4. average data.frame using start/stop
 ###
-### version 1.1, Apr 2014
-### author: RS - based on code by DS (NOAA Aeronomy Lab)
+### version 1.2, Jul 2014
+### author: RS
+###
+### based on code by DS (NOAA Aeronomy Lab)
 ### ---------------------------------------------------------------- ###
 
+fImportData <- function(data.dir, data.fn, miss.flag, ...) {
+  ## 1. load data from a text file (*.csv, *.dat), convert date/time
+  ## to chron, replace missing data points with NA
+  ##
+  ## NB: time strings must have hours, minutes and seconds
+  ##
+  ## input:
+  ##       data.dir = data file directory
+  ##       data.fn = name of data file
+  ##       miss.flag = missing value flag (e.g., -9999)
+  ##       ... = date/time strings (e.g., "d/m/y h:m:s", "h:m:s")
+  ## output:
+  ##        data.frame ( time variables, data variables )
+  ## ------------------------------------------------------------
+  ## select type of data file
+  fn.num <- nchar(data.fn)
+  fn.ext <- substr(data.fn, (fn.num - 3), (fn.num))
+  if (fn.ext == ".csv") {         # comma delimited
+    fn.sep <- ","
+  } else if (fn.ext == ".dat") {  # tabs/space delimited
+    fn.sep <- ""
+  } else {
+    stop("invalid file extension")
+  }
+  ## load data file
+  data.file <- paste(data.dir, data.fn, sep="")
+  data.df <- read.delim(data.file, header=TRUE, sep=fn.sep)
+  ## convert date/time strings to chron
+  time.fmt <- list(...)
+  n.time <- length(time.fmt)
+  time.df <- list()
+  for (t in 1:n.time) {
+    time.vec <- fChronStr(data.df[[t]], time.fmt[[t]])
+    time.df[[t]] <- time.vec
+  }
+  time.df <- as.data.frame(time.df)
+  colnames(time.df) <- colnames(data.df[1:n.time])
+  ## set missing values to NA
+  data.filt <- data.df[,(n.time+1):ncol(data.df)]
+  data.filt[data.filt == miss.flag] <- NA
+  ## output data.frame
+  n.data <- ncol(data.df)
+  data.out <- cbind(time.df, data.filt)
+  return(data.out)
+}
+
 fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
-  ## 1. make start, mid, stop datetime chron vectors with given
+  ## 2. make start, mid, stop datetime chron vectors with given
   ## time step and interval (format: "d-m-y h:m:s")
   ##
   ## e.g., 30 minutes time step with 5 minutes interval:
@@ -48,7 +97,7 @@ fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
 }
 
 fAvgStartStop <- function(tst.orig, dat.orig, dat.str, tst.df, pl) {
-  ## 2. calculate mean, median, standard deviation, number of averaged
+  ## 3. calculate mean, median, standard deviation, number of averaged
   ## points and number of NaN points between time intervals defined by
   ## start/stop chron vectors
   ##
@@ -127,7 +176,7 @@ fAvgStartStop <- function(tst.orig, dat.orig, dat.str, tst.df, pl) {
 }
 
 fAvgStartStopDF <- function(tst.orig, df.orig, tst.df, pl.str) {
-  ## 3. calculate mean, median, standard deviation, number of averaged
+  ## 4. calculate mean, median, standard deviation, number of averaged
   ## points and number of NaN points between time intervals for all
   ## variables in a data.frame
   ##
