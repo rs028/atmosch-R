@@ -167,7 +167,7 @@ fAvgStartStop <- function(tst.orig, dat.orig, dat.str, tst.df, pl) {
     vect.df <- cbind(vect.avg, vect.med, vect.std,
                      vect.npt, vect.nan)
     vect.str <- c("mean", "median", "stddev", "pnts", "nans")
-    colnames(vect.df) <- paste(dat.str, vect.str, sep=".")
+    colnames(vect.df) <- vect.str #paste(dat.str, vect.str, sep=".")
     df.out <- data.frame(tst.df, vect.df)
     return(df.out)
   } else {
