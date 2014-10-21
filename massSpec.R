@@ -5,10 +5,8 @@
 ###  4. rotate spectra and make time spectra plots
 ###  5. load CIMS data
 ###  6. load CIMS spectra
-###  7. run CIMS diagnostics
-###  8. process CIMS data
 ###
-### version 2.6, Jul 2014
+### version 2.8, Oct 2014
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -133,47 +131,48 @@ fLoadCIMS <- function(cims.dir, cims.fn) {
   cims.file <- paste(cims.dir, cims.fn, sep="")
   cims.df <- read.delim(cims.file, header=TRUE, sep="")
   cims.df <- cims.df[-nrow(cims.df),]
-  ## separate data in groups of variables
+  ## separate variables into groups
   nvar <- length(names(cims.df))
   cims1 <- cims.df[,1:8]             # time
-  cims2 <- cims.df[,9:11]            # n. cycles, masses, analog signals
+  cims2 <- cims.df[,9:11]            # n. cycles, hops, analog signals
   cims3 <- cims.df[,12:15]           # cycles
   cims4 <- cims.df[,16:(nvar-32)]    # Hz, mass, dwell time
   cims5 <- cims.df[,(nvar-31):nvar]  # analog signals
-  ## timestamp
+  ## convert date/time string to chron
   tst.d <- paste(cims1$yr, cims1$mo, cims1$dm, sep="-")
   tst.t <- paste(cims1$hr, cims1$mn, cims1$sc, sep=":")
   tst.dt <- paste(tst.d, tst.t, sep=" ")
-  cims.d <- fChronStr(tst.d , "y-m-d")
-  cims.t <- fChronStr(tst.t , "h:m:s")
-  cims.dt <- fChronStr(tst.dt , "y-m-d h:m:s")
+  cims.d <- fChronStr(tst.d, "y-m-d")
+  cims.t <- fChronStr(tst.t, "h:m:s")
+  cims.dt <- fChronStr(tst.dt, "y-m-d h:m:s")
   cims.time <- cbind.data.frame(cims.dt, cims.d, cims.t)
   rownames(cims.time) <- NULL
   colnames(cims.time) <- c("Datetime", "Date", "Time")
-  ## atomic mass unit (amu) and ion count
+  ## calculate atomic mass unit (amu) and ion count
   nmz <- length(names(cims4))
   ic.hz <- cims4[,seq(1, nmz, by=3), drop=F]
   ic.am <- cims4[,seq(2, nmz, by=3), drop=F]
   ic.ms <- cims4[,seq(3, nmz, by=3), drop=F]
   cims.amu <- ic.am / 1000
   cims.ic <- ic.hz * ic.ms / 1000
-  ## name of variables
+  ## set name of variables
   if (ncol(ic.am) == 1) {  # instrument in 'scan' mode
     colnames(cims.amu) <- "amu"
-    colnames(cims.ic) <- "Hz"
+    colnames(cims.ic)  <- "Hz"
   } else {                 # instrument in 'hop' mode
     colnames(cims.amu) <- gsub("mamu", "amu", colnames(cims.amu))
   }
-  ## mass assignment correction   <---------------- !!!
-  cims.amu.corr <- cims.amu + (-0.005279 * cims.amu + 0.854465)
-  colnames(cims.amu) <- paste(colnames(cims.amu), ".raw", sep="")
-  cims.data <- cbind.data.frame(cims.ic, cims.amu, cims.amu.corr)
   ## diagnostics variables
   tst.uxt <- cims1[,1:2, drop=F]
-  cims5.v <- cims5/1000
-  cims.diagn <- cbind.data.frame(tst.uxt, cims2, cims3, cims5.v)
+  cims5.volt <- cims5/1000
+  cims.diagn <- cbind.data.frame(tst.uxt, cims2, cims3, cims5.volt)
+  ## print diagnostics
+  for (i in 1:ncol(ic.am)) {
+    cat(colnames(ic.am)[i], mean(ic.am[[i]]), sd(ic.am[[i]]), "\n")
+    cat(colnames(ic.ms)[i], mean(ic.ms[[i]]), sd(ic.ms[[i]]), "\n")
+  }
   ## output data.frame
-  cims.out <- data.frame(cims.time, cims.data, cims.diagn)
+  cims.out <- data.frame(cims.time, cims.amu, cims.ic, cims.diagn)
   return(cims.out)
 }
 
