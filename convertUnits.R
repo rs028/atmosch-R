@@ -11,25 +11,22 @@
 ### conversion factors from WolframAlpha:
 ###    http://www.wolframalpha.com/
 ###
-### input:
-###       data.in = data in original unit
-###       unit.in = original measurement unit
-###       unit.out = final measurement unit
-###       temp = temperature (K)  [if required]
-###       press = pressure (Pa)   [if required]
-###
-### output:
-###        data.out = data in final unit
-###
-### version 1.5, Dec 2013
+### version 1.6, Dec 2014
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fConvTemp <- function(data.in, unit.in, unit.out) {
-  ## 1. convert between units of temperature:
-  ##   kelvin    -> "K"
-  ##   celsius   -> "C"
-  ##   fahreneit -> "F"
+  ## 1. convert between units of temperature
+  ## - kelvin    : "K"
+  ## - celsius   : "C"
+  ## - fahreneit : "F"
+  ##
+  ## input:
+  ##     data.in = data in original unit
+  ##     unit.in = original measurement unit
+  ##     unit.out = final measurement unit
+  ## output:
+  ##     data.out = data in final unit
   ## ------------------------------------------------------------
   ## data in original unit to reference unit (K)
   switch(unit.in,
@@ -62,15 +59,22 @@ fConvTemp <- function(data.in, unit.in, unit.out) {
 }
 
 fConvPress <- function(data.in, unit.in, unit.out) {
-  ## 2. convert between units of pressure:
-  ##   pascal      -> "Pa"
-  ##   hectopascal -> "hPa"
-  ##   kilopascal  -> "kPa"
-  ##   atmosphere  -> "atm"
-  ##   torr = mmHg -> "torr"
-  ##   bar         -> "bar"
-  ##   millibar    -> "mbar"
-  ##   psi         -> "psi"
+  ## 2. convert between units of pressure
+  ## - pascal      : "Pa"
+  ## - hectopascal : "hPa"
+  ## - kilopascal  : "kPa"
+  ## - atmosphere  : "atm"
+  ## - torr = mmHg : "torr"
+  ## - bar         : "bar"
+  ## - millibar    : "mbar"
+  ## - psi         : "psi"
+  ##
+  ## input:
+  ##     data.in = data in original unit
+  ##     unit.in = original measurement unit
+  ##     unit.out = final measurement unit
+  ## output:
+  ##     data.out = data in final unit
   ## ------------------------------------------------------------
   ## data in original unit to reference unit (Pa)
   switch(unit.in,
@@ -133,9 +137,16 @@ fConvPress <- function(data.in, unit.in, unit.out) {
 }
 
 fConvAngle <- function(data.in, unit.in, unit.out) {
-  ## 3. convert between units of angle:
-  ##   radian -> "rad"
-  ##   degree -> "deg"
+  ## 3. convert between units of angle
+  ## - radian : "rad"
+  ## - degree : "deg"
+  ##
+  ## input:
+  ##     data.in = data in original unit
+  ##     unit.in = original measurement unit
+  ##     unit.out = final measurement unit
+  ## output:
+  ##     data.out = data in final unit
   ## ------------------------------------------------------------
   ## data in original unit to reference unit (rad)
   switch(unit.in,
@@ -162,12 +173,19 @@ fConvAngle <- function(data.in, unit.in, unit.out) {
 }
 
 fConvTime <- function(data.in, unit.in, unit.out) {
-  ## 4. convert between units of time:
-  ##   second -> "sec"
-  ##   minute -> "min"
-  ##   hour   -> "hr"
-  ##   day    -> "day"
-  ##   week   -> "wk"
+  ## 4. convert between units of time
+  ## - second : "sec"
+  ## - minute : "min"
+  ## - hour   : "hr"
+  ## - day    : "day"
+  ## - week   : "wk"
+  ##
+  ## input:
+  ##     data.in = data in original unit
+  ##     unit.in = original measurement unit
+  ##     unit.out = final measurement unit
+  ## output:
+  ##     data.out = data in final unit
   ## ------------------------------------------------------------
   ## data in original unit to reference unit (sec)
   switch(unit.in,
@@ -212,16 +230,31 @@ fConvTime <- function(data.in, unit.in, unit.out) {
 }
 
 fConvSI <- function(data.in, unit.in, unit.out) {
-  ## 5. convert between multiples of SI units:
-  ##   exa       -> "Ex"     atto  -> "a"
-  ##   peta      -> "P"     femto -> "f"
-  ##   tera      -> "T"     pico  -> "p"
-  ##   giga      -> "G"     nano  -> "n"
-  ##   mega      -> "M"     micro -> "u"
-  ##   kilo      -> "k"     milli -> "m"
-  ##   hecto     -> "h"     centi -> "c"
-  ##   deca      -> "da"    deci  -> "d"
-  ##   base unit -> "-"
+  ## 5. convert between multiples of SI units
+  ## - exa       : "Ex"
+  ## - peta      : "P"
+  ## - tera      : "T"
+  ## - giga      : "G"
+  ## - mega      : "M"
+  ## - kilo      : "k"
+  ## - hecto     : "h"
+  ## - deca      : "da"
+  ## - base unit : "-"
+  ## - deci      : "d"
+  ## - centi     : "c"
+  ## - milli     : "m"
+  ## - micro     : "u"
+  ## - nano      : "n"
+  ## - pico      : "p"
+  ## - femto     : "f"
+  ## - atto      : "a"
+  ##
+  ## input:
+  ##     data.in = data in original unit
+  ##     unit.in = original measurement unit
+  ##     unit.out = final measurement unit
+  ## output:
+  ##     data.out = data in final unit
   ## ------------------------------------------------------------
   ## data in original unit to reference unit (base unit)
   switch(unit.in,
@@ -339,12 +372,21 @@ fConvSI <- function(data.in, unit.in, unit.out) {
 
 fConcGas <- function(data.in, unit.in, unit.out, temp, press) {
   ## 6. convert between units of concentration (gas-phase):
-  ##   molecule cm-3 -> "ND"
-  ##   ppth          -> "ppth"
-  ##   ppm           -> "ppm"
-  ##   ppb           -> "ppb"
-  ##   ppt           -> "ppt"
-  ##   mole m-3      -> "MD"
+  ## - molecule cm-3 : "ND"
+  ## - ppth          : "ppth"
+  ## - ppm           : "ppm"
+  ## - ppb           : "ppb"
+  ## - ppt           : "ppt"
+  ## - mole m-3      : "MD"
+  ##
+  ## input:
+  ##     data.in = data in original unit
+  ##     unit.in = original measurement unit
+  ##     unit.out = final measurement unit
+  ##     temp = temperature (K)
+  ##     press = pressure (Pa)
+  ## output:
+  ##     data.out = data in final unit
   ## ------------------------------------------------------------
   ## Avogadro number and air number density
   n.avog <- fConstant("Na")$Value
@@ -399,9 +441,18 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press) {
 
 fConcAq <- function(data.in, unit.in, unit.out) {
   ## 7. convert between units of concentration (aqueous-phase):
-  ##   molarity (mole/l, mole/dm3) -> "M"
-  ##   mole m-3                    -> "MD"
-  ## ------------------------------------------------------------
+  ## - molarity (mole/l, mole/dm3) : "M"
+  ## - mole m-3                    : "MD"
+  ##
+  ## input:
+  ##     data.in = data in original unit
+  ##     unit.in = original measurement unit
+  ##     unit.out = final measurement unit
+  ##     temp = temperature (K)
+  ##     press = pressure (Pa)
+  ## output:
+  ##     data.out = data in final unit
+  ## -------------------------------------------------------------
   ## Avogadro number
   n.avog <- fConstant("Na")$Value
   ## data in original unit to reference unit (M)

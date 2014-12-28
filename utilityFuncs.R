@@ -1,18 +1,19 @@
 ### ---------------------------------------------------------------- ###
-### utilities and tools for R functions:
+### utilities and tools for atmosch-R functions:
 ###  1. clear workspace
 ###  2. merge list of data.frames
 ###  3. find point in vector greater/less than value
 ###  4. convert date/time string to chron
 ###
-### version 1.2, Jul 2014
+### version 1.3, Dec 2014
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fClearWS <- function() {
-  ## 1. clear workspace --> delete all variables, keep functions
+  ## 1. clear workspace: delete all variables, keep atmosch-R
+  ## functions
   ##
-  ## NB: functions names = `f + uppercase letter'
+  ## NB: names of atmosch-R functions = `f + uppercase letter'
   ## ------------------------------------------------------------
   rm(list = setdiff(ls(pos=.GlobalEnv),
                     ls(pos=.GlobalEnv, pattern="^f[.A-Z]")),
@@ -26,12 +27,12 @@ fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
   ## NB: see documentation of merge() function
   ##
   ## input:
-  ##       df.lst = list of data.frames to merge
-  ##       var.str = name of common variable
-  ##       all.str = type of merge operation ("TRUE" OR "FALSE")
-  ##       suff.lst = list of suffixes to rename variables
+  ##    df.lst = list of data.frames to merge
+  ##    var.str = name of common variable
+  ##    all.str = type of merge operation ("TRUE" OR "FALSE")
+  ##    suff.lst = list of suffixes to rename variables
   ## output:
-  ##        data.frame ( merged data.frames )
+  ##    df.merg = data.frame ( merged data.frames )
   ## ------------------------------------------------------------
   if (length(df.lst) == 2 ) {  # two data.frames
     df.merg <- merge(df.lst[1], df.lst[2],
@@ -61,15 +62,15 @@ fFindPnt <- function(vecd, ops, xval, xst) {
   ## the data vector
   ##
   ## NB: mostly for use with fAvgStartStop() and fMakeExpand()
-  ## functions (processData.R)
+  ## functions (in processData.R)
   ##
   ## input:
-  ##       vecd = data vector
-  ##       ops = greater/equal ("GE") or less/equal ("LE")
-  ##       xval = reference value
-  ##       xst = starting point in data vector
+  ##    vecd = data vector
+  ##    ops = greater/equal ("GE") or less/equal ("LE")
+  ##    xval = reference value
+  ##    xst = starting point in data vector
   ## output:
-  ##        xv = point in data vector greater/less than reference value
+  ##    xv = point in data vector greater/less than reference value
   ## ------------------------------------------------------------
   nv <- length(vecd)
   ## starting point is greater than data vector length
@@ -118,11 +119,11 @@ fChronStr <- function(dt.str, dt.fmt) {
   ## vector with format "d-m-y h:m:s"
   ##
   ## input:
-  ##       dt.str = date/time string
-  ##       dt.fmt = format of date/time string ("d/m/y h:m:s" OR
-  ##                                            "d/m/y" OR "h:m:s")
+  ##    dt.str = date/time string
+  ##    dt.fmt = format of date/time string ("d/m/y h:m:s" OR
+  ##                                         "d/m/y" OR "h:m:s")
   ## output:
-  ##        chron ( d-m-y h:m:s )
+  ##    dt.chron = chron ( d-m-y h:m:s )
   ## ------------------------------------------------------------
   ## date/time format flag
   if (grepl("d", dt.fmt)) {
