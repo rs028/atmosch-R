@@ -6,7 +6,7 @@
 ###  5. rate coefficient of termolecular reaction
 ###  6. chemical lifetime and half-life
 ###
-### version 1.6, Jan 2014
+### version 1.7, Dec 2014
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -46,46 +46,44 @@ fGasLaw <- function(press, volum, n.mol, temp) {
 }
 
 fKBi <- function(pfac, ea.r, temp) {
-  ## 3. calculate rate coefficient of bimolecular reaction using the
-  ## standard Arrhenius equation:
-  ##   k = A exp(-Ea / RT)
+  ## 3. calculate rate coefficient of a bimolecular reaction at given
+  ## and standard temperature using the standard Arrhenius equation:
+  ##  k = A exp(-Ea/RT)
   ##
   ## input:
-  ##       pfac = pre-exponential factor (cm3 molecule-1 s-1)
-  ##       ea.r = -Ea / R (J mol-1 / J K-1 mol-1)
-  ##       temp = temperature (K)
+  ##    pfac = pre-exponential factor (cm3 molecule-1 s-1)
+  ##    ea.r = -Ea / R (J mol-1 / J K-1 mol-1)
+  ##    temp = temperature (K)
   ## output:
-  ##        data.frame ( kt = rate coefficient,
-  ##                     k298 = rate coefficient at 298 K )
+  ##    df.out = data.frame ( kt = rate coefficient,
+  ##                          k298 = standard rate coefficient )
   ## ------------------------------------------------------------
   k.gas <- pfac * exp(ea.r / temp)
   k.std <- pfac * exp(ea.r / 298)
   ## output data.frame
-  df.out <- data.frame(kt = k.gas,
-                       k298 = k.std)
+  df.out <- data.frame(kt = k.gas, k298 = k.std)
   return(df.out)
 }
 
 fKBix <- function(pfac, temp0, nn, ea.r, temp) {
-  ## 4. calculate rate coefficient of bimolecular reaction using the
-  ## expanded Arrhenius equation:
-  ##   k = A (T / T0) ^ n exp(-Ea / RT)
+  ## 4. calculate rate coefficient of a bimolecular reaction at given
+  ## and standard temperature using the expanded Arrhenius equation:
+  ##  k = A(T/T0)^n exp(-Ea/RT)
   ##
   ## input:
-  ##       pfac = pre-exponential factor (cm3 molecule-1 s-1)
-  ##       temp0 = reference temperature (K)
-  ##       nn = reference temperature exponent (unitless)
-  ##       ea.r = -Ea / R (J mol-1 / J K-1 mol-1)
-  ##       temp = temperature (K)
+  ##    pfac = pre-exponential factor (cm3 molecule-1 s-1)
+  ##    temp0 = reference temperature (K)
+  ##    nn = reference temperature exponent (unitless)
+  ##    ea.r = -Ea / R (J mol-1 / J K-1 mol-1)
+  ##    temp = temperature (K)
   ## output:
-  ##        data.frame ( kt = rate coefficient,
-  ##                     k298 = rate coefficient at 298 K )
+  ##    df.out = data.frame ( kt = rate coefficient,
+  ##                          k298 = standard rate coefficient )
   ## ------------------------------------------------------------
   k.gas <- (pfac * (temp / temp0) ^ nn) * exp(ea.r / temp)
   k.std <- (pfac * (298 / temp0) ^ nn) * exp(ea.r / 298)
   ## output data.frame
-  df.out <- data.frame(kt = k.gas,
-                       k298 = k.std)
+  df.out <- data.frame(kt = k.gas, k298 = k.std)
   return(df.out)
 }
 
