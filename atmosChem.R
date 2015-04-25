@@ -11,12 +11,12 @@ fAirND <- function(temp, press) {
   ## oxygen and molecular nitrogen at given temperature and pressure
   ##
   ## input:
-  ##    temp = temperature (K)
-  ##    press = pressure (Pa)
+  ##     temp = temperature (K)
+  ##     press = pressure (Pa)
   ## output:
-  ##    df.out = data.frame ( M = number density of air,
-  ##                          O2 = number density of O2,
-  ##                          N2 = number density of N2 )
+  ##     df.out = data.frame ( M = number density of air,
+  ##                           O2 = number density of O2,
+  ##                           N2 = number density of N2 )
   ## ------------------------------------------------------------
   ## Avogadro number, gas constant
   n.avog <- fConstant("Na")$Value

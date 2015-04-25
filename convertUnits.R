@@ -388,7 +388,7 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press) {
   ## output:
   ##     data.out = data in final unit
   ## ------------------------------------------------------------
-  ## Avogadro number and air number density
+  ## Avogadro number, air number density
   n.avog <- fConstant("Na")$Value
   m.air <- fAirND(temp, press)$M
   ## data in original unit to reference unit (ND)

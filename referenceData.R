@@ -1,5 +1,5 @@
 ### ---------------------------------------------------------------- ###
-### database of physical and chemical reference data:
+### reference data for physics and chemistry :
 ###  1. physical/chemical constants
 ###  2. periodic table
 ###
@@ -7,52 +7,61 @@
 ###    http://www.nist.gov/pml/data/physicalconst.cfm
 ###    http://www.nist.gov/pml/data/edi.cfm
 ###
-### version 3.0, Dec 2014
+### version 3.1, Apr 2015
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fConstant <- function(data.in) {
-  ## 1. retrieve name, symbol, value, unit of a physical/chemical
+  ## 1. return name, symbol, value, unit of a physical/chemical
   ## constant
+  ## - Avogadro number           : "Na"
+  ## - Boltzmann constant        : "kB"
+  ## - gas constant              : "R"
+  ## - Planck constant           : "h"
+  ## - Stefan-Boltzmann constant : "kSB"
+  ## - standard gravity          : "g0"
+  ## - speed of light            : "c0"
   ##
   ## input:
-  ##    data.in = symbol of physical/chemical constant
-  ##              - Avogadro number           : "Na"
-  ##              - Boltzmann constant        : "kB"
-  ##              - ideal gas constant        : "R"
-  ##              - Planck constant           : "h"
-  ##              - Stefan-Boltzmann constant : "kSB"
-  ##              - standard gravity          : "g0"
+  ##     data.in = symbol of physical/chemical constant
   ## output:
-  ##    data.out = data.frame ( Name, Symbol, Value, Unit )
+  ##     data.out = data.frame ( Name = name of constant,
+  ##                             Symbol = symbol of constant,
+  ##                             Value = value of constant,
+  ##                             Unit = unit of constant )
   ## ------------------------------------------------------------
   k01 <- c("Avogadro number", "Na", 6.02214129e+23, "mol-1")
   k02 <- c("Boltzmann constant", "kB", 1.3806488e-23, "J K-1")
-  k03 <- c("ideal gas constant", "R", 8.3144621, "J mol-1 K-1")
+  k03 <- c("gas constant", "R", 8.3144621, "J mol-1 K-1")
   k04 <- c("Planck constant", "h", 6.62606957e-34, "J s")
   k05 <- c("Stefan-Boltzmann constant", "kSB", 5.670373e-08, "W m-2 K-4")
   k06 <- c("standard gravity", "g0", 9.80665, "m s-2")
-  k.df <- rbind(k01, k02, k03, k04, k05, k06)
+  k07 <- c("speed of light", "c0", 299792458, "m s-1")
+  k.df <- rbind(k01, k02, k03, k04, k05, k06, k07)
   for (i in 1:nrow(k.df)) {
-      if (data.in == k.df[i,2]) {
-          nn <- as.character(k.df[i,1])  # name
-          ss <- as.character(k.df[i,2])  # symbol
-          vv <- as.numeric(k.df[i,3])    # value
-          uu <- as.character(k.df[i,4])  # unit
-      }
+    if (data.in == k.df[i,2]) {
+      nn <- as.character(k.df[i,1])  # name
+      ss <- as.character(k.df[i,2])  # symbol
+      vv <- as.numeric(k.df[i,3])    # value
+      uu <- as.character(k.df[i,4])  # unit
+    }
   }
   data.out <- data.frame(Name=nn, Symbol=ss, Value=vv, Unit=uu)
   return(data.out)
 }
 
 fPeriodic <- function(data.in) {
-  ## 2. retrieve name, symbol, atomic number, atomic weight of a
+  ## 2. returns name, symbol, atomic number, atomic weight of a
   ## chemical element (trans-uranium elements not included)
+  ## - "H" ... "U"
   ##
   ## input:
-  ##    data.in = symbol of chemical element ("H" to "U")
+  ##     data.in = symbol of chemical element
   ## output:
-  ##    data.out = data.frame ( Name, Symbol, Atomic.N, Atomic.W )
+  ##     data.out = data.frame ( Name = name of element,
+  ##                             Symbol = symbol of element,
+  ##                             Atomic.N = atomic number of element,
+  ##                             Atomic.W = atomic weight of element )
   ## ------------------------------------------------------------
   el01 <- c("Hydrogen", "H", 1, 1.00794)
   el02 <- c("Helium", "He", 2, 4.002602)
@@ -158,12 +167,12 @@ fPeriodic <- function(data.in) {
                  el82, el83, el84, el85, el86, el87, el88, el89, el90,
                  el91, el92)
   for (i in 1:nrow(el.df)) {
-      if (data.in == el.df[i,2]) {
-          nn <- as.character(el.df[i,1])  # name
-          ss <- as.character(el.df[i,2])  # symbol
-          an <- as.numeric(el.df[i,3])    # atomic number
-          aw <- as.character(el.df[i,4])  # atomic weight
-      }
+    if (data.in == el.df[i,2]) {
+      nn <- as.character(el.df[i,1])  # name
+      ss <- as.character(el.df[i,2])  # symbol
+      an <- as.numeric(el.df[i,3])    # atomic number
+      aw <- as.character(el.df[i,4])  # atomic weight
+    }
   }
   data.out <- data.frame(Name=nn, Symbol=ss, Atomic.N=an,  Atomic.W=aw)
   return(data.out)
