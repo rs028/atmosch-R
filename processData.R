@@ -101,7 +101,7 @@ fAvgStartStop <- function(tst.orig, dat.orig, dat.str, tst.df, pl) {
   ## points and number of NaN points between time intervals defined by
   ## start/stop chron vectors
   ##
-  ## NB: see documentation of fMakeStartStop() function
+  ## NB: see documentation of fMakeStartStop()
   ##
   ## input:
   ##       tst.orig = original chron vector ("d-m-y h:m:s")
@@ -181,7 +181,6 @@ fAvgStartStopDF <- function(tst.orig, df.orig, tst.df, pl.str) {
   ## variables in a data.frame
   ##
   ## NB: see documentation of fMakeStartStop() and fAvgStartStop()
-  ## functions
   ##
   ## input:
   ##       tst.orig = original chron vector ("d-m-y h:m:s")

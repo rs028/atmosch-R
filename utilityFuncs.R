@@ -24,7 +24,7 @@ fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
   ## 2. merge list of data.frames by a common variable and rename the
   ## other variables using a list of suffixes
   ##
-  ## NB: see documentation of merge() function
+  ## NB: see documentation of merge()
   ##
   ## input:
   ##    df.lst = list of data.frames to merge
