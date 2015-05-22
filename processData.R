@@ -113,7 +113,7 @@ fAvgStartStop <- function(tst.orig, dat.orig, dat.str, tst.df, pl) {
   ##        data.frame ( start chron, mid chron, stop chron,
   ##                     mean, median, standard deviation,
   ##                     n. averaged points, n. NaN points )
-  ##        ---> plot (if pl = "yes")
+  ##        --> plot (if pl = "yes")
   ## ------------------------------------------------------------
   ## start/stop chron vectors
   tst.start <- tst.df$StartTime
@@ -194,7 +194,7 @@ fAvgStartStopDF <- function(tst.orig, df.orig, tst.df, pl.str) {
   ##              data.frame ( mean, median, standard deviation,
   ##                           n. averaged points, n. NaN points )
   ##              ... )
-  ##        ---> save plots if filename is given (`pl.str'.pdf)
+  ##        --> save plots if filename is given (`pl.str'.pdf)
   ## ------------------------------------------------------------
   ## get dimensions of data.frame
   nrw <- nrow(df.orig)
