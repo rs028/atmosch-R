@@ -64,15 +64,15 @@ fNormTOF <- function(spect.df, scan.ini, scan.fin) {
   ## hydronium (m/z=19) ion count
   h3o <- as.numeric(spect.df[19,])
   ## normalize spectra
-  spect.norm <- t(apply( spect.df, 1, function(x)
-                         x * 1e6 / h3o ))
+  spect.norm <- t(apply(spect.df, 1, function(x)
+                        x * 1e6 / h3o))
   spect.norm[,1] <- spect.df[,1]
   nsp <- ncol(spect.norm)
   ## calculate average spectrum and standard deviation
   smin <- scan.ini + 2
   smax <- nsp - scan.fin
-  spect.avg <- apply( spect.norm[,smin:smax], 1, mean )
-  spect.std <- apply( spect.norm[,smin:smax], 1, sd )
+  spect.avg <- apply(spect.norm[,smin:smax], 1, mean)
+  spect.std <- apply(spect.norm[,smin:smax], 1, sd)
   ## output data.frame
   spect.out <- as.data.frame(spect.norm)
   spect.out[,(nsp+1)] <- spect.avg
@@ -188,7 +188,7 @@ fSpectraCIMS <- function(cims.dir, cims.lst) {
     cims.fn <- cims.lst[[i]]
     cat("loading:", cims.fn, "\n")
     spect.data <- fLoadCIMS(cims.dir, cims.fn)
-    ## extract mass and ion count and add to list
+    ## extract mass and ion counts and add to list
     spect.ic <- data.frame(amu = (spect.data[,5] / 1000),
                            ic = (spect.data[,4] * (spect.data[,6] / 1000)))
     spectra.list[[i]] <- spect.ic
@@ -338,7 +338,7 @@ fProcessCIMS <- function(cims.df, bgd.sw) {
   ##     cims.df = data.frame of CIMS data
   ##     bgd.sw = "on" OR "off"
   ## output:
-  ##     cims.out = data.frame ( time variables, processed data variables,
+  ##     cims.out = data.frame ( time variables, processed data,
   ##                             diagnostic variables, relative humidity,
   ##                             temperature)
   ## ------------------------------------------------------------
@@ -361,7 +361,7 @@ fProcessCIMS <- function(cims.df, bgd.sw) {
   ## temperature and relative humidity from Vaisala probe
   probe.rh <- (cims.diagn$A05 / 1000) * 20
   probe.temp <- (cims.diagn$A06 / 1000) * 30 - 70
-  cims.probe <- data.frame(RH = probe.rh, Temp = probe.temp)
+  cims.probe <- data.frame(Vaisala.RH = probe.rh, Vaisala.T = probe.temp)
   ## extract instrument background
   if (bgd.sw == "on") {
     cat("there is bgd\n")
@@ -377,18 +377,19 @@ fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
   ## [I.H2O]-); the reference ion count can be scaled to a given
   ## parameter (e.g., absolute humidity)
   ##
-  ## NB: 
+  ## NB: fProcessCIMS() must be used before
   ##
   ## input:
   ##    cims.df = data.frame of CIMS data
   ##    ref.mz = mass of reference ion
   ##    norm.fac = normalization factor (1 OR 1e6)
   ##    scale.str =  scaling parameter ("none" OR "vaisala" OR
-  ##                 name of parameter data.frame)
+  ##                 name of parameter)
   ## output:
   ##    cims.out = data.frame ( time variables, processed data,
   ##                            normalized data, diagnostic variables,
-  ##                            relative humidity, temperature)
+  ##                            relative humidity, temperature,
+  ##                            scaling parameter)
   ## ------------------------------------------------------------
   ## separate CIMS variables
   n.var <- ncol(cims.df)
@@ -403,28 +404,29 @@ fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
   switch(scale.str,
          # no scaling (divide by 1)
          "none" = {
-           scale.df <- data.frame(X.1 = rep(1, nrow(cims.time)))
+           scale.df <- data.frame(SF = rep(1, nrow(cims.time)))
          },
          # absolute humidity from Vaisala probe (g/m3)
          "vaisala" = {
-           scale.df <- data.frame(AH = (6.112 * exp((17.67 * cims.probe$Temp) / (cims.probe$Temp + 243.5)) * cims.probe$RH * 2.1674) /
-                                      (273.15 + cims.probe$Temp))
+           scale.df <- data.frame(Vaisala.AH = (6.112 * exp((17.67 * cims.probe$Vaisala.Temp) / (cims.probe$Vaisala.Temp + 243.5)) * cims.probe$Vaisala.RH * 2.1674) / (273.15 + cims.probe$Vaisala.Temp))
          },
          # other parameter
            scale.df <- get(param.str)
          )
-  ## get reference ion and scale it
+  ## scale reference ion to scaling parameter
   ref.str <- paste("m", as.character(ref.mz), "_raw", sep="")
-  ref.ic <- cims.ic[,ref.str]
-  ref.scaled <- ref.ic / scale.df
-  ## normalize data to reference ion count
-  cims.norm1 <- apply( cims.ic, 2, function(x)
-                       x * norm.fac / ref.scaled )
-  cims.norm2 <- apply( cims.norm1, 2, function(x)
-                       ifelse(is.infinite(x) == TRUE, NaN, x) )
-  colnames(cims.norm2) <- gsub("_raw", "_norm", colnames(cims.norm2))
+  ref.ic <- cims.ic[,ref.str, drop=F]
+  ref.scal <- ref.ic / scale.df
+  ## normalize data to reference ion
+  cims.n1 <- as.data.frame(sapply(cims.ic, function(x)
+                                  x * norm.fac / ref.scal))
+  cims.n2 <- as.data.frame(sapply(cims.n1, function(x)
+                                  ifelse(is.infinite(x) == TRUE, NaN, x)))
+  ## rename normalized data variables
+  suffx <- paste("_raw\\.", ref.str, sep="")
+  colnames(cims.n2) <- gsub(suffx, "_norm", colnames(cims.n2))
   ## output data.frame
-  cims.out <- data.frame(cims.time, cims.amu, cims.ic, cims.norm2,
-                         cims.diagn, cims.probe, scale.df)
+  cims.out <- data.frame(cims.time, cims.amu, cims.ic, cims.n2,
+                        cims.diagn, cims.probe, scale.df)
   return(cims.out)
 }
