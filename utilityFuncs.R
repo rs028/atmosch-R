@@ -2,8 +2,9 @@
 ### utilities and tools for atmosch-R functions:
 ###  1. clear workspace
 ###  2. merge list of data.frames
-###  3. find point in vector greater/less than value
-###  4. convert date/time string to chron
+###  3. find point in vector greater/less than value => !!OBSOLETE!!
+###  4. find point in vector greater/less than value
+###  5. convert date/time string to chron
 ###
 ### version 1.3, Dec 2014
 ### author: RS
@@ -61,8 +62,8 @@ fFindPnt <- function(vecd, ops, xval, xst) {
   ## reference value in a data vector starting from a given point in
   ## the data vector
   ##
-  ## NB: mostly for use with fAvgStartStop() and fMakeExpand()
-  ## functions (in processData.R)
+  ## NB: this function is inefficient and slow and is kept only for
+  ## backward compatibility => fFindIdx() should be used instead
   ##
   ## input:
   ##    vecd = data vector
@@ -114,8 +115,60 @@ fFindPnt <- function(vecd, ops, xval, xst) {
   return(xv)
 }
 
+fFindIdx <- function(vecd, ops, xval) {
+  ## 4. find the first point greater/less than a reference value in an
+  ## ordered data/chron vector
+  ##
+  ## input:
+  ##    vecd = ordered data/chron vector
+  ##    ops = greater/equal ("GE") OR greater ("G") OR
+  ##          less ("L") OR less/equal ("LE")
+  ##    xval = reference value
+  ## output:
+  ##    xv = point in vector greater/less than reference value
+  ## ------------------------------------------------------------
+  ## first and last values of data vector
+  vecd.first <- vecd[1]
+  vecd.last <- vecd[length(vecd)]
+  switch(ops,
+         "GE" = {  # GREATER/EQUAL
+           if (xval >= vecd.last) {
+             xv <- which(vecd == vecd.last)
+           } else {
+             xv <- which(vecd >= xval)
+             xv <- xv[1]
+           }
+         },
+         "G" = {  # GREATER
+           if (xval > vecd.last) {
+             xv <- which(vecd == vecd.last)
+           } else {
+             xv <- which(vecd > xval)
+             xv <- xv[1]
+           }
+         },
+         "L" = {  # LESS
+           if (xval < vecd.first) {
+             xv <- which(vecd == vecd.first)
+           } else {
+             xv <- which(vecd < xval)
+             xv <- xv[length(xv)]
+           }
+         },
+         "LE" = {  # LESS/EQUAL
+           if (xval <= vecd.first) {
+             xv <- which(vecd == vecd.first)
+           } else {
+             xv <- which(vecd <= xval)
+             xv <- xv[length(xv)]
+           }
+         }
+         )
+  return(xv)
+}
+
 fChronStr <- function(dt.str, dt.fmt) {
-  ## 4. convert date, time, datetime string in given format to chron
+  ## 5. convert date, time, datetime string in given format to chron
   ## vector with format "d-m-y h:m:s"
   ##
   ## input:
@@ -146,8 +199,8 @@ fChronStr <- function(dt.str, dt.fmt) {
                              format=dt.fmt, out.format="h:m:s")
          },
          "datetime" = {  # date and time
-           dt.lst <- sapply( as.character(dt.str),
-                            function(x) unlist(strsplit(x, " ")) )
+           dt.lst <- sapply(as.character(dt.str),
+                            function(x) unlist(strsplit(x, " ")))
            colnames(dt.lst) <- NULL
            dt.chron <- chron(dates=dt.lst[1,], times=dt.lst[2,],
                              format=unlist(strsplit(dt.fmt, " ")),
