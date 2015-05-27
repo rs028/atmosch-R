@@ -6,7 +6,7 @@
 ###  4. find point in vector greater/less than value
 ###  5. convert date/time string to chron
 ###
-### version 1.3, Dec 2014
+### version 1.4, May 2015
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
