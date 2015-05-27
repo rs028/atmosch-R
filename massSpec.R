@@ -10,7 +10,7 @@
 ###  8. process CIMS data
 ###  9. normalize CIMS data
 ###
-### version 3.0, May 2015
+### version 3.1, May 2015
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -149,7 +149,7 @@ fLoadCIMS <- function(cims.dir, cims.fn) {
   ## separate variables into groups
   nvar <- length(names(cims.df))
   cims1 <- cims.df[,1:8]             # time
-  cims2 <- cims.df[,9:11]            # n. cycles, masses, analog signals
+  cims2 <- cims.df[,9:11]            # n. cycles, mass channels, analog signals
   cims3 <- cims.df[,12:15]           # cycles
   cims4 <- cims.df[,16:(nvar-32)]    # Hz, mass, dwell time
   cims5 <- cims.df[,(nvar-31):nvar]  # analog signals
@@ -164,6 +164,8 @@ fLoadCIMS <- function(cims.dir, cims.fn) {
   rownames(cims.time) <- NULL
   colnames(cims.time) <- c("Datetime", "Date", "Time")
   ## output data.frame
+  cat("loaded:", cims.fn)
+  cat(" [", as.character(cims2$nh[1]), "mass channels ]\n")
   cims.out <- data.frame(cims.time, cims4, cims2, cims3, cims5)
   return(cims.out)
 }
@@ -229,7 +231,7 @@ fDiagnCIMS <- function(cims.df, fn.str) {
   ## set diagnostic variables
   t.stamp <- cims.df$Datetime  # timestamp
   n.cyc <- cims.df$nc          # n. cycles
-  n.hop <- cims.df$nh          # n. monitored masses
+  n.hop <- cims.df$nh          # n. mass channels
   n.ans <- cims.df$na          # n. analog signals
   cyc.0 <- cims.df$cB          # flag x cycle B (background)
   cyc.1 <- cims.df$cC          # flag x cycle C (background)
@@ -255,7 +257,7 @@ fDiagnCIMS <- function(cims.df, fn.str) {
     cat("CONFLICT! n. cycles:", unique(n.cyc), "\n")
   }
   if (length(unique(n.hop)) != 1) {
-    cat("CONFLICT! n. monitored masses:", unique(n.hop), "\n")
+    cat("CONFLICT! n. mass channels:", unique(n.hop), "\n")
   }
   if (length(unique(n.ans)) != 1) {
     cat("CONFLICT! n. analog signals:", unique(n.ans), "\n")
@@ -329,46 +331,59 @@ fDiagnCIMS <- function(cims.df, fn.str) {
   }
 }
 
-fProcessCIMS <- function(cims.df, bgd.sw) {
+fProcessCIMS <- function(cims.df, bkgd.set) {
   ## 8. process CIMS data: calculate total ion counts, temperature and
-  ## relative humidity from the Vaisala probe, extract instrument
-  ## background signals
+  ## relative humidity from the Vaisala probe, flag instrument
+  ## background
   ##
   ## input:
   ##     cims.df = data.frame of CIMS data
-  ##     bgd.sw = "on" OR "off"
+  ##     bkgd.set = background box setting ("on" OR "off")
   ## output:
   ##     cims.out = data.frame ( time variables, processed data,
   ##                             diagnostic variables, relative humidity,
-  ##                             temperature)
+  ##                             temperature, background flag)
   ## ------------------------------------------------------------
   ## separate CIMS variables
-  n.var <- ncol(cims.df)
-  n.hop <- cims.df$nh[1]
-  n.dat <- n.hop*3
-  cims.time <- cims.df[,1:3]
-  cims.data <- cims.df[,4:(n.dat+3)]
-  cims.diagn <- cims.df[,(n.dat+4):n.var]
+  var.str <- names(cims.df)
+  cims.time <- cims.df[,c("Datetime", "Date", "Time")]
+  cims.data <- cbind(cims.df[,grep("^Hz", var.str)],
+                     cims.df[,grep("^mamu", var.str)],
+                     cims.df[,grep("^ms", var.str)])
+  cims.diagn <- cbind(cims.df[,grep("^n", var.str)],
+                      cims.df[,grep("^c", var.str)],
+                      cims.df[,grep("^A", var.str)])
   ## calculate atomic mass unit (amu) and total ion count
-  ic.hz <- cims.data[,seq(1, n.dat, by=3), drop=F]
-  ic.am <- cims.data[,seq(2, n.dat, by=3), drop=F]
-  ic.ms <- cims.data[,seq(3, n.dat, by=3), drop=F]
+  n.mz <- length(names(cims.data)) / 3
+  ic.hz <- cims.data[,1:n.mz]
+  ic.am <- cims.data[,(n.mz+1):(2*n.mz)]
+  ic.ms <- cims.data[,(2*n.mz+1):(3*n.mz)]
   cims.amu <- ic.am / 1000
   cims.ic <- ic.hz * (ic.ms / 1000)
   colnames(cims.amu) <- gsub("mamu", "amu", colnames(cims.amu))
   colnames(cims.ic) <- gsub("Hz", "m", colnames(cims.ic))
   colnames(cims.ic) <- paste(colnames(cims.ic), "_raw", sep="")
-  ## temperature and relative humidity from Vaisala probe
+  ## temperature and relative humidity (Vaisala probe)
   probe.rh <- (cims.diagn$A05 / 1000) * 20
   probe.temp <- (cims.diagn$A06 / 1000) * 30 - 70
   cims.probe <- data.frame(Vaisala.RH = probe.rh, Vaisala.T = probe.temp)
-  ## extract instrument background
-  if (bgd.sw == "on") {
-    cat("there is bgd\n")
+  ## create instrument background flag:
+  ##   0 = signal
+  ##  -1 = before/after valve switch
+  ##   1 = background
+  cims.flag <- rep(0, nrow(cims.time))
+  if (bkgd.set == "on") {
+    fl1 <- cims.diagn$cB
+    fl2 <- cims.diagn$cB
+    fl1[which(cims.diagn$cB == 1) - 5] <- 2
+    fl2[which(cims.diagn$cB == 1) + 5] <- 2
+    cims.flag <- ifelse((fl1 == fl2 & fl1 == 2), 1,
+                        ifelse((fl1 == fl2 & fl1 == 0), 0, -1))
   }
   ## output data.frame
   cims.out <- data.frame(cims.time, cims.amu, cims.ic,
-                         cims.diagn, cims.probe)
+                         cims.diagn, cims.probe,
+                         Flag_Bgd = cims.flag)
   return(cims.out)
 }
 
@@ -386,29 +401,30 @@ fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
   ##    scale.str =  scaling parameter ("none" OR "vaisala" OR
   ##                 name of parameter)
   ## output:
-  ##    cims.out = data.frame ( time variables, processed data,
-  ##                            normalized data, diagnostic variables,
-  ##                            relative humidity, temperature,
-  ##                            scaling parameter)
+  ##    cims.out = data.frame ( time variables, normalized data,
+  ##                            diagnostic variables, relative humidity,
+  ##                            temperature, scaling parameter,
+  ##                            background flag )
   ## ------------------------------------------------------------
   ## separate CIMS variables
-  n.var <- ncol(cims.df)
-  n.hop <- cims.df$nh[1]
-  n.dat <- n.hop*2
-  cims.time <- cims.df[,1:3]
-  cims.amu <- cims.df[,4:(n.hop+3)]
-  cims.ic <- cims.df[,(n.hop+4):(n.dat+3)]
-  cims.diagn <- cims.df[,(n.dat+4):(n.var-2)]
-  cims.probe <- cims.df[,(n.var-1):n.var]
+  var.str <- names(cims.df)
+  cims.time <- cims.df[,c("Datetime", "Date", "Time")]
+  cims.amu <- cims.df[,grep("^amu", var.str)]
+  cims.ic <- cims.df[,grep("^m", var.str)]
+  cims.diagn <- cbind(cims.df[,grep("^n", var.str)],
+                      cims.df[,grep("^c", var.str)],
+                      cims.df[,grep("^A", var.str)])
+  cims.probe <- cims.df[,c("Vaisala.RH", "Vaisala.T")]
+  cims.flag <- cims.df[,"Flag_Bgd", drop=F]
   ## set scaling parameter
   switch(scale.str,
-         # no scaling (divide by 1)
+         # no scaling
          "none" = {
-           scale.df <- data.frame(SF = rep(1, nrow(cims.time)))
+           scale.df <- data.frame(Flag_1 = rep(1, nrow(cims.time)))
          },
          # absolute humidity from Vaisala probe (g/m3)
          "vaisala" = {
-           scale.df <- data.frame(Vaisala.AH = (6.112 * exp((17.67 * cims.probe$Vaisala.Temp) / (cims.probe$Vaisala.Temp + 243.5)) * cims.probe$Vaisala.RH * 2.1674) / (273.15 + cims.probe$Vaisala.Temp))
+           scale.df <- data.frame(Vaisala.AH = (6.112 * exp((17.67 * cims.probe$Vaisala.T) / (cims.probe$Vaisala.T + 243.5)) * cims.probe$Vaisala.RH * 2.1674) / (273.15 + cims.probe$Vaisala.T))
          },
          # other parameter
            scale.df <- get(param.str)
@@ -418,15 +434,17 @@ fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
   ref.ic <- cims.ic[,ref.str, drop=F]
   ref.scal <- ref.ic / scale.df
   ## normalize data to reference ion
-  cims.n1 <- as.data.frame(sapply(cims.ic, function(x)
-                                  x * norm.fac / ref.scal))
-  cims.n2 <- as.data.frame(sapply(cims.n1, function(x)
-                                  ifelse(is.infinite(x) == TRUE, NaN, x)))
+  cims.n1 <- sapply(cims.ic, function(x)
+                    x * norm.fac / ref.scal)
+  cims.n2 <- sapply(cims.n1, function(x)
+                    ifelse(is.infinite(x) == TRUE, NaN, x))
+  cims.n2 <- as.data.frame(cims.n2)
   ## rename normalized data variables
   suffx <- paste("_raw\\.", ref.str, sep="")
   colnames(cims.n2) <- gsub(suffx, "_norm", colnames(cims.n2))
   ## output data.frame
-  cims.out <- data.frame(cims.time, cims.amu, cims.ic, cims.n2,
-                        cims.diagn, cims.probe, scale.df)
+  cims.flag <- data.frame(scale.df, cims.df[,"Flag_Bgd", drop=F])
+  cims.out <- data.frame(cims.time, cims.amu, cims.n2,
+                        cims.diagn, cims.probe, cims.flag)
   return(cims.out)
 }
