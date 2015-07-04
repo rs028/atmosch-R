@@ -278,7 +278,7 @@ fDiagnCIMS <- function(cims.df, fn.str) {
     cat("CONFLICT! flags x background cycles:", unique(cyc.0), "\n")
   }
   ## make plot of diagnostic variables with reference values
-  par(mfrow = c(3,4))
+  par(mfrow = c(3,4), bg="white")
   plot(t.stamp, fptv.a02, type="l", ylim=c(400,600),
        xlab="time", ylab="mV", main="MeI flow")
   lines(t.stamp, rep(500, length(t.stamp)), lty=2, lwd=3, col="red")
@@ -392,7 +392,7 @@ fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
   ## [I.H2O]-); the reference ion count can be scaled to a given
   ## parameter (e.g., absolute humidity)
   ##
-  ## NB: fProcessCIMS() must be used before
+  ## NB: fProcessCIMS() must be used before fNormCIMS()
   ##
   ## input:
   ##    cims.df = data.frame of CIMS data
@@ -427,7 +427,7 @@ fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
            scale.df <- data.frame(Vaisala.AH = (6.112 * exp((17.67 * cims.probe$Vaisala.T) / (cims.probe$Vaisala.T + 243.5)) * cims.probe$Vaisala.RH * 2.1674) / (273.15 + cims.probe$Vaisala.T))
          },
          # other parameter
-           scale.df <- get(param.str)
+           scale.df <- get(scale.str)
          )
   ## scale reference ion to scaling parameter
   ref.str <- paste("m", as.character(ref.mz), "_raw", sep="")
