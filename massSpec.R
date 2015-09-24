@@ -10,7 +10,7 @@
 ###  8. process CIMS data
 ###  9. normalize CIMS data
 ###
-### version 3.1, May 2015
+### version 3.2, Sep 2015
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -96,16 +96,16 @@ fPlotSpect <- function(spect.df, mz.min, mz.max, sc.min, sc.max, filen.str) {
   ##     filen.str = name of file to save plot OR ""
   ## output:
   ##     spect.out = data.frame ( n. scan, mass1, mass2, mass3, ... )
-  ##     --> plot of diagnostic variables
+  ##     --> plot of time spectra
   ##     --> png file : `filen.str'.png
   ## ------------------------------------------------------------
-  ## rotate data.frame and add a vector with scan number
+  ## rotate data.frame and add vector with scan number
   mz.vec <- spect.df[,1]
   spect.t <- t(spect.df[,-1])
   rownames(spect.t) <- NULL
   colnames(spect.t) <- paste("m", mz.vec, sep="")
   n.scan <- seq(1, nrow(spect.t), by=1)
-  ## selected range of masses
+  ## select range of masses
   mz.inter <- which((mz.vec > mz.min) & (mz.vec < mz.max))
   ## plot time spectra in 4x4 panels
   par(mfrow = c(4,4))
@@ -177,7 +177,7 @@ fSpectraCIMS <- function(cims.dir, cims.lst) {
   ##     cims.dir = CIMS spectra files directory
   ##     cims.lst = list of CIMS spectra filenames
   ## output:
-  ##     spect.out = list ( data.frame ( start chron, stop chron )
+  ##     spect.out = list ( data.frame ( start chron, stop chron ),
   ##                        data.frame ( amu, ic_mmdd_hhmm, ... ) )
   ## ------------------------------------------------------------
   ## initialize lists and chron vectors
