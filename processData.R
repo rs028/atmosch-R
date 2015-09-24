@@ -1,11 +1,11 @@
 ### ---------------------------------------------------------------- ###
 ### functions for data processing and analysis:
-###  1. load data from text file
+###  1. load text data file
 ###  2. start/mid/stop chron vectors
-###  3. average data using start/stop
-###  4. average data.frame using start/stop
+###  3. statistics of variable using start/stop
+###  4. statistics of variables data.frame using start/stop
 ###
-### version 1.2, Jul 2014
+### version 1.5, Sep 2015
 ### author: RS
 ###
 ### based on code by DS (NOAA Aeronomy Lab)
@@ -18,19 +18,21 @@ fImportData <- function(data.dir, data.fn, miss.flag, ...) {
   ## NB: time strings must have hours, minutes and seconds
   ##
   ## input:
-  ##       data.dir = data file directory
-  ##       data.fn = name of data file
-  ##       miss.flag = missing value flag (e.g., -9999)
-  ##       ... = date/time strings (e.g., "d/m/y h:m:s", "h:m:s")
+  ##    data.dir = data file directory
+  ##    data.fn = name of data file
+  ##    miss.flag = missing value flag (e.g., -9999)
+  ##    ... = date/time strings (e.g., "d/m/y h:m:s", "h:m:s")
   ## output:
-  ##        data.frame ( time variables, data variables )
+  ##    data.out = data.frame ( time variables, data variables )
   ## ------------------------------------------------------------
   ## select type of data file
   fn.num <- nchar(data.fn)
   fn.ext <- substr(data.fn, (fn.num - 3), (fn.num))
   if (fn.ext == ".csv") {         # comma delimited
     fn.sep <- ","
-  } else if (fn.ext == ".dat") {  # tabs/space delimited
+  } else if (fn.ext == ".txt") {  # tab delimited
+    fn.sep <- "\t"
+  } else if (fn.ext == ".dat") {  # tab/space delimited
     fn.sep <- ""
   } else {
     stop("invalid file extension")
@@ -49,8 +51,9 @@ fImportData <- function(data.dir, data.fn, miss.flag, ...) {
   time.df <- as.data.frame(time.df)
   colnames(time.df) <- colnames(data.df[1:n.time])
   ## set missing values to NA
-  data.filt <- data.df[,(n.time+1):ncol(data.df)]
+  data.filt <- data.df[,(n.time+1):ncol(data.df), drop=F]
   data.filt[data.filt == miss.flag] <- NA
+  data.filt[is.na(data.filt)] <- NA
   ## output data.frame
   n.data <- ncol(data.df)
   data.out <- cbind(time.df, data.filt)
@@ -62,18 +65,20 @@ fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
   ## time step and interval (format: "d-m-y h:m:s")
   ##
   ## e.g., 30 minutes time step with 5 minutes interval:
-  ##            start     mid       stop
-  ##          12:00:00  12:02:30  12:04:59
-  ##          12:30:00  12:32:30  12:34:59
-  ##          01:00:00  01:02:30  01:04:59
+  ##     start     mid       stop
+  ##   12:00:00  12:02:30  12:04:59
+  ##   12:30:00  12:32:30  12:34:59
+  ##   01:00:00  01:02:30  01:04:59
   ##
   ## input:
-  ##       start.str = start datetime ("d-m-y h:m:s")
-  ##       stop.str = stop datetime ("d-m-y h:m:s")
-  ##       tstep.str = time step between start (minutes)
-  ##       inter.str = interval between start and stop (minutes)
+  ##    start.str = start datetime ("d-m-y h:m:s")
+  ##    stop.str = stop datetime ("d-m-y h:m:s")
+  ##    tstep.str = time step between start (minutes)
+  ##    inter.str = interval between start and stop (minutes)
   ## output:
-  ##        data.frame ( start chron, mid chron, stop chron )
+  ##    df.out = data.frame ( StartTime = start chron,
+  ##                          MidTime = mid chron,
+  ##                          StopTime = stop chron )
   ## ------------------------------------------------------------
   ## datetime chron vector
   begin.start <- fChronStr(start.str, "d-m-y h:m:s")
@@ -96,24 +101,23 @@ fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
   return(df.out)
 }
 
-fAvgStartStop <- function(tst.orig, dat.orig, dat.str, tst.df, pl) {
-  ## 3. calculate mean, median, standard deviation, number of averaged
-  ## points and number of NaN points between time intervals defined by
-  ## start/stop chron vectors
+fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
+  ## 3. calculate statistics (mean, median, standard deviation,
+  ## etc...) of a variable between time intervals defined by
+  ## start/stop chron vectors; make plot of averaged data
   ##
   ## NB: see documentation of fMakeStartStop()
   ##
   ## input:
-  ##       tst.orig = original chron vector ("d-m-y h:m:s")
-  ##       dat.orig = original data vector
-  ##       dat.str = name of data variable
-  ##       tst.df = start/mid/stop chron vector ("d-m-y h:m:s")
-  ##       pl = "yes" or "no"
+  ##    tst.orig = original chron vector ("d-m-y h:m:s")
+  ##    dat.orig = original data vector
+  ##    tst.df = start/mid/stop chron vector ("d-m-y h:m:s")
+  ##    pl = make plot of averaged data ("yes" or "no")
   ## output:
-  ##        data.frame ( start chron, mid chron, stop chron,
-  ##                     mean, median, standard deviation,
-  ##                     n. averaged points, n. NaN points )
-  ##        --> plot (if pl = "yes")
+  ##    df.out <- data.frame ( start chron, mid chron, stop chron,
+  ##                           mean, median, standard deviation,
+  ##                           n. averaged points, n. NA points )
+  ##    --> plot (if pl = "yes")
   ## ------------------------------------------------------------
   ## start/stop chron vectors
   tst.start <- tst.df$StartTime
@@ -131,15 +135,15 @@ fAvgStartStop <- function(tst.orig, dat.orig, dat.str, tst.df, pl) {
     start.pt <- 1
     stop.pt <- 1
     for (i in 1:n.tst) {
-      start.pt <- fFindPnt(tst.orig, "GE", tst.start[i], start.pt)
-      stop.pt <- fFindPnt(tst.orig, "LE", tst.stop[i], stop.pt)
+      start.pt <- fFindIdx(tst.orig, "GE", tst.start[i])
+      stop.pt <- fFindIdx(tst.orig, "LE", tst.stop[i])
       ## printout for debugging
-       # cat("------------------------------\n")
-       # cat("start:"); print(tst.start[i])
-       # cat("\t"); print(tst.orig[start.pt])
-       # cat("\t"); print(tst.orig[stop.pt])
-       # cat("stop:"); print(tst.stop[i])
-      ## average data between time intervals
+      # cat("------------------------------\n")
+      # cat("start:"); print(tst.start[i])
+      # cat("\t"); print(tst.orig[start.pt])
+      # cat("\t"); print(tst.orig[stop.pt])
+      # cat("stop:"); print(tst.stop[i])
+      # average data between time intervals
       if ((tst.orig[start.pt] >= tst.start[i]) &
           (tst.orig[stop.pt] <= tst.stop[i])) {
           if ((stop.pt - start.pt) >= 1) {         # multiple data points
@@ -157,44 +161,47 @@ fAvgStartStop <- function(tst.orig, dat.orig, dat.str, tst.df, pl) {
           }
       }
     }
-    ## make plot (if requested)
+    ## make plot of original and averaged data
     if (pl == "yes") {
+      vect.name <- deparse(substitute(dat.orig))
+      vect.char <- unlist(strsplit(vect.name, "$", fixed=T))
+      dev.new()
       plot(tst.orig, dat.orig, type="l", col="blue",
-           main="", xlab="Time", ylab=dat.str)
+           main="", xlab="Time", ylab=vect.char[2])
       points(tst.df$StartTime, vect.avg, col="red", pch=10)
     }
     ## output data.frame
     vect.df <- cbind(vect.avg, vect.med, vect.std,
                      vect.npt, vect.nan)
-    vect.str <- c("mean", "median", "stddev", "pnts", "nans")
-    colnames(vect.df) <- vect.str #paste(dat.str, vect.str, sep=".")
+    vect.str <- c("Mean", "Median", "StdDev", "Pnts", "NaNs")
+    colnames(vect.df) <- vect.str
     df.out <- data.frame(tst.df, vect.df)
     return(df.out)
   } else {
-    stop("--> ERROR: data.frames have different sizes!\n")
+    stop("time and data vectors not compatible")
   }
 }
 
-fAvgStartStopDF <- function(tst.orig, df.orig, tst.df, pl.str) {
-  ## 4. calculate mean, median, standard deviation, number of averaged
-  ## points and number of NaN points between time intervals for all
-  ## variables in a data.frame
+fAvgStartStopDF <- function(tst.orig, df.orig, tst.df, fn.str) {
+  ## 4. calculate statistics (mean, median, standard deviation,
+  ## etc...) of all variables in a data.frame using start/stop chron
+  ## vectors; save plots of averaged data to pdf file
   ##
   ## NB: see documentation of fMakeStartStop() and fAvgStartStop()
   ##
   ## input:
-  ##       tst.orig = original chron vector ("d-m-y h:m:s")
-  ##       df.orig = data.frame of original data
-  ##       tst.df = start/mid/stop chron vector ("d-m-y h:m:s")
-  ##       pl.str = filename to save plots OR ""
+  ##    tst.orig = original chron vector ("d-m-y h:m:s")
+  ##    df.orig = original data.frame
+  ##    tst.df = start/mid/stop chron vector ("d-m-y h:m:s")
+  ##    fn.str = name of file to save plots OR ""
   ## output:
-  ##        list( start chron, mid chron, stop chron,
-  ##              data.frame ( mean, median, standard deviation,
-  ##                           n. averaged points, n. NaN points )
-  ##              data.frame ( mean, median, standard deviation,
-  ##                           n. averaged points, n. NaN points )
-  ##              ... )
-  ##        --> save plots if filename is given (`pl.str'.pdf)
+  ##    lst.out = list ( start chron, mid chron, stop chron,
+  ##                     data.frame ( mean, median, standard deviation,
+  ##                                  n. averaged points, n. NA points ),
+  ##                     data.frame ( mean, median, standard deviation,
+  ##                                  n. averaged points, n. NA points ),
+  ##                     ... )
+  ##        --> pdf file : `fn.str'.pdf
   ## ------------------------------------------------------------
   ## get dimensions of data.frame
   nrw <- nrow(df.orig)
@@ -202,24 +209,24 @@ fAvgStartStopDF <- function(tst.orig, df.orig, tst.df, pl.str) {
   ## initialize output list and add chron vector
   lst.out <- list()
   lst.out <- tst.df
-  ## open file to save plots (if required)
-  if ( pl.str != "") {
-    pdf(paste(pl.str, ".pdf", sep=""), paper="a4r", width=0, height=0)
+  ## open pdf file to save plots
+  if ( fn.str != "") {
+    pdf(paste(fn.str, ".pdf", sep=""), paper="a4r", width=0, height=0)
   }
   ## average variables in data.frame
   for (i in 1:ncl) {
     dat.orig <- df.orig[,i]
     dat.str <- colnames(df.orig)[i]
     cat("averaging:", dat.str, "\n")
-    avg.df <- fAvgStartStop(tst.orig, dat.orig, dat.str, tst.df, "yes")
-    ## data.frame of averaged data: <variable name>_avg
-    r <- paste(dat.str, "avg", sep="_")
-    lst.out[[r]] <- avg.df[,-1:-ncol(tst.df)]
+    avg.df <- fAvgStartStop(tst.orig, dat.orig, tst.df, "yes")
+    ## add data.frame of averaged data to output list
+    avg.str <- paste(dat.str, "avg", sep=".")
+    lst.out[[avg.str]] <- avg.df[,-1:-ncol(tst.df)]
   }
-  ## close file to save plots
-  if ( pl.str != "") {
+  ## close pdf file
+  if ( fn.str != "") {
     dev.off()
   }
-  ## output list of data.frames
+  ## output list
   return(lst.out)
 }
