@@ -82,7 +82,7 @@ fNormTOF <- function(spect.df, scan.ini, scan.fin) {
   return(spect.out)
 }
 
-fPlotSpect <- function(spect.df, mz.min, mz.max, sc.min, sc.max, filen.str) {
+fPlotSpect <- function(spect.df, mz.min, mz.max, sc.min, sc.max, fn.str) {
   ## 4. rotate data.frame of spectra; make plots of time spectra
   ## (ion counts vs. number of scans) for a given interval of masses
   ## and save plots to pdf file
@@ -93,11 +93,11 @@ fPlotSpect <- function(spect.df, mz.min, mz.max, sc.min, sc.max, filen.str) {
   ##     mz.max = largest mass to plot
   ##     sc.min = smallest mass to plot
   ##     sc.max = largest mass to plot
-  ##     filen.str = name of file to save plot OR ""
+  ##     fn.str = name of file to save plot OR ""
   ## output:
   ##     spect.out = data.frame ( n. scan, mass1, mass2, mass3, ... )
   ##     --> plot of time spectra
-  ##     --> png file : `filen.str'.png
+  ##     --> png file : `fn.str'.png
   ## ------------------------------------------------------------
   ## rotate data.frame and add vector with scan number
   mz.vec <- spect.df[,1]
@@ -122,8 +122,8 @@ fPlotSpect <- function(spect.df, mz.min, mz.max, sc.min, sc.max, filen.str) {
                xlab="scan n.", ylab="ion count")
       }
   }
-  if (filen.str != "") {
-    dev.copy(png, paste(filen.str, ".png", sep=""),
+  if (fn.str != "") {
+    dev.copy(png, paste(fn.str, ".png", sep=""),
              width=297, height=210, units="mm", res=150)
     dev.off()
   }
@@ -323,7 +323,7 @@ fDiagnCIMS <- function(cims.df, fn.str) {
   plot(t.stamp, hv.b07, type="l", ylim=c(1800,2100),
        xlab="time", ylab="mV", main="Quad pressure")
   grid()
-  ## save plot of diagnostic variables (if required)
+  ## save plot of diagnostic variables
   if (fn.str != "") {
     dev.copy(png, paste(fn.str, ".png", sep=""),
              width=297, height=210, units="mm", res=150)
