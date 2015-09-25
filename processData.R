@@ -163,11 +163,10 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
     }
     ## make plot of original and averaged data
     if (pl == "yes") {
-      vect.name <- deparse(substitute(dat.orig))
-      vect.char <- unlist(strsplit(vect.name, "$", fixed=T))
+      vect.name <- fVarStr(dat.orig)
       dev.new()
       plot(tst.orig, dat.orig, type="l", col="blue",
-           main="", xlab="Time", ylab=vect.char[2])
+           main="", xlab="Time", ylab=vect.name)
       points(tst.df$StartTime, vect.avg, col="red", pch=10)
     }
     ## output data.frame
@@ -215,7 +214,7 @@ fAvgStartStopDF <- function(tst.orig, df.orig, tst.df, fn.str) {
   }
   ## average variables in data.frame
   for (i in 1:ncl) {
-    dat.orig <- df.orig[,i]
+    dat.orig <- t(df.orig[,i, drop=F])
     dat.str <- colnames(df.orig)[i]
     cat("averaging:", dat.str, "\n")
     avg.df <- fAvgStartStop(tst.orig, dat.orig, tst.df, "yes")

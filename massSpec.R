@@ -147,7 +147,7 @@ fLoadCIMS <- function(cims.dir, cims.fn) {
   cims.df <- read.delim(cims.file, header=TRUE, sep="")
   cims.df <- cims.df[-nrow(cims.df),]
   ## separate variables into groups
-  nvar <- length(names(cims.df))
+  nvar <- length(colnames(cims.df))
   cims1 <- cims.df[,1:8]             # time
   cims2 <- cims.df[,9:11]            # n. cycles, mass channels, analog signals
   cims3 <- cims.df[,12:15]           # cycles
@@ -345,7 +345,7 @@ fProcessCIMS <- function(cims.df, bkgd.set) {
   ##                             temperature, background flag)
   ## ------------------------------------------------------------
   ## separate CIMS variables
-  var.str <- names(cims.df)
+  var.str <- colnames(cims.df)
   cims.time <- cims.df[,c("Datetime", "Date", "Time")]
   cims.data <- cbind(cims.df[,grep("^Hz", var.str)],
                      cims.df[,grep("^mamu", var.str)],
@@ -354,7 +354,7 @@ fProcessCIMS <- function(cims.df, bkgd.set) {
                       cims.df[,grep("^c", var.str)],
                       cims.df[,grep("^A", var.str)])
   ## calculate atomic mass unit (amu) and total ion count
-  n.mz <- length(names(cims.data)) / 3
+  n.mz <- length(colnames(cims.data)) / 3
   ic.hz <- cims.data[,1:n.mz]
   ic.am <- cims.data[,(n.mz+1):(2*n.mz)]
   ic.ms <- cims.data[,(2*n.mz+1):(3*n.mz)]
@@ -407,7 +407,7 @@ fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
   ##                            background flag )
   ## ------------------------------------------------------------
   ## separate CIMS variables
-  var.str <- names(cims.df)
+  var.str <- colnames(cims.df)
   cims.time <- cims.df[,c("Datetime", "Date", "Time")]
   cims.amu <- cims.df[,grep("^amu", var.str)]
   cims.ic <- cims.df[,grep("^m", var.str)]
