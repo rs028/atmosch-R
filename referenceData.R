@@ -7,7 +7,7 @@
 ###    http://www.nist.gov/pml/data/physicalconst.cfm
 ###    http://www.nist.gov/pml/data/edi.cfm
 ###
-### version 3.1, Apr 2015
+### version 3.2, Oct 2015
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -171,7 +171,7 @@ fPeriodic <- function(data.in) {
       nn <- as.character(el.df[i,1])  # name
       ss <- as.character(el.df[i,2])  # symbol
       an <- as.numeric(el.df[i,3])    # atomic number
-      aw <- as.character(el.df[i,4])  # atomic weight
+      aw <- as.numeric(el.df[i,4])    # atomic weight
     }
   }
   data.out <- data.frame(Name=nn, Symbol=ss, Atomic.N=an,  Atomic.W=aw)

@@ -6,7 +6,7 @@
 ###  4. find point in vector greater/less than value
 ###  5. convert date/time string to chron
 ###
-### version 1.4, May 2015
+### version 1.5, Oct 2015
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -127,6 +127,7 @@ fFindIdx <- function(vecd, ops, xval) {
   ## output:
   ##    xv = point in vector greater/less than reference value
   ## ------------------------------------------------------------
+  vecd <- unlist(vecd, use.names=FALSE)
   ## first and last values of data vector
   vecd.first <- vecd[1]
   vecd.last <- vecd[length(vecd)]
@@ -168,16 +169,17 @@ fFindIdx <- function(vecd, ops, xval) {
 }
 
 fChronStr <- function(dt.str, dt.fmt) {
-  ## 5. convert date, time, datetime string in given format to chron
-  ## vector with format "d-m-y h:m:s"
+  ## 5. convert date, time, datetime string vector to chron vector
+  ## with format "d-m-y h:m:s"
   ##
   ## input:
-  ##    dt.str = date/time string
+  ##    dt.str = date/time string vector
   ##    dt.fmt = format of date/time string ("d/m/y h:m:s" OR
   ##                                         "d/m/y" OR "h:m:s")
   ## output:
   ##    dt.chron = chron ( d-m-y h:m:s )
   ## ------------------------------------------------------------
+  dt.str <- unlist(dt.str, use.names=FALSE)
   ## date/time format flag
   if (grepl("d", dt.fmt)) {
       dt.flag <- "date"
