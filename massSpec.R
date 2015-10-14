@@ -121,7 +121,7 @@ fPlotSpect <- function(spect.df, mz.min, mz.max, sc.min, sc.max, fn.str) {
   par(mfrow = c(4,4))
   for (i in mz.inter) {
       spect.ic <- spect.t[,i]
-      if (all(is.na(spect.ic)) == FALSE) {  # time spectrum
+      if (all(is.na(spect.ic)) == FALSE) {  # time spectrum #!
           plot(n.scan, spect.ic, type="o", cex=0.6,
                main=paste("mass ", mz.vec[i], sep=""),
                xlab="scan n.", ylab="ion count")
@@ -309,7 +309,7 @@ fDiagnCIMS <- function(cims.df, fn.str) {
        xlab="time", ylab="mV", main="N2 flow")
   lines(t.stamp, rep(2000, length(t.stamp)), lty=2, lwd=3, col="red")
   grid()
-  plot(t.stamp, hv.a01, type="l", ylim=c(-325,-175),
+  plot(t.stamp, hv.a01, type="l", ylim=c(-300,-180),
        xlab="time", ylab="mV", main="pinhole")
   lines(t.stamp, rep(-250, length(t.stamp)), lty=2, lwd=3, col="red")
   grid()
@@ -329,14 +329,14 @@ fDiagnCIMS <- function(cims.df, fn.str) {
        xlab="time", ylab="mV", main="octopole RF")
   lines(t.stamp, rep(1900, length(t.stamp)), lty=2, lwd=3, col="red")
   grid()
-  plot(t.stamp, hv.a10, type="l", ylim=c(400,700),
+  plot(t.stamp, hv.a10, type="l", ylim=c(400,800),
        xlab="time", ylab="mV", main="octopole DC")
   lines(t.stamp, rep(496, length(t.stamp)), lty=2, lwd=3, col="red")
   grid()
   plot(t.stamp, fptv.a08, type="l", ylim=c(800,1400),
        xlab="time", ylab="mV", main="FT pressure")
   grid()
-  plot(t.stamp, hv.b05, type="l", ylim=c(5500,5800),
+  plot(t.stamp, hv.b05, type="l", ylim=c(5500,5900),
        xlab="time", ylab="mV", main="CDC pressure")
   grid()
   plot(t.stamp, hv.b06, type="l", ylim=c(3500,3900),
@@ -447,7 +447,7 @@ fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
                       cims.df[,grep("^c", var.str)],
                       cims.df[,grep("^A", var.str)])
   cims.probe <- cims.df[,c("Vaisala.RH", "Vaisala.T")]
-  cims.flag <- cims.df[,"Flag_Bgd", drop=F]
+  cims.flag <- cims.df[,"Flag_Bgd", drop=F] #!
   ## set scaling parameter
   switch(scale.str,
          # no scaling
@@ -463,19 +463,19 @@ fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
          )
   ## scale reference ion to scaling parameter
   ref.str <- paste("m", as.character(ref.mz), "_raw", sep="")
-  ref.ic <- cims.ic[,ref.str, drop=F]
+  ref.ic <- cims.ic[,ref.str, drop=F] #!
   ref.scal <- ref.ic / scale.df
   ## normalize data to reference ion
   cims.n1 <- sapply(cims.ic, function(x)
                     x * norm.fac / ref.scal)
   cims.n2 <- sapply(cims.n1, function(x)
-                    ifelse(is.infinite(x) == TRUE, NaN, x))
+                    ifelse(is.infinite(x) == TRUE, NaN, x)) #!
   cims.n2 <- as.data.frame(cims.n2)
   ## rename normalized data variables
   suffx <- paste("_raw\\.", ref.str, sep="")
   colnames(cims.n2) <- gsub(suffx, "_norm", colnames(cims.n2))
   ## output data.frame
-  cims.flag <- data.frame(scale.df, cims.df[,"Flag_Bgd", drop=F])
+  cims.flag <- data.frame(scale.df, cims.df[,"Flag_Bgd", drop=F]) #!
   cims.out <- data.frame(cims.time, cims.amu, cims.n2,
                         cims.diagn, cims.probe, cims.flag)
   return(cims.out)
