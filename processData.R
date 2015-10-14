@@ -5,7 +5,7 @@
 ###  3. statistics of variable using start/stop
 ###  4. statistics of variables data.frame using start/stop
 ###
-### version 1.5, Sep 2015
+### version 1.6, Sep 2015
 ### author: RS
 ###
 ### based on code by DS (NOAA Aeronomy Lab)
@@ -51,7 +51,7 @@ fImportData <- function(data.dir, data.fn, miss.flag, ...) {
   time.df <- as.data.frame(time.df)
   colnames(time.df) <- colnames(data.df[1:n.time])
   ## set missing values to NA
-  data.filt <- data.df[,(n.time+1):ncol(data.df), drop=F]
+  data.filt <- data.df[(n.time+1):ncol(data.df)]
   data.filt[data.filt == miss.flag] <- NA
   data.filt[is.na(data.filt)] <- NA
   ## output data.frame
@@ -157,7 +157,7 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
             vect.med[i] <- dat.orig[start.pt]
             vect.std[i] <- 0
             vect.npt[i] <- 1
-            vect.nan[i] <- as.numeric(is.na(dat.orig[start.pt]))
+            vect.nan[i] <- as.numeric(is.na(dat.orig[start.pt])) #!
           }
       }
     }
@@ -214,7 +214,7 @@ fAvgStartStopDF <- function(tst.orig, df.orig, tst.df, fn.str) {
   }
   ## average variables in data.frame
   for (i in 1:ncl) {
-    dat.orig <- t(df.orig[,i, drop=F])
+    dat.orig <- t(df.orig[,i, drop=F]) #!
     dat.str <- colnames(df.orig)[i]
     cat("averaging:", dat.str, "\n")
     avg.df <- fAvgStartStop(tst.orig, dat.orig, tst.df, "yes")
@@ -223,7 +223,7 @@ fAvgStartStopDF <- function(tst.orig, df.orig, tst.df, fn.str) {
     lst.out[[avg.str]] <- avg.df[,-1:-ncol(tst.df)]
   }
   ## close pdf file
-  if ( fn.str != "") {
+  if (fn.str != "") {
     dev.off()
   }
   ## output list
