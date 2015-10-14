@@ -1,5 +1,6 @@
 ### ---------------------------------------------------------------- ###
 ### functions for physical chemistry:
+###  1. 
 ###  2. ideal gas law
 ###  3. rate coefficient of bimolecular reaction (standard)
 ###  4. rate coefficient of bimolecular reaction (expanded)
@@ -61,7 +62,8 @@ fKBi <- function(pfac, ea.r, temp) {
   k.gas <- pfac * exp(ea.r / temp)
   k.std <- pfac * exp(ea.r / 298)
   ## output data.frame
-  df.out <- data.frame(kt = k.gas, k298 = k.std)
+  df.out <- data.frame(kt = k.gas,
+                       k298 = k.std)
   return(df.out)
 }
 
@@ -83,7 +85,8 @@ fKBix <- function(pfac, temp0, nn, ea.r, temp) {
   k.gas <- (pfac * (temp / temp0) ^ nn) * exp(ea.r / temp)
   k.std <- (pfac * (298 / temp0) ^ nn) * exp(ea.r / 298)
   ## output data.frame
-  df.out <- data.frame(kt = k.gas, k298 = k.std)
+  df.out <- data.frame(kt = k.gas,
+                       k298 = k.std)
   return(df.out)
 }
 

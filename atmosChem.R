@@ -26,6 +26,8 @@ fAirND <- function(temp, press) {
   o2.air <- 0.21 * m.air
   n2.air <- 0.78 * m.air
   ## output data.frame
-  df.out <- data.frame(M = m.air, O2 = o2.air, N2 = n2.air)
+  df.out <- data.frame(M = m.air,
+                       O2 = o2.air,
+                       N2 = n2.air)
   return(df.out)
 }
