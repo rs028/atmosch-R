@@ -6,7 +6,7 @@
 ###  4. find point in vector greater/less than value
 ###  5. convert date/time string to chron
 ###
-### version 1.5, Oct 2015
+### version 1.6, Oct 2015
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -16,9 +16,9 @@ fClearWS <- function() {
   ##
   ## NB: names of atmosch-R functions = `f + uppercase letter'
   ## ------------------------------------------------------------
-  rm(list = setdiff(ls(pos=.GlobalEnv),
-                    ls(pos=.GlobalEnv, pattern="^f[.A-Z]")),
-     pos = .GlobalEnv)
+  rm(list=base::setdiff(ls(pos=.GlobalEnv),
+                        ls(pos=.GlobalEnv, pattern="^f[.A-Z]")),
+     pos=.GlobalEnv)
 }
 
 fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
@@ -45,7 +45,7 @@ fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
     colnames(df.merg)[-1] <- paste(colnames(df.merg)[-1],
                                    suff.lst[[1]], sep="")
     for (i in 2:length(df.lst)) {
-      df.i <- as.data.frame(df.lst[i])
+      df.i <- as.data.frame(df.lst[i]) #!
       colnames(df.i)[-1] <- paste(colnames(df.i)[-1],
                                   suff.lst[[i]], sep="")
       df.merg <- merge(df.merg, df.i,
@@ -125,7 +125,7 @@ fFindIdx <- function(vecd, ops, xval) {
   ##          less ("L") OR less/equal ("LE")
   ##    xval = reference value
   ## output:
-  ##    xv = point in vector greater/less than reference value
+  ##    xv = index of point in vector greater/less than reference value
   ## ------------------------------------------------------------
   vecd <- unlist(vecd, use.names=FALSE)
   ## first and last values of data vector
