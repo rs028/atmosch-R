@@ -11,10 +11,11 @@
 ### ---------------------------------------------------------------- ###
 
 fClearWS <- function() {
-  ## 1. clear workspace: delete all variables, keep atmosch-R
-  ## functions
+  ## 1. clear workspace
+  ##    - delete all variables
+  ##    - keep atmosch-R functions
   ##
-  ## NB: names of atmosch-R functions = `f + uppercase letter'
+  ## NB: name of atmosch-R functions = `f + uppercase letter'
   ## ------------------------------------------------------------
   rm(list=base::setdiff(ls(pos=.GlobalEnv),
                         ls(pos=.GlobalEnv, pattern="^f[.A-Z]")),

@@ -6,7 +6,7 @@
 ###  4. rotate spectra and make timeseries plots
 ###  5. load CIMS data
 ###  6. load CIMS spectra
-###  7. basic CIMS diagnostics
+###  7. run CIMS diagnostics
 ###  8. process CIMS data
 ###  9. normalize CIMS data
 ###

@@ -11,7 +11,7 @@
 ### conversion factors from WolframAlpha:
 ###    http://www.wolframalpha.com/
 ###
-### version 1.6, Dec 2014
+### version 1.7, Nov 2015
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -370,7 +370,7 @@ fConvSI <- function(data.in, unit.in, unit.out) {
   return(data.out)
 }
 
-fConcGas <- function(data.in, unit.in, unit.out, temp, press) {
+fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   ## 6. convert between units of concentration (gas-phase):
   ## - molecule cm-3 : "ND"
   ## - ppth          : "ppth"
@@ -378,6 +378,7 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press) {
   ## - ppb           : "ppb"
   ## - ppt           : "ppt"
   ## - mole m-3      : "MD"
+  ## - ug m-3        : "UG"
   ##
   ## input:
   ##     data.in = data in original unit
@@ -385,9 +386,16 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press) {
   ##     unit.out = final measurement unit
   ##     temp = temperature (K)
   ##     press = pressure (Pa)
+  ##     m.mass = molar mass (g/mole)   [OPTIONAL]
   ## output:
   ##     data.out = data in final unit
   ## ------------------------------------------------------------
+  ## molar mass required for conversion to/from ug m-3
+  if (unit.in == "UG" || unit.out == "UG") {
+    if (is.null(m.mass)) {
+      stop("missing input: molar mass (g/mole)")
+    }
+  }
   ## Avogadro number, air number density
   n.avog <- fConstant("Na")$Value
   m.air <- fAirND(temp, press)$M
@@ -411,6 +419,9 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press) {
          "MD" = {
            data.ref <- data.in * (n.avog * 1.0e-06)
          },
+         "UG" = {
+           data.ref <- (data.in / (m.mass * 1.0e+06)) * (n.avog * 1.0e-06)
+         },
          stop("unit not found")
          )
   ## data in reference unit (ND) to final unit
@@ -432,6 +443,9 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press) {
          },
          "MD" = {
            data.out <- data.ref / (n.avog * 1.0e-06)
+         },
+         "UG" = {
+           data.out <- (data.ref / (n.avog * 1.0e-06)) * (m.mass * 1.0e+06)
          },
          stop("unit not found")
          )
