@@ -53,7 +53,6 @@ fConstant <- function(data.in) {
 fPeriodic <- function(data.in) {
   ## 2. returns name, symbol, atomic number, atomic weight of a
   ## chemical element (trans-uranium elements not included)
-  ## - "H" ... "U"
   ##
   ## input:
   ##     data.in = symbol of chemical element

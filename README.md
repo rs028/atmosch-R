@@ -1,18 +1,18 @@
 atmosch-R
 =========
 
-R code for atmospheric chemistry and mass spectrometry.
+Collection of R (http://www.r-project.org/) functions for mass
+spectrometry, atmospheric chemistry and data analysis. Compatible with
+the openair package (http://www.openair-project.org/).
 
 
 CONFIGURATION
 -------------
 
-Download the atmosch-R files in a directory (e.g. "Z:\My
-Documents\atmosch-R")
+Download the atmosch-R files in a directory (e.g. "Z:\My Documents\atmosch-R")
 
-Create a file called .Rprofile in the home directory (e.g. "Z:\My
-Documents) with the following text:
-
+Create a file called .Rprofile in the home directory (e.g. "Z:\My Documents)
+with the following text:
 
 ```
 .libPaths("Z:\\My Documents\\R\\win-library\\3.0")
@@ -33,21 +33,24 @@ source("utilityFuncs.R")
 ```
 
 If the .Rprofile file already exists, just add the text to the
-existing file. Modify the directory paths in the above text to match
-the configuration of your system.
+existing file. Modify the directory paths in .Rprofile to match the
+configuration of your system (e.g. version of win-library). On a Linux
+system, .libPaths() may not be required and can be deleted or
+commented out.
 
-N.B.: on a Linux system, .libPaths() may not be required and can be
-deleted.
+The .Rprofile file can be customized to your personal preferences
+(e.g. if only some of the R functions are required).
 
-Customize the .Rprofile file to your personal preferences (e.g. if
-only some of the R functions are required). The atmosch-R functions
-should now be available in R and can be called like all other R
-functions.
+The atmosch-R functions should now be available in R and can be listed
+using the ls() command at the R prompt.
 
 
 ADDITIONAL LIBRARIES
 --------------------
 
-Some of the atmosch-R functions require the "chron" library to handle
-dates and times. All additional libraries need to be installed
-separately from CRAN (http://cran.r-project.org/).
+Some atmosch-R functions require the "chron" library to handle dates
+and times. To install it, type at the R prompt:
+
+    install.packages("chron")
+
+and follow the instructions.
