@@ -1,52 +1,81 @@
 ### ---------------------------------------------------------------- ###
 ### functions for atmospheric physics:
-###  1. humidity
+###  1. humidity measurements
 ###
-### version 0.2, Jun 2014
+### version 1.0, Feb 2016
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
-fHumid <- function() {
-  ## 1. 
+fHumid <- function(data.in, meas.in, meas.out, temp, press) {
+  ## 1. convert between measurements of humidity at given temperature
+  ## and pressure
+  ##
+  ## based upon "Humidity Conversion Formulas" published by Vaisala:
+  ##    http://www.vaisala.com/
+  ##
+  ## - absolute humidity : ("AH")
+  ##   mass of water vapour per volume air (g/m3)
+  ## - specific humidity : ("SH")
+  ##   mass of water vapour per mass air (g/kg)
+  ## - mixing ratio      : ("MR")
+  ##   mass of water vapour per mass dry air (g/kg)
+  ## - relative humidity : ("RH")
+  ##   water vapour pressure to water vapour saturation pressure (%)
+  ## - parts per million : ("PPM")
+  ##   volume of water vapour per volume of dry air (ppm)
   ##
   ## input:
-  ##    temp = temperature (K)
-  ##    press = pressure (Pa)
+  ##     data.in = original humidity data
+  ##     meas.in = original measurement
+  ##     meas.out = final measurement
+  ##     temp = temperature (K)
+  ##     press = pressure (Pa)
   ## output:
-  ##    df.out = 
+  ##     data.out = final humidity data
   ## ------------------------------------------------------------
-  ## saturation water vapour pressure over water
-  #temp.c <- fConvTemp(temp, "K", "C")
-  temp.c <- c(-20, -10, 0, 10, 20, 30, 40, 50)
-  press.ws <- 100* 6.116441 * 10^((7.591386 * temp.c) / (temp.c + 240.7263))
-  press.ws1 <- 610.78 * exp(temp.c/(temp.c+238.3) * 17.2694)
-  press.ws2 <- 100* 6.11 * 10^((7.5 * temp.c)/(237.3 + temp.c))
-  ## ## data in original unit to reference unit (K)
-  ## switch(unit_in,
-  ##        "K" = {
-  ##          data_ref <- data_in
-  ##        },
-  ##        "C" = {
-  ##          data_ref <- data_in + 273.15
-  ##        },
-  ##        "F" = {
-  ##          data_ref <- (data_in + 459.67)*5/9
-  ##        }
-  ## )
-  ## ## data in reference unit (K) to final unit
-  ## switch(unit_out,
-  ##        "K" = {
-  ##          data_out <- data_ref
-  ##        },
-  ##        "C" = {
-  ##          data_out <- data_ref - 273.15
-  ##        },
-  ##        "F" = {
-  ##          data_out <- (data_ref*9/5) - 459.67
-  ##        }
-  ## )
-  ## data in final unit
-  df.out <- data.frame(temp.c, press.ws, press.ws1, press.ws2)
-  return(df.out)
+  ## convert temperature and pressure units
+  temp.c <- fConvTemp(temp, "K", "C")
+  press.h <- fConvPress(press, "Pa", "hPa")
+  ## water vapour saturation pressure (hPa)
+  pws <- 6.116441 * 10 ^ ((7.591386 * temp.c) / (temp.c + 240.7263))
+  ## calculate water vapour pressure (hPa) from original humidity data
+  switch(meas.in,
+         "AH" = {
+           pw <- 1.0e-02 * (data.in * temp) / 2.16679
+         },
+         "SH" = {
+           pw <- 1.0e-03 * (data.in * press.h) / 0.622
+         },
+         "MR" = {
+           pw <- (data.in * press.h) / (621.9907 + data.in)
+         },
+         "RH" = {
+           pw <- data.in * pws / 100
+         },
+         "PPM" = {
+           pw <- (data.in * 1.0e-06 * press.h) / (1 + data.in * 1.0e-06)
+         },
+         stop("unit not found")
+         )
+  ## calculate final humidity data from water vapour pressure (hPa)
+  switch(meas.out,
+         "AH" = {
+           data.out <- 1.0e+02 * (pw * 2.16679) / temp
+         },
+         "SH" = {
+           data.out <- 1.0e+03 * (pw * 0.622) / press.h
+         },
+         "MR" = {
+           data.out <- (621.9907 * pw) / (press.h - pw)
+         },
+         "RH" = {
+           data.out <- 100 * pw / pws
+         },
+         "PPM" = {
+           data.out <- 1.0e+06 * pw / (press.h - pw)
+         },
+         stop("unit not found")
+  )
+  ## final humidity data
+  return(data.out)
 }
-
