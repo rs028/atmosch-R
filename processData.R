@@ -1,63 +1,49 @@
 ### ---------------------------------------------------------------- ###
 ### functions for data processing and analysis:
-###  1. load text data file
+###  1. compatibility with openair
 ###  2. start/mid/stop chron vectors
 ###  3. statistics of variable using start/stop
-###  4. statistics of variables data.frame using start/stop
+###  4. statistics of variables in data.frame using start/stop
 ###
-### version 1.6, Sep 2015
-### author: RS
-###
-### based on code by DS (NOAA Aeronomy Lab)
+### version 1.7, Mar 2016
+### author: RS -- based on code by DS (NOAA Aeronomy Lab)
 ### ---------------------------------------------------------------- ###
 
-fImportData <- function(data.dir, data.fn, miss.flag, ...) {
-  ## 1. load data from a text file (*.csv, *.dat), convert date/time
-  ## to chron, replace missing data points with NA
-  ##
-  ## NB: time strings must have hours, minutes and seconds
+fOpenair <- function(df.in, date.str, ws.str, wd.str) {
+  ## 1. prepare a data.frame for the openair package
   ##
   ## input:
-  ##    data.dir = data file directory
-  ##    data.fn = name of data file
-  ##    miss.flag = missing value flag (e.g., -9999)
-  ##    ... = date/time strings (e.g., "d/m/y h:m:s", "h:m:s")
+  ##     df.in = input data.frame
+  ##     date.str = name of datetime variable
+  ##     ws.str = name of wind speed variable
+  ##     wd.str = name of wind direction variable
   ## output:
-  ##    data.out = data.frame ( time variables, data variables )
+  ##     df.out = data.frame ( datetime, variables )
   ## ------------------------------------------------------------
-  ## select type of data file
-  fn.num <- nchar(data.fn)
-  fn.ext <- substr(data.fn, (fn.num - 3), (fn.num))
-  if (fn.ext == ".csv") {         # comma delimited
-    fn.sep <- ","
-  } else if (fn.ext == ".txt") {  # tab delimited
-    fn.sep <- "\t"
-  } else if (fn.ext == ".dat") {  # tab/space delimited
-    fn.sep <- ""
+  if (is.data.frame(df.in)) {
+    df.out <- df.in
+    ## change name of variables to openair standard
+    df.vars <- colnames(df.in)
+    df.vars[which(df.vars == date.str)] <- "date"
+    if (ws.str != "") {
+      df.vars[which(df.vars == ws.str)] <- "ws"
+      cat("-> wind speed data assumed to be: m/s\n")
+    }
+    if (wd.str != "") {
+      df.vars[which(df.vars == wd.str)] <- "wd"
+      cat("-> wind direction data assumed to be: deg N\n")
+    }
+    colnames(df.out) <- df.vars
+    ## convert time to POSIX format
+    time.x <- as.POSIXlt(df.out$date, tz="GMT")
+    time.x <- round.POSIXt(time.x)
+    df.out$date <- as.POSIXct(time.x)#, tz="GMT")
+    #attr(df.out$date, "tzone") <- "GMT"
+    ## output data.frame
+    return(df.out)
   } else {
-    stop("invalid file extension")
+    stop("input must be a data.frame")
   }
-  ## load data file
-  data.file <- paste(data.dir, data.fn, sep="")
-  data.df <- read.delim(data.file, header=TRUE, sep=fn.sep)
-  ## convert date/time strings to chron
-  time.fmt <- list(...)
-  n.time <- length(time.fmt)
-  time.df <- list()
-  for (t in 1:n.time) {
-    time.vec <- fChronStr(data.df[[t]], time.fmt[[t]])
-    time.df[[t]] <- time.vec
-  }
-  time.df <- as.data.frame(time.df)
-  colnames(time.df) <- colnames(data.df[1:n.time])
-  ## set missing values to NA
-  data.filt <- data.df[(n.time+1):ncol(data.df)]
-  data.filt[data.filt == miss.flag] <- NA
-  data.filt[is.na(data.filt)] <- NA
-  ## output data.frame
-  n.data <- ncol(data.df)
-  data.out <- cbind(time.df, data.filt)
-  return(data.out)
 }
 
 fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
@@ -71,14 +57,14 @@ fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
   ##   01:00:00  01:02:30  01:04:59
   ##
   ## input:
-  ##    start.str = start datetime ("d-m-y h:m:s")
-  ##    stop.str = stop datetime ("d-m-y h:m:s")
-  ##    tstep.str = time step between start (minutes)
-  ##    inter.str = interval between start and stop (minutes)
+  ##     start.str = start datetime ("d-m-y h:m:s")
+  ##     stop.str = stop datetime ("d-m-y h:m:s")
+  ##     tstep.str = time step between start (minutes)
+  ##     inter.str = interval between start and stop (minutes)
   ## output:
-  ##    df.out = data.frame ( StartTime = start chron,
-  ##                          MidTime = mid chron,
-  ##                          StopTime = stop chron )
+  ##     df.out = data.frame ( StartTime = start chron,
+  ##                           MidTime = mid chron,
+  ##                           StopTime = stop chron )
   ## ------------------------------------------------------------
   ## datetime chron vector
   begin.start <- fChronStr(start.str, "d-m-y h:m:s")
@@ -104,21 +90,25 @@ fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
 fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
   ## 3. calculate statistics (mean, median, standard deviation,
   ## etc...) of a variable between time intervals defined by
-  ## start/stop chron vectors; make plot of averaged data
+  ## start/stop chron vectors
   ##
   ## NB: see documentation of fMakeStartStop()
   ##
   ## input:
-  ##    tst.orig = original chron vector ("d-m-y h:m:s")
-  ##    dat.orig = original data vector
-  ##    tst.df = start/mid/stop chron vector ("d-m-y h:m:s")
-  ##    pl = make plot of averaged data ("yes" or "no")
+  ##     tst.orig = original chron vector ("d-m-y h:m:s")
+  ##     dat.orig = original data vector
+  ##     tst.df = start/mid/stop chron vector ("d-m-y h:m:s")
+  ##     pl = make plot of averaged data ("yes" or "no")
   ## output:
-  ##    df.out <- data.frame ( start chron, mid chron, stop chron,
-  ##                           mean, median, standard deviation,
-  ##                           n. averaged points, n. NA points )
-  ##    --> plot (if pl = "yes")
+  ##     df.out = data.frame ( start chron, mid chron, stop chron,
+  ##                            mean, median, standard deviation,
+  ##                            n. averaged points, n. NA points )
+  ##     --> plot of averaged data (if pl = "yes")
   ## ------------------------------------------------------------
+  if (!is.data.frame(tst.df)) {
+    df.name <- deparse(substitute(tst.df))
+    stop(paste(df.name, "must be a data.frame", sep=" "))
+  }
   ## start/stop chron vectors
   tst.start <- tst.df$StartTime
   tst.stop <- tst.df$StopTime
@@ -144,7 +134,7 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
       # cat("\t"); print(tst.orig[stop.pt])
       # cat("stop:"); print(tst.stop[i])
       # average data between time intervals
-      if ((tst.orig[start.pt] >= tst.start[i]) &
+      if ((tst.orig[start.pt] >= tst.start[i]) &&
           (tst.orig[stop.pt] <= tst.stop[i])) {
           if ((stop.pt - start.pt) >= 1) {         # multiple data points
             vect.avg[i] <- mean(dat.orig[start.pt:stop.pt], na.rm=TRUE)
@@ -157,17 +147,16 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
             vect.med[i] <- dat.orig[start.pt]
             vect.std[i] <- 0
             vect.npt[i] <- 1
-            vect.nan[i] <- as.numeric(is.na(dat.orig[start.pt])) #!
+            vect.nan[i] <- as.numeric(is.na(dat.orig[start.pt]))
           }
       }
     }
     ## make plot of original and averaged data
     if (pl == "yes") {
       vect.name <- fVarStr(dat.orig)
-      dev.new()
-      plot(tst.orig, dat.orig, type="l", col="blue",
-           main="", xlab="Time", ylab=vect.name)
-      points(tst.df$StartTime, vect.avg, col="red", pch=10)
+      plot(tst.orig, dat.orig, type="l", col="red", lwd=2,
+           xlab="Time", ylab=vect.name)
+      lines(tst.df$StartTime, vect.avg, col="blue", lwd=1)
     }
     ## output data.frame
     vect.df <- cbind(vect.avg, vect.med, vect.std,
@@ -181,40 +170,42 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
   }
 }
 
-fAvgStartStopDF <- function(tst.orig, df.orig, tst.df, fn.str) {
+fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   ## 4. calculate statistics (mean, median, standard deviation,
-  ## etc...) of all variables in a data.frame using start/stop chron
-  ## vectors; save plots of averaged data to pdf file
+  ## etc...) of all variables in a data.frame between time intervals
+  ## defined by start/stop chron vectors
+  ## save plots of averaged data to pdf if filename given
   ##
   ## NB: see documentation of fMakeStartStop() and fAvgStartStop()
   ##
   ## input:
-  ##    tst.orig = original chron vector ("d-m-y h:m:s")
-  ##    df.orig = original data.frame
-  ##    tst.df = start/mid/stop chron vector ("d-m-y h:m:s")
-  ##    fn.str = name of file to save plots OR ""
+  ##     df.orig = original data.frame (first column must be a
+  ##               chron vector in "d-m-y h:m:s" format)
+  ##     tst.df = start/mid/stop chron vector ("d-m-y h:m:s")
+  ##     fn.str = name of pdf file to save plots OR ""
   ## output:
-  ##    lst.out = list ( start chron, mid chron, stop chron,
-  ##                     data.frame ( mean, median, standard deviation,
-  ##                                  n. averaged points, n. NA points ),
-  ##                     data.frame ( mean, median, standard deviation,
-  ##                                  n. averaged points, n. NA points ),
+  ##     lst.out = list ( start chron, mid chron, stop chron,
+  ##                      data.frame ( mean, median, standard deviation,
+  ##                                   n. averaged points, n. NA points ),
+  ##                      data.frame ( mean, median, standard deviation,
+  ##                                   n. averaged points, n. NA points ),
   ##                     ... )
-  ##        --> pdf file : `fn.str'.pdf
+  ##     --> pdf file : `fn.str'.pdf
   ## ------------------------------------------------------------
-  ## get dimensions of data.frame
-  nrw <- nrow(df.orig)
-  ncl <- ncol(df.orig)
-  ## initialize output list and add chron vector
-  lst.out <- list()
+  if (!is.data.frame(df.orig) && !is.data.frame(tst.df)) {
+    df.name <- deparse(substitute(df.orig))
+    stop("input must be a data.frame")
+  }
+  ## initialize output list with chron vector
   lst.out <- tst.df
   ## open pdf file to save plots
-  if ( fn.str != "") {
+  if (fn.str != "") {
     pdf(paste(fn.str, ".pdf", sep=""), paper="a4r", width=0, height=0)
   }
-  ## average variables in data.frame
-  for (i in 1:ncl) {
-    dat.orig <- t(df.orig[,i, drop=F]) #!
+  ## average variables in data.frame using fAvgStartStop()
+  tst.orig <- df.orig[,1]
+  for (i in 2:ncol(df.orig)) {
+    dat.orig <- df.orig[,i]
     dat.str <- colnames(df.orig)[i]
     cat("averaging:", dat.str, "\n")
     avg.df <- fAvgStartStop(tst.orig, dat.orig, tst.df, "yes")
