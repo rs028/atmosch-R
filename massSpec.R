@@ -1,6 +1,6 @@
 ### ---------------------------------------------------------------- ###
 ### functions for mass spectrometry:
-###  1. 
+###  1. (mass ID)
 ###  2. load PTR-TOF spectra
 ###  3. normalize and average PTR-TOF spectra
 ###  4. rotate spectra and make timeseries plots
@@ -10,7 +10,7 @@
 ###  8. process CIMS data
 ###  9. normalize CIMS data
 ###
-### version 3.3, Oct 2015
+### version 3.4, Feb 2016
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -80,7 +80,7 @@ fNormTOF <- function(spect.df, ref.mz, scan.ini, scan.fin) {
   spect.avg <- apply(spect.norm[,smin:smax], 1, mean)
   spect.std <- apply(spect.norm[,smin:smax], 1, sd)
   ## output data.frame
-  spect.out <- as.data.frame(spect.norm)
+  spect.out <- as.data.frame(spect.norm) #!
   spect.out[,(nsp+1)] <- spect.avg
   spect.out[,(nsp+2)] <- spect.std
   colnames(spect.out)[(nsp+1)] <- "scan.avg"
@@ -333,7 +333,7 @@ fDiagnCIMS <- function(cims.df, fn.str) {
        xlab="time", ylab="mV", main="octopole DC")
   lines(t.stamp, rep(496, length(t.stamp)), lty=2, lwd=3, col="red")
   grid()
-  plot(t.stamp, fptv.a08, type="l", ylim=c(800,1400),
+  plot(t.stamp, fptv.a08, type="l", ylim=c(700,1400),
        xlab="time", ylab="mV", main="FT pressure")
   grid()
   plot(t.stamp, hv.b05, type="l", ylim=c(5500,5900),
@@ -354,9 +354,10 @@ fDiagnCIMS <- function(cims.df, fn.str) {
 }
 
 fProcessCIMS <- function(cims.df, bkgd.set) {
-  ## 8. process CIMS data: calculate total ion counts, temperature and
-  ## relative humidity from the Vaisala probe, flag instrument
-  ## background
+  ## 8. process CIMS data: separate data and diagnostic variables,
+  ## check monitored masses and dwell times, calculate temperature and
+  ## relative humidity from Vaisala probe, flag instrument background
+  ## (if background box ON)
   ##
   ## NB: see documentation of fLoadCIMS()
   ##
@@ -366,7 +367,7 @@ fProcessCIMS <- function(cims.df, bkgd.set) {
   ## output:
   ##     cims.out = data.frame ( time variables, processed data,
   ##                             diagnostic variables, relative humidity,
-  ##                             temperature, background flag)
+  ##                             temperature, background flag )
   ## ------------------------------------------------------------
   if (!is.data.frame(cims.df)) {
     df.name <- deparse(substitute(cims.df))
@@ -381,20 +382,24 @@ fProcessCIMS <- function(cims.df, bkgd.set) {
   cims.diagn <- cbind(cims.df[,grep("^n", var.str)],
                       cims.df[,grep("^c", var.str)],
                       cims.df[,grep("^A", var.str)])
-  ## calculate atomic mass unit (amu) and total ion count
+  ## ion count per second, atomic mass (amu), dwell time (s)
   n.mz <- length(colnames(cims.data)) / 3
   ic.hz <- cims.data[,1:n.mz]
   ic.am <- cims.data[,(n.mz+1):(2*n.mz)]
   ic.ms <- cims.data[,(2*n.mz+1):(3*n.mz)]
+  cims.ic <- ic.hz
   cims.amu <- ic.am / 1000
-  cims.ic <- ic.hz * (ic.ms / 1000)
-  colnames(cims.amu) <- gsub("mamu", "amu", colnames(cims.amu))
+  cims.sec <- ic.ms / 1000
   colnames(cims.ic) <- gsub("Hz", "m", colnames(cims.ic))
-  colnames(cims.ic) <- paste(colnames(cims.ic), "_raw", sep="")
+  colnames(cims.amu) <- gsub("mamu", "amu", colnames(cims.amu))
+  colnames(cims.sec) <- gsub("ms", "sec", colnames(cims.sec))
+  ## check consistency of monitored masses and dwell times
+  print(colMeans(cims.amu, na.rm=TRUE))
+  print(colMeans(cims.sec, na.rm=TRUE))
   ## temperature and relative humidity (Vaisala probe)
   probe.rh <- (cims.diagn$A05 / 1000) * 20
   probe.temp <- (cims.diagn$A06 / 1000) * 30 - 70
-  cims.probe <- data.frame(Vaisala.RH = probe.rh, Vaisala.T = probe.temp)
+  cims.probe <- data.frame(Vaias.RH = probe.rh, Vaias.T = probe.temp)
   ## create instrument background flag:
   ##   0 = signal
   ##  -1 = before/after valve switch
@@ -403,31 +408,31 @@ fProcessCIMS <- function(cims.df, bkgd.set) {
   if (bkgd.set == "on") {
     fl1 <- cims.diagn$cB
     fl2 <- cims.diagn$cB
-    fl1[which(cims.diagn$cB == 1) - 5] <- 2
-    fl2[which(cims.diagn$cB == 1) + 5] <- 2
+    fl1[which(cims.diagn$cB == 1) - 10] <- 2
+    fl2[which(cims.diagn$cB == 1) + 10] <- 2
     cims.flag <- ifelse((fl1 == fl2 & fl1 == 2), 1,
                         ifelse((fl1 == fl2 & fl1 == 0), 0, -1))
   }
   ## output data.frame
-  cims.out <- data.frame(cims.time, cims.amu, cims.ic,
+  cims.out <- data.frame(cims.time, cims.amu, cims.ic, cims.sec,
                          cims.diagn, cims.probe,
                          Flag_Bgd = cims.flag)
   return(cims.out)
 }
 
 fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
-  ## 9. normalize CIMS data to a reference ion (e.g., [I]- or
-  ## [I.H2O]-); the reference ion count can be scaled to a given
-  ## parameter (e.g., absolute humidity)
+  ## 9. normalize processed CIMS data to a reference ion (typically 1
+  ## million counts of the reagent ion); the reference ion can be
+  ## scaled to a given parameter (e.g., absolute humidity)
   ##
   ## NB: see documentation of fProcessCIMS()
   ##
   ## input:
-  ##    cims.df = data.frame of CIMS data
-  ##    ref.mz = mass of reference ion
-  ##    norm.fac = normalization factor (1 OR 1e6)
+  ##    cims.df = data.frame of processed CIMS data
+  ##    ref.mz = mass of reference ion (e.g., 127 for iodine)
+  ##    norm.fac = normalization factor (e.g., 1 OR 1e6)
   ##    scale.str =  scaling parameter ("none" OR "vaisala" OR
-  ##                 name of parameter)
+  ##                 name of variable)
   ## output:
   ##    cims.out = data.frame ( time variables, normalized data,
   ##                            diagnostic variables, relative humidity,
@@ -443,40 +448,40 @@ fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
   cims.time <- cims.df[,c("Datetime", "Date", "Time")]
   cims.amu <- cims.df[,grep("^amu", var.str)]
   cims.ic <- cims.df[,grep("^m", var.str)]
-  cims.diagn <- cbind(cims.df[,grep("^n", var.str)],
+  cims.diagn <- cbind(cims.df[,grep("^sec", var.str)],
+                      cims.df[,grep("^n", var.str)],
                       cims.df[,grep("^c", var.str)],
                       cims.df[,grep("^A", var.str)])
-  cims.probe <- cims.df[,c("Vaisala.RH", "Vaisala.T")]
-  cims.flag <- cims.df[,"Flag_Bgd", drop=F] #!
+  cims.probe <- cims.df[,c("Vaias.RH", "Vaias.T")]
+  cims.flag <- cims.df[,"Flag_Bgd", drop=F]
   ## set scaling parameter
   switch(scale.str,
-         # no scaling
-         "none" = {
+         "none" = {     # no scaling (set to 1)
            scale.df <- data.frame(Flag_1 = rep(1, nrow(cims.time)))
          },
-         # absolute humidity from Vaisala probe (g/m3)
-         "vaisala" = {
-           scale.df <- data.frame(Vaisala.AH = (6.112 * exp((17.67 * cims.probe$Vaisala.T) / (cims.probe$Vaisala.T + 243.5)) * cims.probe$Vaisala.RH * 2.1674) / (273.15 + cims.probe$Vaisala.T))
+         "vaisala" = {  # absolute humidity from Vaisala probe (g/m3)
+           probe.ah <- fHumid(cims.probe$Vaias.RH, "RH", "AH",
+                              cims.probe$Vaias.T, 1.01325e+05)
+           scale.df <- data.frame(Vaias.AH = probe.ah)
          },
-         # other parameter
-           scale.df <- get(scale.str)
+         {              # other parameter
+           scale.df <- data.frame(get(scale.str))
+           colnames(scale.df) <- scale.str
+         }
          )
   ## scale reference ion to scaling parameter
-  ref.str <- paste("m", as.character(ref.mz), "_raw", sep="")
-  ref.ic <- cims.ic[,ref.str, drop=F] #!
+  ref.str <- paste("m", as.character(ref.mz), sep="")
+  ref.ic <- cims.ic[,ref.str]
   ref.scal <- ref.ic / scale.df
+  ref.scal[ref.scal == 0] <- NaN
   ## normalize data to reference ion
-  cims.n1 <- sapply(cims.ic, function(x)
-                    x * norm.fac / ref.scal)
-  cims.n2 <- sapply(cims.n1, function(x)
-                    ifelse(is.infinite(x) == TRUE, NaN, x)) #!
-  cims.n2 <- as.data.frame(cims.n2)
+  cims.norm <- apply(cims.ic, 2, function(x)
+                     x * norm.fac / ref.scal)
+  cims.norm <- data.frame(cims.norm)
   ## rename normalized data variables
-  suffx <- paste("_raw\\.", ref.str, sep="")
-  colnames(cims.n2) <- gsub(suffx, "_norm", colnames(cims.n2))
+  colnames(cims.norm) <- paste(colnames(cims.ic), "norm", sep="_")
   ## output data.frame
-  cims.flag <- data.frame(scale.df, cims.df[,"Flag_Bgd", drop=F]) #!
-  cims.out <- data.frame(cims.time, cims.amu, cims.n2,
-                        cims.diagn, cims.probe, cims.flag)
+  cims.out <- data.frame(cims.time, cims.amu, cims.norm, cims.diagn,
+                         cims.probe, cims.flag, scale.df)
   return(cims.out)
 }
