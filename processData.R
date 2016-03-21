@@ -1,12 +1,13 @@
 ### ---------------------------------------------------------------- ###
 ### functions for data processing and analysis:
-###  1. compatibility with openair
-###  2. start/mid/stop chron vectors
-###  3. statistics of variable using start/stop
-###  4. statistics of variables in data.frame using start/stop
+###  1. convert data.frame to openair format
+###  2. make start/mid/stop chron vectors
+###  3. average variable using start/stop
+###  4. average variables in data.frame using start/stop
 ###
-### version 1.7, Mar 2016
-### author: RS -- based on code by DS (NOAA Aeronomy Lab)
+### version 1.8, Mar 2016
+### author: RS
+###   based on code by DS (NOAA Aeronomy Lab)
 ### ---------------------------------------------------------------- ###
 
 fOpenair <- function(df.in, date.str, ws.str, wd.str) {
@@ -157,6 +158,7 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
       plot(tst.orig, dat.orig, type="l", col="red", lwd=2,
            xlab="Time", ylab=vect.name)
       lines(tst.df$StartTime, vect.avg, col="blue", lwd=1)
+      grid()
     }
     ## output data.frame
     vect.df <- cbind(vect.avg, vect.med, vect.std,
@@ -192,7 +194,7 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   ##                     ... )
   ##     --> pdf file : `fn.str'.pdf
   ## ------------------------------------------------------------
-  if (!is.data.frame(df.orig) && !is.data.frame(tst.df)) {
+  if (!is.data.frame(df.orig) || !is.data.frame(tst.df)) {
     df.name <- deparse(substitute(df.orig))
     stop("input must be a data.frame")
   }
