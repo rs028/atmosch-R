@@ -11,7 +11,12 @@
 ### ---------------------------------------------------------------- ###
 
 fOpenair <- function(df.in, date.str, ws.str, wd.str) {
-  ## 1. prepare a data.frame for the openair package
+  ## 1. convert a data.frame to the openair format:
+  ## - 
+  ## - 
+  ##
+  ## openair (http://www.openair-project.org/) is a collection of open
+  ## source tools for the analysis of air pollution data
   ##
   ## input:
   ##     df.in = input data.frame
@@ -135,7 +140,7 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
       # cat("\t"); print(tst.orig[stop.pt])
       # cat("stop:"); print(tst.stop[i])
       # average data between time intervals
-      if ((tst.orig[start.pt] >= tst.start[i]) &&
+      if ((tst.orig[start.pt] >= tst.start[i]) &
           (tst.orig[stop.pt] <= tst.stop[i])) {
           if ((stop.pt - start.pt) >= 1) {         # multiple data points
             vect.avg[i] <- mean(dat.orig[start.pt:stop.pt], na.rm=TRUE)
@@ -194,7 +199,7 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   ##                     ... )
   ##     --> pdf file : `fn.str'.pdf
   ## ------------------------------------------------------------
-  if (!is.data.frame(df.orig) || !is.data.frame(tst.df)) {
+  if (!is.data.frame(df.orig) | !is.data.frame(tst.df)) {
     df.name <- deparse(substitute(df.orig))
     stop("input must be a data.frame")
   }

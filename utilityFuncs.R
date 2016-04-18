@@ -90,10 +90,10 @@ fFindPnt <- function(vecd, ops, xval, xst) {  # ===> OBSOLETE <===
              if (vecd[xst] >= xval) {
                xv <- xst
              } else {
-               while ((vecd[xst] < xval) && (xst < nv)) {
+               while ((vecd[xst] < xval) & (xst < nv)) {
                  xst <- xst + 1
                }
-               if ((vecd[xst] >= xval) && (vecd[xst-1] < xval)) {
+               if ((vecd[xst] >= xval) & (vecd[xst-1] < xval)) {
                  xv <- xst
                } else {
                  xv <- nv
@@ -104,10 +104,10 @@ fFindPnt <- function(vecd, ops, xval, xst) {  # ===> OBSOLETE <===
              if (vecd[xst] >= xval) {
                xv <- xst
              } else {
-               while ((vecd[xst] <= xval) && (xst < nv)) {
+               while ((vecd[xst] <= xval) & (xst < nv)) {
                  xst <- xst + 1
                }
-               if ((vecd[xst-1] <= xval) && (vecd[xst] > xval)) {
+               if ((vecd[xst-1] <= xval) & (vecd[xst] > xval)) {
                  xv <- xst - 1
                } else {
                  xv <- nv
@@ -191,7 +191,7 @@ fChronStr <- function(dt.str, dt.fmt) {
   if (grepl("h", dt.fmt)) {
     dt.flag <- "time"
   }
-  if (grepl("d", dt.fmt) && grepl("h", dt.fmt)) {
+  if (grepl("d", dt.fmt) & grepl("h", dt.fmt)) {
     dt.flag <- "datetime"
   }
   ## convert date/time string to chron

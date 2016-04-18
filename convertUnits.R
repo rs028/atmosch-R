@@ -391,7 +391,7 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   ##     data.out = data in final unit
   ## ------------------------------------------------------------
   ## molar mass required for conversion to/from ug m-3
-  if (unit.in == "UG" || unit.out == "UG") {
+  if (unit.in == "UG" | unit.out == "UG") {
     if (is.null(m.mass)) {
       stop("missing input: molar mass (g/mole)")
     }

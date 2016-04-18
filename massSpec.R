@@ -117,7 +117,7 @@ fPlotSpect <- function(spect.df, mz.min, mz.max, sc.min, sc.max, fn.str) {
   colnames(spect.t) <- paste("m", mz.vec, sep="")
   n.scan <- seq(1, nrow(spect.t), by=1)
   ## select range of masses
-  mz.inter <- which((mz.vec > mz.min) && (mz.vec < mz.max))
+  mz.inter <- which((mz.vec > mz.min) & (mz.vec < mz.max))
   ## plot time spectra in 4x4 panels
   par(mfrow = c(4,4))
   for (i in mz.inter) {
@@ -286,10 +286,10 @@ fDiagnCIMS <- function(cims.df, fn.str) {
   if (length(unique(n.ans)) != 1) {
     cat("CONFLICT! n. analog signals:", unique(n.ans), "\n")
   }
-  if (length(unique(cyc.0)) != 1 && length(unique(cyc.0)) != 2) {
+  if (length(unique(cyc.0)) != 1 & length(unique(cyc.0)) != 2) {
     cat("CONFLICT! flag x cycle B:", unique(cyc.0), "\n")
   }
-  if (length(unique(cyc.1)) != 1 && length(unique(cyc.1)) != 2) {
+  if (length(unique(cyc.1)) != 1 & length(unique(cyc.1)) != 2) {
     cat("CONFLICT! flag x cycle C:", unique(cyc.1), "\n")
   }
   if (length(unique(cyc.2)) != 1) {
@@ -402,7 +402,8 @@ fProcessCIMS <- function(cims.df, bkgd.set) {
   probe.rh <- (cims.diagn$A05 / 1000) * 20
   probe.temp <- (cims.diagn$A06 / 1000) * 30 - 70
   cims.probe <- data.frame(Vaias.RH = probe.rh, Vaias.T = probe.temp)
-  ## create instrument background flag:
+  ## create instrument background flag (exclude 10 data points
+  ## before/after valve switch):
   ##   0 = signal
   ##  -1 = before/after valve switch
   ##   1 = background
@@ -412,8 +413,8 @@ fProcessCIMS <- function(cims.df, bkgd.set) {
     fl2 <- cims.diagn$cB
     fl1[which(cims.diagn$cB == 1) - 10] <- 2
     fl2[which(cims.diagn$cB == 1) + 10] <- 2
-    cims.flag <- ifelse((fl1 == fl2 && fl1 == 2), 1,
-                        ifelse((fl1 == fl2 && fl1 == 0), 0, -1))
+    cims.flag <- ifelse((fl1 == fl2 & fl1 == 2), 1,
+                        ifelse((fl1 == fl2 & fl1 == 0), 0, -1))
   }
   ## output data.frame
   cims.out <- data.frame(cims.time, cims.amu, cims.ic, cims.sec,
