@@ -10,7 +10,7 @@
 ###  8. process CIMS data
 ###  9. normalize CIMS data
 ###
-### version 3.6, Apr 2016
+### version 3.7, May 2016
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -212,7 +212,8 @@ fSpectraCIMS <- function(cims.dir, cims.lst) {
                            ic = spect.data[,4])
     spectra.list[[i]] <- spect.ic
     ## add spectrum name (ic`_mmdd_hhmm') to list
-    spect.str <- gsub("-", "", substr(cims.fn, 13, 23))
+    n.fn <- nchar(cims.fn)
+    spect.str <- gsub("-", "", substr(cims.fn, n.fn-18, n.fn-7))
     spectra.name[[i]] <- paste("_", spect.str, sep="")
     ## get spectrum scan start/stop datetime
     spect.dt <- spect.data$Datetime

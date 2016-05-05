@@ -6,23 +6,22 @@
 ###  4. average variables in data.frame using start/stop
 ###
 ### version 1.8, Mar 2016
-### author: RS
-###   based on code by DS (NOAA Aeronomy Lab)
+### author: RS -- based on code by DS (NOAA Aeronomy Lab)
 ### ---------------------------------------------------------------- ###
 
 fOpenair <- function(df.in, date.str, ws.str, wd.str) {
   ## 1. convert a data.frame to the openair format:
-  ## - 
-  ## - 
+  ## - openair naming standard for datetime, wind data
+  ## - datetime from chron to POSIX format
   ##
-  ## openair (http://www.openair-project.org/) is a collection of open
-  ## source tools for the analysis of air pollution data
+  ## openair is a collection of open source tools for the analysis of
+  ## air pollution data (http://www.openair-project.org/)
   ##
   ## input:
   ##     df.in = input data.frame
   ##     date.str = name of datetime variable
-  ##     ws.str = name of wind speed variable
-  ##     wd.str = name of wind direction variable
+  ##     ws.str = name of wind speed variable (m/s)
+  ##     wd.str = name of wind direction variable (deg N)
   ## output:
   ##     df.out = data.frame ( datetime, variables )
   ## ------------------------------------------------------------
@@ -40,7 +39,7 @@ fOpenair <- function(df.in, date.str, ws.str, wd.str) {
       cat("-> wind direction data assumed to be: deg N\n")
     }
     colnames(df.out) <- df.vars
-    ## convert time to POSIX format
+    ## convert datetime to POSIX format
     time.x <- as.POSIXlt(df.out$date, tz="GMT")
     time.x <- round.POSIXt(time.x)
     df.out$date <- as.POSIXct(time.x)#, tz="GMT")
