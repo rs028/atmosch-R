@@ -1,13 +1,13 @@
 ### ---------------------------------------------------------------- ###
-### functions for :
-###  1. load text data file
+### functions to read/write data files:
+### - fImportTXT() : load text data file
 ###
 ### version 1.0, Apr 2016
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
-  ## 1. load data from a delimited text file (tab, space, comma,
+  ## load data from a delimited text file (tab, space, comma,
   ## semicolon, etc...), convert the date/time variables to chron and
   ## replace missing data points with NA
   ##
@@ -15,7 +15,7 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ## and must have at least one date/time variable in the first
   ## column:
   ##
-  ##   time        variable       variable     variable
+  ##    time       variable       variable     variable
   ##  12:00:00        10             25           30
   ##  12:30:00        25             30           45
   ##  13:00:00        40             55           60

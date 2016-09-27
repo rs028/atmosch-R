@@ -1,17 +1,18 @@
 ### ---------------------------------------------------------------- ###
 ### utilities and tools for atmosch-R functions:
-###  1. clear workspace
-###  2. merge list of data.frames
-###  3. find point in vector greater/less than value ===> OBSOLETE <===
-###  4. find point in vector greater/less than value
-###  5. convert date/time string to chron
+### - fClearWS()  : clear workspace
+### - fMergeDF()  : merge list of data.frame
+### - fFindPnt()  : OBSOLETE !!!
+### - fFindIdx()  : find point in vector greater/less than value
+### - fVarName()  : name of variable in data.frame
+### - fChronStr() : convert date/time string to chron
 ###
-### version 1.7, Apr 2016
+### version 1.9, Jun 2016
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fClearWS <- function() {
-  ## 1. clear R workspace:
+  ## clear R workspace:
   ## - delete all variables
   ## - keep atmosch-R functions
   ##
@@ -24,28 +25,28 @@ fClearWS <- function() {
 }
 
 fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
-  ## 2. merge list of data.frames by a common variable and rename the
+  ## merge list of data.frame by a common variable and rename the
   ## other variables
   ##
   ## NB: see documentation of merge()
   ##
   ## input:
-  ##     df.lst = list of data.frames to merge
+  ##     df.lst = list of data.frame to merge
   ##     var.str = name of common variable
   ##     all.str = type of merge operation ("TRUE" OR "FALSE")
   ##     suff.lst = list of suffixes to rename variables
   ## output:
-  ##     df.merg = data.frame ( merged data.frames )
+  ##     df.merg = data.frame ( merged data.frame )
   ## ------------------------------------------------------------
   if (!is.list(df.lst)) {
     lst.name <- deparse(substitute(df.lst))
     stop(paste(lst.name, "must be a list", sep=" "))
   }
-  if (length(df.lst) == 2 ) {  # two data.frames
+  if (length(df.lst) == 2 ) {  # two data.frame
     df.merg <- merge(df.lst[1], df.lst[2], by.x=var.str, by.y=var.str,
                      all=as.logical(all.str),
                      suffixes=unlist(suff.lst))
-  } else {                     # multiple data.frames
+  } else {                     # multiple data.frame
     df.merg <- data.frame(df.lst[1])
     colnames(df.merg)[-1] <- paste(colnames(df.merg)[-1],
                                    suff.lst[[1]], sep="")
@@ -57,14 +58,14 @@ fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
                        all=as.logical(all.str))
     }
   }
-  ## merged data.frames
+  ## merged data.frame
   return(df.merg)
 }
 
-fFindPnt <- function(vecd, ops, xval, xst) {  # ===> OBSOLETE <===
-  ## 3. find the first point greater/equal or less/equal than a
-  ## reference value in a data vector starting from a given point in
-  ## the data vector
+fFindPnt <- function(vecd, ops, xval, xst) {  # ==> OBSOLETE !!!
+  ## find the first point greater/equal or less/equal than a reference
+  ## value in a data vector starting from a given point in the data
+  ## vector
   ##
   ## NB: this function is inefficient and slow: fFindIdx() should be
   ## used instead
@@ -120,7 +121,7 @@ fFindPnt <- function(vecd, ops, xval, xst) {  # ===> OBSOLETE <===
 }
 
 fFindIdx <- function(vecd, ops, xval) {
-  ## 4. find the first point greater/less than a reference value in an
+  ## find the first point greater/less than a reference value in an
   ## ordered data/chron vector
   ##
   ## input:
@@ -172,9 +173,31 @@ fFindIdx <- function(vecd, ops, xval) {
   return(xv)
 }
 
+fVarName <- function(var.dat) {
+  ## return the name of a variable in a data.frame
+  ##
+  ## input:
+  ##    var.dat = data.frame
+  ## output:
+  ##    var.name = name of variable
+  ## ------------------------------------------------------------
+  if (is.data.frame(var.dat)) {              # df[1] OR df["A"]
+    var.name <- colnames(var.dat)
+  } else {
+    var.char <- deparse(substitute(var.dat))
+    if (grepl("$", var.char, fixed=TRUE)) {  # df$A
+      var.str <- strsplit(var.char, "$", fixed=TRUE)
+      var.name <- unlist(var.str)[2]
+    } else {                                 # df[,1]
+      var.name <- ""
+    }
+  }
+  return(var.name)
+}
+
 fChronStr <- function(dt.str, dt.fmt) {
-  ## 5. convert date, time, datetime string vector to chron vector
-  ## with format "d-m-y h:m:s"
+  ## convert date, time, datetime string vector to chron vector with
+  ## format "d-m-y h:m:s"
   ##
   ## input:
   ##     dt.str = date/time string vector
@@ -193,6 +216,11 @@ fChronStr <- function(dt.str, dt.fmt) {
   }
   if (grepl("d", dt.fmt) & grepl("h", dt.fmt)) {
     dt.flag <- "datetime"
+  }
+  ## add seconds if missing
+  if (dt.flag != "date" & grepl("s", dt.fmt) == FALSE) {
+    dt.str <- paste(dt.str, "00", sep=":")
+    dt.fmt <- paste(dt.fmt, "s", sep=":")
   }
   ## convert date/time string to chron
   switch(dt.flag,

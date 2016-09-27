@@ -1,16 +1,15 @@
 ### ---------------------------------------------------------------- ###
 ### functions for atmospheric physics:
-###  1. humidity measurements
+### - fHumid() : humidity measurements
 ###
 ### version 1.0, Feb 2016
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fHumid <- function(data.in, meas.in, meas.out, temp, press) {
-  ## 1. convert between measurements of humidity at given temperature
-  ## and pressure
-  ##
-  ## based upon "Humidity Conversion Formulas" published by Vaisala:
+  ## convert between measurements of humidity at given temperature and
+  ## pressure
+  ## from "Humidity Conversion Formulas" published by Vaisala:
   ##    http://www.vaisala.com/
   ##
   ## - absolute humidity : ("AH")
