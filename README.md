@@ -6,16 +6,18 @@ spectrometry, atmospheric chemistry and data analysis. Compatible with
 the **openair** package (http://www.openair-project.org/).
 
 Use of this software is free (see LICENSE), but please acknowledge or
-cite (as appropriate). Comments, suggestions, requests, reporting of
-errors and bugs are welcome.
+cite, as appropriate. Comments, suggestions, requests, reporting of
+errors/bugs and submissions of code are welcome.
 
 
 CONFIGURATION
 -------------
 
-Download the atmosch-R files in a directory (e.g. `Z:\My Documents\atmosch-R`).
+Download the atmosch-R archive file (`atmosch-R-master.zip`) and
+extract all the files in a directory of choice (e.g. `Z:\My
+Documents\atmosch-R`).
 
-Create a file called `.Rprofile` in the home directory (e.g. `Z:\My
+Create a file called `.Rprofile` in your home directory (e.g. `Z:\My
 Documents`) with the following text:
 
 ```
@@ -36,17 +38,19 @@ source("referenceData.R")
 source("utilityFuncs.R")
 ```
 
-If `.Rprofile` already exists, just add the text above to the existing
+If `.Rprofile` already exists, just add the text to the existing
 file. Modify the directory paths in `.Rprofile` to match the
-configuration of your system (e.g. version of win-library). On a Linux
-system, `.libPaths()` may not be required and can be deleted or
-commented out.
+configuration of your system (e.g. the version of win-library).
 
-The `.Rprofile` file can be customized to your personal preferences
-(e.g. if only some of the R functions are required).
+On Linux systems, `.libPaths()` may not be required; in this case line
+1 can be deleted or commented out. The `.Rprofile` file can be
+customized to your personal preferences (e.g. if only some of the
+functions are required).
 
-The atmosch-R functions should now be available in R and can be listed
-using the `ls()` command at the R prompt.
+Restart R. The atmosch-R functions should now be available in R and
+can be listed using the `ls()` command at the R prompt. The names of
+all atmosch-R functions begin with lowercase "f" followed by the
+capitalized function name.
 
 
 ADDITIONAL LIBRARIES

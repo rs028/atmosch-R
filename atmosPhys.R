@@ -2,15 +2,16 @@
 ### functions for atmospheric physics:
 ### - fHumid() : humidity measurements
 ###
-### version 1.0, Feb 2016
+### version 1.1, Nov 2016
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
-fHumid <- function(data.in, meas.in, meas.out, temp, press) {
+fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
   ## convert between measurements of humidity at given temperature and
   ## pressure
-  ## from "Humidity Conversion Formulas" published by Vaisala:
-  ##    http://www.vaisala.com/
+  ##
+  ## equations from "Humidity Conversion Formulas" published by
+  ## Vaisala: http://www.vaisala.com/
   ##
   ## - absolute humidity : ("AH")
   ##   mass of water vapour per volume air (g/m3)
@@ -28,7 +29,7 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press) {
   ##     meas.in = original measurement
   ##     meas.out = final measurement
   ##     temp = temperature (K)
-  ##     press = pressure (Pa)
+  ##     press = pressure (Pa)   [DEFAULT = 1 atm]
   ## output:
   ##     data.out = final humidity data
   ## ------------------------------------------------------------

@@ -1,9 +1,9 @@
 ### ---------------------------------------------------------------- ###
 ### reference data for physics and chemistry :
-###  1. physical/chemical constants
-###  2. periodic table
+### - fConstant() : physical/chemical constants
+### - fPeriodic() : periodic table
 ###
-### data from NIST Standard Reference Database:
+### data from the NIST Standard Reference Database:
 ###    http://www.nist.gov/pml/data/physicalconst.cfm
 ###    http://www.nist.gov/pml/data/edi.cfm
 ###
@@ -12,8 +12,8 @@
 ### ---------------------------------------------------------------- ###
 
 fConstant <- function(data.in) {
-  ## 1. return name, symbol, value, unit of a physical/chemical
-  ## constant
+  ## return name, symbol, value, unit of a physical/chemical constant
+  ##
   ## - Avogadro number           : "Na"
   ## - Boltzmann constant        : "kB"
   ## - gas constant              : "R"
@@ -23,7 +23,7 @@ fConstant <- function(data.in) {
   ## - speed of light            : "c0"
   ##
   ## input:
-  ##     data.in = symbol of physical/chemical constant
+  ##     data.in = symbol of constant
   ## output:
   ##     data.out = data.frame ( Name = name of constant,
   ##                             Symbol = symbol of constant,
@@ -51,11 +51,11 @@ fConstant <- function(data.in) {
 }
 
 fPeriodic <- function(data.in) {
-  ## 2. returns name, symbol, atomic number, atomic weight of a
-  ## chemical element (trans-uranium elements not included)
+  ## return name, symbol, atomic number, atomic weight of a chemical
+  ## element (trans-uranium elements not included)
   ##
   ## input:
-  ##     data.in = symbol of chemical element
+  ##     data.in = symbol of element
   ## output:
   ##     data.out = data.frame ( Name = name of element,
   ##                             Symbol = symbol of element,
