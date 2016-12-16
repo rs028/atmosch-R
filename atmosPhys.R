@@ -29,7 +29,7 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
   ##     meas.in = original measurement
   ##     meas.out = final measurement
   ##     temp = temperature (K)
-  ##     press = pressure (Pa)   [DEFAULT = 1 atm]
+  ##     press = pressure (Pa)     [ DEFAULT = 1 atm ]
   ## output:
   ##     data.out = final humidity data
   ## ------------------------------------------------------------

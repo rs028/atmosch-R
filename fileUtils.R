@@ -1,21 +1,20 @@
 ### ---------------------------------------------------------------- ###
 ### functions to read/write data files:
-### - fImportTXT() : load text data file
+### - fImportTXT()  : delimited text files
 ###
-### version 1.0, Apr 2016
+### version 1.1, Nov 2016
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
-  ## load data from a delimited text file (tab, space, comma,
-  ## semicolon, etc...), convert the date/time variables to chron and
+  ## import data from a delimited text file (tab, space, comma,
+  ## semicolon, etc...), convert the date/time variables to chron,
   ## replace missing data points with NA
   ##
-  ## data files must be without header (except names of the variables)
-  ## and must have at least one date/time variable in the first
-  ## column:
+  ## NB: data files must be without header (except names of the
+  ## variables) and must have one or more date/time variables:
   ##
-  ##    time       variable       variable     variable
+  ##    time      variable 1     variable 2   variable 3
   ##  12:00:00        10             25           30
   ##  12:30:00        25             30           45
   ##  13:00:00        40             55           60
@@ -25,8 +24,8 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ##     data.dir = data file directory
   ##     data.fn = name of data file
   ##     data.sep = delimiter of data file (e.g., "\t" OR ",")
-  ##     data.miss = missing values (e.g., -9999 OR "" OR NA)
-  ##     ... = format of date/time variables ("d/m/y h:m:s", "h:m:s"
+  ##     data.miss = missing value flag (e.g., -9999 OR "" OR NaN)
+  ##     ... = format of date/time variables (e.g., "d/m/y h:m:s"
   ##           OR "FD" if fractional days are used)
   ## output:
   ##     data.out = data.frame ( date/time variables, data variables )
@@ -59,7 +58,6 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   data.filt[data.filt == data.miss] <- NA
   data.filt[is.na(data.filt)] <- NA
   ## output data.frame
-  n.data <- ncol(data.df)
   data.out <- cbind(time.df, data.filt)
   return(data.out)
 }

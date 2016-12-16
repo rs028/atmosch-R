@@ -11,7 +11,7 @@
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
-fConstant <- function(data.in) {
+fConstant <- function(symb.in) {
   ## return name, symbol, value, unit of a physical/chemical constant
   ##
   ## - Avogadro number           : "Na"
@@ -23,7 +23,7 @@ fConstant <- function(data.in) {
   ## - speed of light            : "c0"
   ##
   ## input:
-  ##     data.in = symbol of constant
+  ##     symb.in = symbol of constant
   ## output:
   ##     data.out = data.frame ( Name = name of constant,
   ##                             Symbol = symbol of constant,
@@ -39,7 +39,7 @@ fConstant <- function(data.in) {
   k07 <- c("speed of light", "c0", 299792458, "m s-1")
   k.df <- rbind(k01, k02, k03, k04, k05, k06, k07)
   for (i in 1:nrow(k.df)) {
-    if (data.in == k.df[i,2]) {
+    if (symb.in == k.df[i,2]) {
       nn <- as.character(k.df[i,1])  # name
       ss <- as.character(k.df[i,2])  # symbol
       vv <- as.numeric(k.df[i,3])    # value
@@ -50,12 +50,12 @@ fConstant <- function(data.in) {
   return(data.out)
 }
 
-fPeriodic <- function(data.in) {
+fPeriodic <- function(symb.in) {
   ## return name, symbol, atomic number, atomic weight of a chemical
   ## element (trans-uranium elements not included)
   ##
   ## input:
-  ##     data.in = symbol of element
+  ##     symb.in = symbol of element
   ## output:
   ##     data.out = data.frame ( Name = name of element,
   ##                             Symbol = symbol of element,
@@ -166,7 +166,7 @@ fPeriodic <- function(data.in) {
                  el82, el83, el84, el85, el86, el87, el88, el89, el90,
                  el91, el92)
   for (i in 1:nrow(el.df)) {
-    if (data.in == el.df[i,2]) {
+    if (symb.in == el.df[i,2]) {
       nn <- as.character(el.df[i,1])  # name
       ss <- as.character(el.df[i,2])  # symbol
       an <- as.numeric(el.df[i,3])    # atomic number
