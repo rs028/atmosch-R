@@ -9,9 +9,10 @@
 fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
   ## convert between measurements of humidity at given temperature and
   ## pressure
+  ## pressure is required only for conversions to/from PPM
   ##
-  ## equations from "Humidity Conversion Formulas" published by
-  ## Vaisala: http://www.vaisala.com/
+  ## conversion equations taken from "Humidity Conversion Formulas"
+  ## published by Vaisala: http://www.vaisala.com/
   ##
   ## - absolute humidity : ("AH")
   ##   mass of water vapour per volume air (g/m3)
