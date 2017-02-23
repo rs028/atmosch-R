@@ -52,22 +52,28 @@ can be listed using the `ls()` command at the R prompt. The names of
 all atmosch-R functions begin with lowercase "f" followed by the
 capitalized function name.
 
+Example code and data can be found in the [wiki](https://github.com/rs028/atmosch-R/wiki/).
+
 
 ADDITIONAL LIBRARIES
 --------------------
 
 Some atmosch-R functions require the **chron** library to handle dates
 and times. To install it, type at the R prompt:
+
 ```
 install.packages("chron")
 ```
+
 and follow the instructions.
 
 The atmosch-R functions are compatible with the **openair**
 package. To install openair, type at the R prompt:
+
 ```
 install.packages("openair")
 ```
+
 and follow the instructions. Then add `library(openair)` to `.Rprofile`.
 
 The `fOpenair()` function, in `processData.R`, can be used to convert
