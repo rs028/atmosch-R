@@ -38,7 +38,7 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
   temp.c <- fConvTemp(temp, "K", "C")
   press.h <- fConvPress(press, "Pa", "hPa")
   ## water vapour saturation pressure (hPa)
-  pws <- 6.116441 * 10 ^ ((7.591386 * temp.c) / (temp.c + 240.7263))
+  pws <- 6.116441 * 10^( (7.591386 * temp.c) / (temp.c + 240.7263) )
   ## calculate water vapour pressure (hPa) from original humidity data
   switch(meas.in,
          "AH" = {

@@ -48,7 +48,7 @@ fKBi <- function(aa, ea.r, temp) {
   ## calculate the rate coefficient (cm3 molecule-1 s-1) of a
   ## bimolecular reaction at given and standard temperature using the
   ## Arrhenius equation:
-  ##    k = A exp(-Ea/RT)
+  ##    k = A * exp(-Ea/RT)
   ##
   ## input:
   ##     aa = pre-exponential factor (cm3 molecule-1 s-1)
@@ -74,7 +74,7 @@ fKBix <- function(aa, t0, nn, ea.r, temp) {
   ## calculate the rate coefficient (cm3 molecule-1 s-1) of a
   ## bimolecular reaction at given and standard temperature using the
   ## expanded Arrhenius equation:
-  ##    k = A(T/T0)^n exp(-Ea/RT)
+  ##    k = A * (T/T0)^n * exp(-Ea/RT)
   ##
   ## input:
   ##     aa = pre-exponential factor (cm3 molecule-1 s-1)
@@ -90,22 +90,21 @@ fKBix <- function(aa, t0, nn, ea.r, temp) {
     stop("input not valid")
   }
   ## expanded Arrhenius
-  k.gas <- (aa * (temp / t0) ^ nn) * exp(ea.r / temp)
-  k.std <- (aa * (298 / t0) ^ nn) * exp(ea.r / 298)
+  k.gas <- (aa * (temp / t0)^nn) * exp(ea.r / temp)
+  k.std <- (aa * (298 / t0)^nn) * exp(ea.r / 298)
   ## output data.frame
   df.out <- data.frame(k.gas, k.std)
   colnames(df.out) <- c("kt", "k298")
   return(df.out)
 }
 
-fKTer <- function(k.zero, k.inf, fc, m.air, refp) {
+fKTer <- function(k.zero, k.inf, fc, temp, press, refp) {
   ## calculate the rate coefficient of a termolecular reaction at
   ## given and standard temperature using the Lindemann-Hinshelwood
   ## expression:
   ##    k = F (k0 * ki) / (k0 + ki)
   ##
   ## NB: use fKBi() and fKBix() to calculate k.zero and k.inf
-  ##     use fAirND() to calculate m.air
   ##
   ## input:
   ##     k.zero = low pressure limit rate coefficient
@@ -117,13 +116,12 @@ fKTer <- function(k.zero, k.inf, fc, m.air, refp) {
   ##     df.out = data.frame ( kt = rate coefficient,
   ##                           k298 = standard rate coefficient )
   ## ------------------------------------------------------------
-  if (is.list(m.air) | length(m.air) > 1) {
+  if (is.list(temp) | length(temp) > 1) {
     stop("input not valid")
   }
   ## air number density
-  m.temp <- m.air
+  m.temp <- fAirND(temp, press)$M
   m.298 <- fAirND(298, 101325)$M
-  m.df <- cbind(m.temp, m.298)
   ## fall-off curve parameters
   if (refp == "iupac") {        # IUPAC fitting
     fc <- fc
@@ -133,13 +131,15 @@ fKTer <- function(k.zero, k.inf, fc, m.air, refp) {
     nn <- 1.0
   }
   ## broadening factor F
-  kr <- (k.zero * m.df) / k.inf
-  fr <- (log10(kr) / nn) ^ 2
-  ff <- 10 ^ (log10(fc) / (1 + fr))
+  kr1 <- (k.zero[1] * m.temp) / k.inf[1]
+  kr2 <- (k.zero[2] * m.298) / k.inf[2]
+  ff1 <- 10^( log10(fc) / (1 + (log10(kr1) / nn)^2) )
+  ff2 <- 10^( log10(fc) / (1 + (log10(kr2) / nn)^2) )
   ## effective second-order rate coefficient
-  k.gas <- ff * k.inf * (kr / (1 + kr))
+  k.gas <- ff1 * k.inf[1] * (kr1 / (1 + kr1))
+  k.std <- ff2 * k.inf[2] * (kr2 / (1 + kr2))
   ## output data.frame
-  df.out <- data.frame(k.gas)
+  df.out <- data.frame(k.gas, k.std)
   colnames(df.out) <- c("kt", "k298")
   return(df.out)
 }
@@ -147,6 +147,8 @@ fKTer <- function(k.zero, k.inf, fc, m.air, refp) {
 fLifeT <- function(k.gas, c.gas) {
   ## calculate the chemical lifetime (s) and the half-life (s) of a
   ## gas with respect to a first or second order process
+  ##
+  ## NB: see documentation of fKBi(), fKBix(), fKTer()
   ##
   ## input:
   ##     k.gas = rate coefficient (cm3 molecule-1 s-1 OR s-1)
