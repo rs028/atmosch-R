@@ -6,7 +6,7 @@
 ### - fKTer()   : rate coefficient of termolecular reaction
 ### - fLifeT()  : chemical lifetime and half-life
 ###
-### version 1.9, Nov 2016
+### version 2.0, Feb 2017
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -59,7 +59,7 @@ fKBi <- function(aa, ea.r, temp) {
   ##                           k298 = standard rate coefficient )
   ## ------------------------------------------------------------
   if (is.list(temp) | length(temp) > 1) {
-    stop("input not valid")
+    stop("only one temperature value allowed")
   }
   ## standard Arrhenius
   k.gas <- aa * exp(ea.r / temp)
@@ -87,7 +87,7 @@ fKBix <- function(aa, t0, nn, ea.r, temp) {
   ##                           k298 = standard rate coefficient )
   ## ------------------------------------------------------------
   if (is.list(temp) | length(temp) > 1) {
-    stop("input not valid")
+    stop("only one temperature value allowed")
   }
   ## expanded Arrhenius
   k.gas <- (aa * (temp / t0)^nn) * exp(ea.r / temp)
@@ -100,8 +100,8 @@ fKBix <- function(aa, t0, nn, ea.r, temp) {
 
 fKTer <- function(k.zero, k.inf, fc, temp, press, refp) {
   ## calculate the rate coefficient of a termolecular reaction at
-  ## given and standard temperature using the Lindemann-Hinshelwood
-  ## expression:
+  ## given and standard temperature and pressure using the
+  ## Lindemann-Hinshelwood expression:
   ##    k = F (k0 * ki) / (k0 + ki)
   ##
   ## NB: use fKBi() and fKBix() to calculate k.zero and k.inf
@@ -110,14 +110,18 @@ fKTer <- function(k.zero, k.inf, fc, temp, press, refp) {
   ##     k.zero = low pressure limit rate coefficient
   ##     k.inf = high pressure limit rate coefficient
   ##     fc = Fc factor
-  ##     temp = air density (molecule cm-3)
+  ##     temp = temperature (K)
+  ##     press = pressure (Pa)
   ##     refp = "iupac" OR "jpl" fitting
   ## output:
   ##     df.out = data.frame ( kt = rate coefficient,
   ##                           k298 = standard rate coefficient )
   ## ------------------------------------------------------------
   if (is.list(temp) | length(temp) > 1) {
-    stop("input not valid")
+    stop("only one temperature value allowed")
+  }
+  if (is.list(press) | length(press) > 1) {
+    stop("only one pressure value allowed")
   }
   ## air number density
   m.temp <- fAirND(temp, press)$M
