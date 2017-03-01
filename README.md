@@ -6,8 +6,11 @@ spectrometry, atmospheric chemistry and data analysis. Compatible with
 the **openair** package (http://www.openair-project.org/).
 
 Use of this software is free (see LICENSE), but please acknowledge or
-cite, as appropriate. Comments, suggestions, requests, reporting of
-errors/bugs and submissions of code are welcome.
+cite, as appropriate, if you use it. Comments, suggestions, requests,
+reports of errors/bugs and submissions of code are welcome.
+
+**N.B.:** It is _strongly recommended_ to check the results and the
+  output of the functions, and make sure that they work as intended.
 
 
 CONFIGURATION
@@ -52,7 +55,8 @@ can be listed using the `ls()` command at the R prompt. The names of
 all atmosch-R functions begin with lowercase "f" followed by the
 capitalized function name.
 
-Example code and data can be found in the [wiki](https://github.com/rs028/atmosch-R/wiki/).
+Example code and data can be found in the
+[wiki](https://github.com/rs028/atmosch-R/wiki/).
 
 
 ADDITIONAL LIBRARIES
@@ -77,4 +81,5 @@ install.packages("openair")
 and follow the instructions. Then add `library(openair)` to `.Rprofile`.
 
 The `fOpenair()` function, in `processData.R`, can be used to convert
-a data.frame to the openair format.
+a data.frame to the openair format. For more information on
+**openair** see the [project website](http://www.openair-project.org/).
