@@ -16,16 +16,17 @@ reports of errors/bugs and submissions of code are welcome.
 CONFIGURATION
 -------------
 
-Download the atmosch-R archive file (`atmosch-R-master.zip`) and
-extract all the files in a directory of choice (e.g. `Z:\My
-Documents\atmosch-R`).
+Download the atmosch-R archive file (`atmosch-R-master.zip`) and unzip
+it in a directory of choice (e.g. `Z:\My Documents\R Code\`). This
+creates a directory called `atmosch-R-master/` containing the
+atmosch-R files. Rename the directory as `atmosch-R/`.
 
 Create a file called `.Rprofile` in your home directory (e.g. `Z:\My
-Documents`) with the following text:
+Documents`) with the following content:
 
 ```
 .libPaths("Z:\\My Documents\\R\\win-library\\3.0")
-f.home <- "Z:\\My Documents\\atmosch-R"
+f.home <- "Z:\\My Documents\\R Code\\atmosch-R"
 
 library(chron)
 
@@ -41,12 +42,11 @@ source("referenceData.R")
 source("utilityFuncs.R")
 ```
 
-If `.Rprofile` already exists, just add the text to the existing
+If `.Rprofile` already exists, add the text above to the existing
 file. Modify the directory paths in `.Rprofile` to match the
-configuration of your system (e.g. the version of win-library).
-
-On Linux systems, `.libPaths()` may not be required; in this case line
-1 can be deleted or commented out. The `.Rprofile` file can be
+configuration of your system (e.g. the version of win-library). On
+Linux systems, `.libPaths()` may not be required; in this case line 1
+can be deleted or commented out. The `.Rprofile` file can be
 customized to your personal preferences (e.g. if only some of the
 functions are required).
 
@@ -72,14 +72,15 @@ install.packages("chron")
 and follow the instructions.
 
 The atmosch-R functions are compatible with the **openair**
-package. To install openair, type at the R prompt:
+package. In particular, the `fOpenair()` function, in `processData.R`,
+can be used to convert a data.frame to the openair format.
+
+To install openair, type at the R prompt:
 
 ```
 install.packages("openair")
 ```
 
-and follow the instructions. Then add `library(openair)` to `.Rprofile`.
-
-The `fOpenair()` function, in `processData.R`, can be used to convert
-a data.frame to the openair format. For more information on
-**openair** see the [project website](http://www.openair-project.org/).
+and follow the instructions. Add `library(openair)` to
+`.Rprofile`. For more information on **openair** see the [project
+website](http://www.openair-project.org/).

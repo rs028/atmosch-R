@@ -3,7 +3,7 @@
 ### - fHumid() : humidity measurements
 ### - fSolar() : Earth-Sun angles
 ###
-### version 1.3, Mar 2017
+### version 1.4, Mar 2017
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -83,7 +83,6 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
 
 fSolar <- function(lat, long, dt.chron) {
   ## calculate the Earth-Sun angles (in radians)
-  ##
   ## - sun declination (DEC) is the angle between the center of the
   ##   sun and the earth's equatorial plane
   ## - local hour angle (LHA) is the angle between the observer's
@@ -93,7 +92,8 @@ fSolar <- function(lat, long, dt.chron) {
   ## - solar elevation angle (SEA) is the angle between the local
   ##   horizontal and the center of the sun
   ##
-  ## from "Environmental UV Photobiology", S. Madronich (1993)
+  ## from "The Atmosphere and UV-B Radiation at Ground Level" by
+  ## S. Madronich (Environmental UV Photobiology, 1993)
   ##
   ## input:
   ##     lat = latitude (degrees)
@@ -112,7 +112,7 @@ fSolar <- function(lat, long, dt.chron) {
   jan1 <- chron(paste("01/01/", years(dt.chron), sep=""))
   fracd <- as.numeric(dt.chron - jan1 + 1)
   doy <- floor(fracd)
-  gmt <- fracd - doy
+  gmt <- (fracd - doy) * 24
   ## day angle
   nday = doy - 1
   theta = 2 * pi * (nday / 365)
@@ -137,12 +137,12 @@ fSolar <- function(lat, long, dt.chron) {
   c4 = -0.040849
   eqt = c0 + c1 * cos(theta) + c2 * sin(theta) + c3 * cos(2 * theta) +
         c4 * sin(2 * theta)
-  lha = pi * (gmt / 12 - 1 + long / 180) + eqt
+  lha = pi * (gmt / 12 - (1 + long / 180)) + eqt
   ## solar zenith angle and solar elevation angle
   sza = acos(sin(dec) * sin(lat.r) + cos(dec) * cos(lat.r) * cos(lha))
   sea = pi/2 - sza
   ## output data.frame
-  df.out <- data.frame(dec, lha, sza, sea)
-  colnames(df.out) <- c("DEC","LHA","SZA","SEA")
+  df.out <- data.frame(dt.chron, dec, lha, sza, sea)
+  colnames(df.out) <- c("TIME","DEC","LHA","SZA","SEA")
   return(df.out)
 }
