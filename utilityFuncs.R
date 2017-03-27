@@ -2,12 +2,12 @@
 ### utilities and tools for atmosch-R functions:
 ### - fClearWS()  : clear workspace
 ### - fMergeDF()  : merge list of data.frame
-### - fFindPnt()  : OBSOLETE !!!
+### - fFindPnt()  ==>  OBSOLETE !!!
 ### - fFindIdx()  : find point in vector greater/less than value
-### - fVarName()  : name of variable in data.frame
+### - fVarName()  : name of variable(s) in data.frame
 ### - fChronStr() : convert date/time string to chron
 ###
-### version 1.9, Jun 2016
+### version 2.1, Mar 2017
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -15,13 +15,15 @@ fClearWS <- function() {
   ## clear R workspace:
   ## - delete all variables
   ## - keep atmosch-R functions
+  ## - close plot windows
   ##
-  ## NB: all atmosch-R functions begin with lowercase `f' followed by
-  ## the capitalized function name
+  ## the names of all atmosch-R functions begin with lowercase `f'
+  ## followed by the capitalized function name
   ## ------------------------------------------------------------
   rm(list=base::setdiff(ls(pos=.GlobalEnv),
                         ls(pos=.GlobalEnv, pattern="^f[.A-Z]")),
      pos=.GlobalEnv)
+  graphics.off()
 }
 
 fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
@@ -62,13 +64,14 @@ fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
   return(df.merg)
 }
 
-fFindPnt <- function(vecd, ops, xval, xst) {  # ==> OBSOLETE !!!
+fFindPnt <- function(vecd, ops, xval, xst) {  ## ==> OBSOLETE !!!
   ## find the first point greater/equal or less/equal than a reference
   ## value in a data vector starting from a given point in the data
   ## vector
   ##
-  ## NB: this function is inefficient and slow: fFindIdx() should be
-  ## used instead
+  ## ==> this function is inefficient and slow and is kept only for
+  ## backwards compatibility: the function fFindIdx() should be used
+  ## instead <==
   ##
   ## input:
   ##     vecd = data vector
@@ -174,12 +177,16 @@ fFindIdx <- function(vecd, ops, xval) {
 }
 
 fVarName <- function(var.dat) {
-  ## return the name of a variable in a data.frame
+  ## return a string with the name of one or more variables in a
+  ## data.frame
+  ##
+  ## a variable can be addressed by column number (df[1], df[,1]) or
+  ## by name df["A"]) or with the $ operator (df$A)
   ##
   ## input:
-  ##    var.dat = data.frame
+  ##    var.dat = variable(s) in data.frame
   ## output:
-  ##    var.name = name of variable
+  ##    var.name = name of variable(s)
   ## ------------------------------------------------------------
   if (is.data.frame(var.dat)) {              # df[1] OR df["A"]
     var.name <- colnames(var.dat)
@@ -189,7 +196,7 @@ fVarName <- function(var.dat) {
       var.str <- strsplit(var.char, "$", fixed=TRUE)
       var.name <- unlist(var.str)[2]
     } else {                                 # df[,1]
-      var.name <- ""
+      var.name <- "" #! DOES NOT WORK
     }
   }
   return(var.name)
