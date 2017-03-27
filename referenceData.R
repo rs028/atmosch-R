@@ -12,15 +12,14 @@
 ### ---------------------------------------------------------------- ###
 
 fConstant <- function(symb.in) {
-  ## return name, symbol, value, unit of a physical/chemical constant
-  ##
-  ## - Avogadro number           : "Na"
-  ## - Boltzmann constant        : "kB"
-  ## - gas constant              : "R"
-  ## - Planck constant           : "h"
-  ## - Stefan-Boltzmann constant : "kSB"
-  ## - standard gravity          : "g0"
-  ## - speed of light            : "c0"
+  ## return name, symbol, value, unit of a physical/chemical constant:
+  ## * Avogadro number           = "Na"
+  ## * Boltzmann constant        = "kB"
+  ## * gas constant              = "R"
+  ## * Planck constant           = "h"
+  ## * Stefan-Boltzmann constant = "kSB"
+  ## * standard gravity          = "g0"
+  ## * speed of light            = "c0"
   ##
   ## input:
   ##     symb.in = symbol of constant

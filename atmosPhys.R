@@ -3,34 +3,34 @@
 ### - fHumid() : humidity measurements
 ### - fSolar() : Earth-Sun angles
 ###
-### version 1.4, Mar 2017
+### version 1.5, Mar 2017
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
-  ## convert between measurements of humidity at given temperature;
-  ## pressure is required only for conversions to/from PPM
-  ##
-  ## conversion equations taken from "Humidity Conversion Formulas"
-  ## published by Vaisala (http://www.vaisala.com/)
-  ##
-  ## - absolute humidity : ("AH")
+  ## convert between measurements of humidity at given temperature:
+  ## * absolute humidity = "AH"
   ##   mass of water vapour per volume air (g/m3)
-  ## - specific humidity : ("SH")
+  ## * specific humidity = "SH"
   ##   mass of water vapour per mass air (g/kg)
-  ## - mixing ratio      : ("MR")
+  ## * mixing ratio      = "MR"
   ##   mass of water vapour per mass dry air (g/kg)
-  ## - relative humidity : ("RH")
+  ## * relative humidity = "RH"
   ##   water vapour pressure to water vapour saturation pressure (%)
-  ## - parts per million : ("PPM")
+  ## * parts per million = "PPM"
   ##   volume of water vapour per volume of dry air (ppm)
+  ##
+  ## from "Humidity Conversion Formulas" published by Vaisala
+  ## (http://www.vaisala.com/)
+  ##
+  ## NB: pressure is required only for conversions to/from PPM
   ##
   ## input:
   ##     data.in = original humidity data
   ##     meas.in = original measurement
   ##     meas.out = final measurement
   ##     temp = temperature (K)
-  ##     press = pressure (Pa)     [ DEFAULT = 1 atm ]
+  ##     press = pressure (Pa)     [ OPTIONAL, DEFAULT = 1 atm ]
   ## output:
   ##     data.out = final humidity data
   ## ------------------------------------------------------------
@@ -82,15 +82,15 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
 }
 
 fSolar <- function(lat, long, dt.chron) {
-  ## calculate the Earth-Sun angles (in radians)
-  ## - sun declination (DEC) is the angle between the center of the
-  ##   sun and the earth's equatorial plane
-  ## - local hour angle (LHA) is the angle between the observer's
-  ##    meridian and the sun's meridian
-  ## - solar zenith angle (SZA) is the angle between the local
-  ##   vertical and the center of the sun
-  ## - solar elevation angle (SEA) is the angle between the local
-  ##   horizontal and the center of the sun
+  ## calculate earth-sun angles:
+  ## * sun declination = "DEC"
+  ##   angle between center of the sun and earth's equatorial plane (rad)
+  ## * local hour angle = "LHA"
+  ##   angle between observer's meridian and sun's meridian (rad)
+  ## * solar zenith angle = "SZA"
+  ##   angle between local vertical and center of the sun (rad)
+  ## * solar elevation angle = "SEA"
+  ##   angle between local horizontal and center of the sun (rad)
   ##
   ## from "The Atmosphere and UV-B Radiation at Ground Level" by
   ## S. Madronich (Environmental UV Photobiology, 1993)
@@ -117,9 +117,6 @@ fSolar <- function(lat, long, dt.chron) {
   nday = doy - 1
   theta = 2 * pi * (nday / 365)
   ## sun declination
-  ## - summer solstice = +0.41 rad
-  ## - winter solstice = -0.41 rad
-  ## - spring and autumn equinoxes = 0 rad
   b0 =  0.006918
   b1 = -0.399912
   b2 =  0.070257
@@ -143,6 +140,6 @@ fSolar <- function(lat, long, dt.chron) {
   sea = pi/2 - sza
   ## output data.frame
   df.out <- data.frame(dt.chron, dec, lha, sza, sea)
-  colnames(df.out) <- c("TIME","DEC","LHA","SZA","SEA")
+  colnames(df.out) <- c("GMT","DEC","LHA","SZA","SEA")
   return(df.out)
 }
