@@ -23,7 +23,7 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
   ## from "Humidity Conversion Formulas" published by Vaisala
   ## (http://www.vaisala.com/)
   ##
-  ## NB: pressure is required only for conversions to/from PPM
+  ## NB: pressure is required only for conversions to/from "PPM"
   ##
   ## input:
   ##     data.in = original humidity data
