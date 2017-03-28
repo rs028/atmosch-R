@@ -5,45 +5,47 @@
 ### - fAvgStartStop()   : average variable using start/stop
 ### - fAvgStartStopDF() : average data.frame using start/stop
 ###
-### version 1.8, Mar 2016
-### author: RS -- based on code by DS (NOAA Aeronomy Lab)
+### version 1.9, Mar 2017
+### author: RS
+###
+### NB: the functions fMakeStartStop(), fAvgStartStop() are based on
+### code written by DS (NOAA Aeronomy Lab) in Wavemetrics Igor
 ### ---------------------------------------------------------------- ###
 
-fOpenair <- function(df.in, date.str, ws.str, wd.str) {
+fOpenair <- function(data.df, time.str, ws.str, wd.str) {
   ## convert a data.frame to the openair format:
-  ## - openair naming standard for datetime, wind data
-  ## - datetime from chron to POSIX format
+  ## * openair naming standard for datetime, wind data
+  ## * datetime from chron to POSIX format
   ##
-  ## openair is a collection of open source tools for the analysis of
-  ## air pollution data (http://www.openair-project.org/)
+  ## openair is an R package for the analysis of air pollution data
+  ## (http://www.openair-project.org/)
   ##
   ## input:
-  ##     df.in = input data.frame
-  ##     date.str = name of datetime variable
+  ##     data.df = input data.frame
+  ##     time.str = name of datetime variable
   ##     ws.str = name of wind speed variable (m/s)
   ##     wd.str = name of wind direction variable (deg N)
   ## output:
   ##     df.out = data.frame ( datetime, variables )
   ## ------------------------------------------------------------
-  if (is.data.frame(df.in)) {
-    df.out <- df.in
+  if (is.data.frame(data.df)) {
+    df.out <- data.df
     ## change name of variables to openair standard
-    df.vars <- colnames(df.in)
-    df.vars[which(df.vars == date.str)] <- "date"
+    df.vars <- colnames(data.df)
+    df.vars[which(df.vars == time.str)] <- "date"
     if (ws.str != "") {
       df.vars[which(df.vars == ws.str)] <- "ws"
-      cat("-> wind speed data assumed to be: m/s\n")
+      cat("-> wind speed data [", ws.str,"]: m/s\n")
     }
     if (wd.str != "") {
       df.vars[which(df.vars == wd.str)] <- "wd"
-      cat("-> wind direction data assumed to be: deg N\n")
+      cat("-> wind direction data [", wd.str,"]: deg N\n")
     }
     colnames(df.out) <- df.vars
     ## convert datetime to POSIX format
     time.x <- as.POSIXlt(df.out$date, tz="GMT")
     time.x <- round.POSIXt(time.x)
     df.out$date <- as.POSIXct(time.x)#, tz="GMT")
-    #attr(df.out$date, "tzone") <- "GMT"
     ## output data.frame
     return(df.out)
   } else {
@@ -62,8 +64,8 @@ fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
   ##   01:00:00  01:02:30  01:04:59
   ##
   ## input:
-  ##     start.str = start datetime ("d-m-y h:m:s")
-  ##     stop.str = stop datetime ("d-m-y h:m:s")
+  ##     start.str = start datetime string ("d-m-y h:m:s")
+  ##     stop.str = stop datetime string ("d-m-y h:m:s")
   ##     tstep.str = time step between start (minutes)
   ##     inter.str = interval between start and stop (minutes)
   ## output:
@@ -97,7 +99,8 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
   ## of a variable between time intervals defined by start/stop chron
   ## vectors
   ##
-  ## NB: see documentation of fMakeStartStop()
+  ## NB: use fMakeStartStop() to create the start/mid/stop chron
+  ## vector (tst.df)
   ##
   ## input:
   ##     tst.orig = original chron vector ("d-m-y h:m:s")
@@ -106,9 +109,9 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
   ##     pl = make plot of averaged data ("yes" or "no")
   ## output:
   ##     df.out = data.frame ( start chron, mid chron, stop chron,
-  ##                            mean, median, standard deviation,
-  ##                            n. averaged points, n. NA points )
-  ##     --> plot of averaged data (if pl = "yes")
+  ##                           mean, median, standard deviation,
+  ##                           n. averaged points, n. NA points )
+  ##     --> plot averaged data (if pl = "yes")
   ## ------------------------------------------------------------
   if (!is.data.frame(tst.df)) {
     df.name <- deparse(substitute(tst.df))
@@ -166,7 +169,7 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
     ## output data.frame
     vect.df <- cbind(vect.avg, vect.med, vect.std,
                      vect.npt, vect.nan)
-    vect.str <- c("Mean", "Median", "StdDev", "Pnts", "NaNs")
+    vect.str <- c("Mean", "Median", "StdDev", "Pnts", "NAs")
     colnames(vect.df) <- vect.str
     df.out <- data.frame(tst.df, vect.df)
     return(df.out)
