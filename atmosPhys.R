@@ -56,7 +56,7 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
          "PPM" = {
            pw <- (data.in * 1.0e-06 * press.h) / (1 + data.in * 1.0e-06)
          },
-         stop("unit not found")
+         stop("INPUT ERROR: unit not found")
          )
   ## calculate final humidity data from water vapour pressure (hPa)
   switch(meas.out,
@@ -75,7 +75,7 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
          "PPM" = {
            data.out <- 1.0e+06 * pw / (press.h - pw)
          },
-         stop("unit not found")
+         stop("INPUT ERROR: unit not found")
   )
   ## final humidity data
   return(data.out)

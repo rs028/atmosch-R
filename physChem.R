@@ -59,7 +59,7 @@ fKBi <- function(aa, ea.r, temp) {
   ##                           k298 = standard rate coefficient )
   ## ------------------------------------------------------------
   if (is.list(temp) | length(temp) > 1) {
-    stop("only one temperature value allowed")
+    stop("INPUT ERROR: only one temperature value allowed")
   }
   ## standard Arrhenius
   k.gas <- aa * exp(ea.r / temp)
@@ -87,7 +87,7 @@ fKBix <- function(aa, t0, nn, ea.r, temp) {
   ##                           k298 = standard rate coefficient )
   ## ------------------------------------------------------------
   if (is.list(temp) | length(temp) > 1) {
-    stop("only one temperature value allowed")
+    stop("INPUT ERROR: only one temperature value allowed")
   }
   ## expanded Arrhenius
   k.gas <- (aa * (temp / t0)^nn) * exp(ea.r / temp)
@@ -118,10 +118,10 @@ fKTer <- function(k.zero, k.inf, fc, temp, press, refp) {
   ##                           k298 = standard rate coefficient )
   ## ------------------------------------------------------------
   if (is.list(temp) | length(temp) > 1) {
-    stop("only one temperature value allowed")
+    stop("INPUT ERROR: only one temperature value allowed")
   }
   if (is.list(press) | length(press) > 1) {
-    stop("only one pressure value allowed")
+    stop("INPUT ERROR: only one pressure value allowed")
   }
   ## air number density
   m.temp <- fAirND(temp, press)$M
