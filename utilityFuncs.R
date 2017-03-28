@@ -13,9 +13,9 @@
 
 fClearWS <- function() {
   ## clear R workspace:
-  ## - delete all variables
-  ## - keep atmosch-R functions
-  ## - close plot windows
+  ## * delete all variables
+  ## * keep atmosch-R functions
+  ## * close plot windows
   ##
   ## the names of all atmosch-R functions begin with lowercase `f'
   ## followed by the capitalized function name
@@ -196,7 +196,7 @@ fVarName <- function(var.dat) {
       var.str <- strsplit(var.char, "$", fixed=TRUE)
       var.name <- unlist(var.str)[2]
     } else {                                 # df[,1]
-      var.name <- "" #! DOES NOT WORK
+      var.name <- "" #! FIX THIS !#
     }
   }
   return(var.name)

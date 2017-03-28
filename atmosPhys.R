@@ -82,15 +82,15 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
 }
 
 fSolar <- function(lat, long, dt.chron) {
-  ## calculate earth-sun angles:
+  ## calculate Earth-Sun angles:
   ## * sun declination = "DEC"
-  ##   angle between center of the sun and earth's equatorial plane (rad)
+  ##   angle between center of the Sun and Earth's equatorial plane (rad)
   ## * local hour angle = "LHA"
-  ##   angle between observer's meridian and sun's meridian (rad)
+  ##   angle between observer's meridian and Sun's meridian (rad)
   ## * solar zenith angle = "SZA"
-  ##   angle between local vertical and center of the sun (rad)
+  ##   angle between local vertical and center of the Sun (rad)
   ## * solar elevation angle = "SEA"
-  ##   angle between local horizontal and center of the sun (rad)
+  ##   angle between local horizontal and center of the Sun (rad)
   ##
   ## from "The Atmosphere and UV-B Radiation at Ground Level" by
   ## S. Madronich (Environmental UV Photobiology, 1993)
