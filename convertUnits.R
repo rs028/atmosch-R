@@ -392,12 +392,16 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   ## output:
   ##     data.out = data in final unit
   ## ------------------------------------------------------------
+  if (!is.list(data.in)) {
+    data.df <- data.frame(data.in)
+    colnames(data.df) <- rep(unit.out, ncol(data.df))
+  } else {
+    data.df <- data.in
+  }
+  ## check molar mass input
   if (unit.in == "UG" | unit.out == "UG") {
     if (is.null(m.mass)) {
-      stop("INPUT ERROR: molar mass needed for conversion to/from ug m-3")
-    }
-    if (length(m.mass) != ncol(data.in) & length(m.mass) != 1) {
-      stop("INPUT ERROR: only one molar mass value per variable allowed")
+      stop("INPUT ERROR: molar mass needed")
     }
   }
   ## Avogadro number, air number density
@@ -406,25 +410,25 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   ## data in original unit to reference unit (ND)
   switch(unit.in,
          "ND" = {
-           data.ref <- data.in
+           data.ref <- data.df
          },
          "ppth" = {
-           data.ref <- data.in * (m.air * 1.0e-03)
+           data.ref <- data.df * (m.air * 1.0e-03)
          },
          "ppm" = {
-           data.ref <- data.in * (m.air * 1.0e-06)
+           data.ref <- data.df * (m.air * 1.0e-06)
          },
          "ppb" = {
-           data.ref <- data.in * (m.air * 1.0e-09)
+           data.ref <- data.df * (m.air * 1.0e-09)
          },
          "ppt" = {
-           data.ref <- data.in * (m.air * 1.0e-12)
+           data.ref <- data.df * (m.air * 1.0e-12)
          },
          "MD" = {
-           data.ref <- data.in * (n.avog * 1.0e-06)
+           data.ref <- data.df * (n.avog * 1.0e-06)
          },
          "UG" = {
-           data.ref <- t(apply(data.in, 1, function(x)
+           data.ref <- t(apply(data.df, 1, function(x)
                                (x / (m.mass * 1.0e+06)) * (n.avog * 1.0e-06)))
          },
          stop("INPUT ERROR: unit not found")
@@ -459,29 +463,43 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   return(data.out)
 }
 
-fConcAq <- function(data.in, unit.in, unit.out, temp=NULL, press=NULL) {
+fConcAq <- function(data.in, unit.in, unit.out, m.mass=NULL) {
   ## convert between units of concentration (aqueous-phase):
-  ## * molarity (mole/l, mole/dm3) = "M"
+  ## * molarity (mole/L, mole/dm3) = "M"
   ## * mole m-3                    = "MD"
+  ## * ug m-3                      = "UG"
   ##
   ## input:
   ##     data.in = data in original unit
   ##     unit.in = original measurement unit
   ##     unit.out = final measurement unit
-  ##     temp = temperature (K)
-  ##     press = pressure (Pa)
+  ##     m.mass = molar mass (g/mole)     [ OPTIONAL ]
   ## output:
   ##     data.out = data in final unit
   ## -------------------------------------------------------------
-  ## Avogadro number
-  n.avog <- fConstant("Na")$Value
+  if (!is.list(data.in)) {
+    data.df <- data.frame(data.in)
+    colnames(data.df) <- rep(unit.out, ncol(data.df))
+  } else {
+    data.df <- data.in
+  }
+  ## check molar mass input
+  if (unit.in == "UG" | unit.out == "UG") {
+    if (is.null(m.mass)) {
+      stop("INPUT ERROR: molar mass needed")
+    }
+  }
   ## data in original unit to reference unit (M)
   switch(unit.in,
          "M" = {
-           data.ref <- data.in
+           data.ref <- data.df
          },
          "MD" = {
-           data.ref <- data.in * 1.0e-03
+           data.ref <- data.df * 1.0e-03
+         },
+         "UG" = {
+           data.ref <- t(apply(data.df, 1, function(x)
+                               (x / m.mass * 1.0e-03) * 1.0e-06))
          },
          stop("INPUT ERROR: unit not found")
          )
@@ -492,6 +510,10 @@ fConcAq <- function(data.in, unit.in, unit.out, temp=NULL, press=NULL) {
          },
          "MD" = {
            data.out <- data.ref / 1.0e-03
+         },
+         "UG" = {
+           data.out <- t(apply(data.ref, 1, function(x)
+                               (x * m.mass / 1.0e-03) / 1.0e-06))
          },
          stop("INPUT ERROR: unit not found")
          )
