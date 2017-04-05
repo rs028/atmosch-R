@@ -60,7 +60,7 @@ fAtchemIn <- function(input.dir, input.df, start.str) {
   return(init)
 }
 
-fAtchemOut <- function(output.dir, start.str) {
+fAtchemOut <- function(output.dir, output.lst, start.str) {
   ## load output files from the AtChem/MCM model:
   ## * concentration of chemical species
   ## * environmental variables
@@ -68,30 +68,27 @@ fAtchemOut <- function(output.dir, start.str) {
   ## * model parameters
   ##
   ## input:
-  ##       mcm_dir = model output directory
+  ##       output.dir = model output directory
+  ##       output.lst = list of output files
   ##       start.str = model start datetime string ("d-m-y h:m:s")
   ## output:
   ##        data.frame ( seconds, datetime chron, variable1, variable2, ... )
   ## ------------------------------------------------------------
-  ## set directory and filename of output files
-  fn.conc <- paste(output.dir, "concentration.output", sep="")
-  fn.env <- paste(output.dir, "envVar.output", sep="")
-  fn.jval <- paste(output.dir, "photolysisRates.output", sep="")
-  fn.vars <- paste(output.dir, "photoRateCalcParameters.output", sep="")
+  if (!is.list(output.lst)) {
+    lst.name <- deparse(substitute(output.lst))
+    stop(paste(lst.name, "must be a list", sep=" "))
+  }
   ## load output files
-  out.conc <- read.delim(fn.conc, header=TRUE, sep="")
-  out.env <- read.delim(fn.env, header=TRUE, sep="")
-  out.jval <- read.delim(fn.jval, header=TRUE, sep="")
-  out.vars <- read.delim(fn.vars, header=TRUE, sep="")
-  ## merge model results
-  df.all <- merge(out.conc, out.env, by="time")
-  df.all <- merge(df.all, out.jval, by="time")
-  df.all <- merge(df.all, out.vars, by="time")
+  df.res <- read.delim(paste(output.dir, output.lst[1], sep=""), header=TRUE, sep="")
+  for (i in 2:length(output.lst)) {
+    res.i <- read.delim(paste(output.dir, output.lst[i], sep=""), header=TRUE, sep="")
+    df.res <- merge(df.res, res.i, by="time")
+  }
   ## add timestamp (model time in seconds since start)
-  df.out <- data.frame(SEC=df.all$time)
+  df.out <- data.frame(SEC=df.res$time)
   df.out$datetime <- df.out$SEC/86400 + fChronStr(start.str, "d-m-y h:m:s")
-  df.out <- cbind(df.out, df.all[-1])
   ## output data.frame
+  df.out <- cbind(df.out, df.res[-1])
   colnames(df.out) <- toupper(colnames(df.out))
   return(df.out)
 }
