@@ -5,7 +5,7 @@
 
 require(chron)
 
-setwd(f.repo)
+setwd(f_repo)
 
 source("atmosChem.R")
 source("atmosPhys.R")

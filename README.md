@@ -22,19 +22,19 @@ it in a directory of choice (e.g. `Z:\My Documents\R Code\`). This
 will create a directory called `atmosch-R-master/` containing the
 atmosch-R files. Rename the directory `atmosch-R/`.
 
-Add the following lines to the `.Rprofile` file in your home directory
-(e.g. in `Z:\My Documents\`. **N.B.:** if `.Rprofile` does not exist
-create it):
+Add the following lines to the `.Rprofile` file located in your home
+directory (e.g. `Z:\My Documents\`):
 
 ```
-f.repo <- "Z:\\My Documents\\R Code\\atmosch-R"
+f_repo <- "Z:\\My Documents\\R Code\\atmosch-R"
 
-source(paste(f.repo, "main.R", sep=""))
+source(paste(f_repo, "main.R", sep=""))
 ```
 
-Modify the `f.repo` variable in `.Rprofile` to match the configuration
-of your system (e.g., a different directory name or partition letter;
-UNIX style directory paths for Linux systems).
+If `.Rprofile` does not exist create it. Modify the `f_repo` variable
+in `.Rprofile` to match the configuration of your system (e.g., a
+different directory name or partition letter; or UNIX style directory
+paths for Linux systems).
 
 Restart R. The atmosch-R functions should now be available in the R
 workspace and can be listed using the `ls()` command at the R
@@ -42,40 +42,39 @@ prompt. The names of all atmosch-R functions begin with lowercase "f"
 followed by the capitalized function name.
 
 Example code and test data can be found in the
-[wiki](https://github.com/rs028/atmosch-R/wiki/).
+[wiki|https://github.com/rs028/atmosch-R/wiki/].
 
 
 ADDITIONAL PACKAGES
 -------------------
 
 Some atmosch-R functions require the **chron** library to handle dates
-and times. To install it, type at the R prompt:
+and times. To install chron, type at the R prompt:
 
 ```
 install.packages("chron")
 ```
 
-and follow the instructions. _Optional:_ add `library(chron)` to
-`.Rprofile`.
+and follow the instructions.  
+_Optional:_ add `library(chron)` to `.Rprofile`.
 
 The atmosch-R functions can be used in conjunction with the
 **openair** package (http://www.openair-project.org/). In particular,
 the `fOpenair()` function in `processData.R` can be used to convert a
-data.frame to the format used by openair functions.
-
-To install openair, type at the R prompt:
+data.frame to the format used by openair functions. To install
+openair, type at the R prompt:
 
 ```
 install.packages("openair")
 ```
 
-and follow the instructions. _Optional:_ add `library(openair)` to
-`.Rprofile`.
+and follow the instructions.  
+_Optional:_ add `library(openair)` to `.Rprofile`.
 
 On some machines -- depending on the operating system, the
 installation method, the user permissions -- it may be necessary to
 add the location of the additional libraries to `.Rprofile`. For
-example (adjust path and R version number):
+example (adjust path and R version number to your configuration):
 
 ```
 .libPaths("Z:\\My Documents\\R\\win-library\\3.0")
