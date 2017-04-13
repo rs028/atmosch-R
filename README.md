@@ -26,15 +26,16 @@ Add the following lines to the `.Rprofile` file located in your home
 directory (e.g. `Z:\My Documents\`):
 
 ```
-f_repo <- "Z:\\My Documents\\R Code\\atmosch-R"
+f1.repo <- "Z:\\My Documents\\R Code\\atmosch-R"
 
-source(paste(f_repo, "main.R", sep=""))
+source(paste(f1.repo, "main.R", sep=""))
 ```
 
-If `.Rprofile` does not exist create it. Modify the `f_repo` variable
-in `.Rprofile` to match the configuration of your system (e.g., a
-different directory name or partition letter; or UNIX style directory
-paths for Linux systems).
+If `.Rprofile` does not exist create it. The `f1.repo` variable is a
+string with the path to the atmosch-R functions. Modify the content of
+this variable in the `.Rprofile` file to match the configuration of
+your system (e.g., a different directory name or partition letter; or
+UNIX style directory paths for Linux systems).
 
 Restart R. The atmosch-R functions should now be available in the R
 workspace and can be listed using the `ls()` command at the R
@@ -42,7 +43,7 @@ prompt. The names of all atmosch-R functions begin with lowercase "f"
 followed by the capitalized function name.
 
 Example code and test data can be found in the
-[wiki|https://github.com/rs028/atmosch-R/wiki/].
+[wiki](https://github.com/rs028/atmosch-R/wiki/).
 
 
 ADDITIONAL PACKAGES
