@@ -80,9 +80,11 @@ fAtchemOut <- function(output.dir, output.lst, start.str) {
   }
   ## load output files
   df.res <- read.delim(paste(output.dir, output.lst[1], sep=""), header=TRUE, sep="")
-  for (i in 2:length(output.lst)) {
-    res.i <- read.delim(paste(output.dir, output.lst[i], sep=""), header=TRUE, sep="")
-    df.res <- merge(df.res, res.i, by="time")
+  if (length(output.lst) > 1) {
+    for (i in 2:length(output.lst)) {
+      res.i <- read.delim(paste(output.dir, output.lst[i], sep=""), header=TRUE, sep="")
+      df.res <- merge(df.res, res.i, by="time")
+    }
   }
   ## add timestamp (model time in seconds since start)
   df.out <- data.frame(SEC=df.res$time)

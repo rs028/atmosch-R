@@ -392,9 +392,8 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   ## output:
   ##     data.out = data in final unit
   ## ------------------------------------------------------------
-  if (!is.list(data.in)) {
-    data.df <- data.frame(data.in)
-    colnames(data.df) <- rep(unit.out, ncol(data.df))
+  if (!is.list(data.in)) {  #! may not be necessary !#
+    data.df <- data.in #data.frame(data.in)
   } else {
     data.df <- data.in
   }
@@ -477,9 +476,8 @@ fConcAq <- function(data.in, unit.in, unit.out, m.mass=NULL) {
   ## output:
   ##     data.out = data in final unit
   ## -------------------------------------------------------------
-  if (!is.list(data.in)) {
-    data.df <- data.frame(data.in)
-    colnames(data.df) <- rep(unit.out, ncol(data.df))
+  if (!is.list(data.in)) {  #! may not be necessary !#
+    data.df <- data.in #data.frame(data.in)
   } else {
     data.df <- data.in
   }
