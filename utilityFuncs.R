@@ -7,7 +7,7 @@
 ### - fVarName()  : name of variable(s) in data.frame
 ### - fChronStr() : convert date/time string to chron
 ###
-### version 2.1, Mar 2017
+### version 2.2, Apr 2017
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -21,7 +21,7 @@ fClearWS <- function() {
   ## followed by the capitalized function name
   ## ------------------------------------------------------------
   rm(list=base::setdiff(ls(pos=.GlobalEnv),
-                        ls(pos=.GlobalEnv, pattern="^f[1A-Z]")),
+                        ls(pos=.GlobalEnv, pattern="^f[.A-Z]")),
      pos=.GlobalEnv)
   graphics.off()
 }

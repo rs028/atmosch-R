@@ -26,12 +26,12 @@ Add the following lines to the `.Rprofile` file located in your home
 directory (e.g. `Z:\My Documents\`):
 
 ```
-f1.repo <- "Z:\\My Documents\\R Code\\atmosch-R"
+f.repo <- "Z:\\My Documents\\R Code\\atmosch-R"
 
-source(paste(f1.repo, "main.R", sep=""))
+source(paste(f.repo, "main.R", sep=""))
 ```
 
-If `.Rprofile` does not exist create it. The `f1.repo` variable is a
+If `.Rprofile` does not exist create it. The `f.repo` variable is a
 string with the path to the atmosch-R functions. Modify the content of
 this variable in the `.Rprofile` file to match the configuration of
 your system (e.g., a different directory name or partition letter; or

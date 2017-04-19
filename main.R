@@ -1,11 +1,11 @@
 ### ---------------------------------------------------------------- ###
-### version 2.3, Apr 2017
+### version 2.4, Apr 2017
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 require(chron)
 
-setwd(f1.repo)
+setwd(f.repo)
 
 source("atmosChem.R")
 source("atmosPhys.R")
