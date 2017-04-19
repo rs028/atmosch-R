@@ -21,7 +21,7 @@ fClearWS <- function() {
   ## followed by the capitalized function name
   ## ------------------------------------------------------------
   rm(list=base::setdiff(ls(pos=.GlobalEnv),
-                        ls(pos=.GlobalEnv, pattern="^f[.A-Z]")),
+                        ls(pos=.GlobalEnv, pattern="^f[1A-Z]")),
      pos=.GlobalEnv)
   graphics.off()
 }
