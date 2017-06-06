@@ -78,9 +78,9 @@ fKBix <- function(aa, t0, nn, ea.r, temp) {
   ##
   ## input:
   ##     aa = pre-exponential factor (cm3 molecule-1 s-1)
-  ##     t0 = reference temperature (K)
-  ##     nn = reference temperature exponent
-  ##     ea.r = -Ea/R (J mol-1 / J K-1 mol-1)
+  ##     t0 = reference temperature (K)        -> 1 if not used
+  ##     nn = reference temperature exponent   -> 0 if not used
+  ##     ea.r = -Ea/R (J mol-1 / J K-1 mol-1)  -> 0 if not used
   ##     temp = temperature (K)
   ## output:
   ##     df.out = data.frame ( kt = rate coefficient,
