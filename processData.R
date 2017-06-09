@@ -1,7 +1,7 @@
 ### ---------------------------------------------------------------- ###
 ### functions for data processing and analysis:
 ### - fOpenair()        : convert data.frame to openair format
-### - fMakeStartStop()  : make start/mid/stop chron vectors
+### - fMakeStartStop()  : make start/mid/stop chron variables
 ### - fAvgStartStop()   : average variable using start/stop
 ### - fAvgStartStopDF() : average data.frame using start/stop
 ###
@@ -54,7 +54,7 @@ fOpenair <- function(data.df, time.str, ws.str, wd.str) {
 }
 
 fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
-  ## make start, mid, stop datetime chron vectors with given time step
+  ## make start, mid, stop datetime chron variables with given time step
   ## and interval (format: "d-m-y h:m:s")
   ##
   ## e.g., 30 minutes time step with 5 minutes interval:
@@ -73,16 +73,16 @@ fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
   ##                           MidTime = mid chron,
   ##                           StopTime = stop chron )
   ## ------------------------------------------------------------
-  ## datetime chron vector
+  ## datetime chron variable
   begin.start <- fChronStr(start.str, "d-m-y h:m:s")
   end.start <- fChronStr(stop.str, "d-m-y h:m:s")
   ## time step and interval in fraction of day
   tstep.fd <- fConvTime(as.numeric(tstep.str), "min", "day")
   inter.fd <- fConvTime(as.numeric(inter.str), "min", "day")
-  ## start and mid chron vectors
+  ## start and mid chron variables
   start.dt <- seq(begin.start, end.start, by=tstep.fd)
   mid.dt <- start.dt + (inter.fd / 2)
-  ## stop chron vector
+  ## stop chron variable
   begin.stop <- begin.start + inter.fd
   end.stop <- end.start + inter.fd
   stop.dt <- seq(begin.stop, end.stop, by=tstep.fd)
@@ -97,15 +97,15 @@ fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
 fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
   ## calculate statistics (mean, median, standard deviation, etc...)
   ## of a variable between time intervals defined by start/stop chron
-  ## vectors
+  ## variables
   ##
   ## NB: use fMakeStartStop() to create the start/mid/stop chron
-  ## vector (tst.df)
+  ## variable (tst.df)
   ##
   ## input:
-  ##     tst.orig = original chron vector ("d-m-y h:m:s")
-  ##     dat.orig = original data vector
-  ##     tst.df = start/mid/stop chron vector ("d-m-y h:m:s")
+  ##     tst.orig = original chron variable ("d-m-y h:m:s")
+  ##     dat.orig = original data variable
+  ##     tst.df = start/mid/stop chron variable ("d-m-y h:m:s")
   ##     pl = make plot of averaged data ("yes" or "no")
   ## output:
   ##     df.out = data.frame ( start chron, mid chron, stop chron,
@@ -117,13 +117,13 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
     df.name <- deparse(substitute(tst.df))
     stop(paste(df.name, "must be a data.frame", sep=" "))
   }
-  ## start/stop chron vectors
+  ## start/stop chron variables
   tst.start <- tst.df$StartTime
   tst.stop <- tst.df$StopTime
   n.tst <- nrow(tst.df)
-  ## chron and data vectors must have same size
+  ## chron and data variables must have same size
   if (length(tst.orig) == length(dat.orig)) {
-    ## initialize vectors
+    ## initialize variables
     vect.avg <- rep(NA, n.tst)
     vect.med <- rep(NA, n.tst)
     vect.std <- rep(NA, n.tst)
@@ -174,22 +174,22 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
     df.out <- data.frame(tst.df, vect.df)
     return(df.out)
   } else {
-    stop("time and data vectors not compatible")
+    stop("time and data variables not compatible")
   }
 }
 
 fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   ## calculate statistics (mean, median, standard deviation, etc...)
   ## of all variables in a data.frame between time intervals defined
-  ## by start/stop chron vectors save plots of averaged data to pdf if
+  ## by start/stop chron variables save plots of averaged data to pdf if
   ## filename given
   ##
   ## NB: see documentation of fMakeStartStop() and fAvgStartStop()
   ##
   ## input:
   ##     df.orig = original data.frame (first column must be a
-  ##               chron vector in "d-m-y h:m:s" format)
-  ##     tst.df = start/mid/stop chron vector ("d-m-y h:m:s")
+  ##               chron variable in "d-m-y h:m:s" format)
+  ##     tst.df = start/mid/stop chron variable ("d-m-y h:m:s")
   ##     fn.str = name of pdf file to save plots OR ""
   ## output:
   ##     lst.out = list ( start chron, mid chron, stop chron,
@@ -203,7 +203,7 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   if (!is.data.frame(df.orig) | !is.data.frame(tst.df)) {
     stop("input must be a data.frame")
   }
-  ## initialize output list with chron vector
+  ## initialize output list with chron variable
   lst.out <- tst.df
   ## open pdf file to save plots
   if (fn.str != "") {

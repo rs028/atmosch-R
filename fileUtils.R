@@ -29,7 +29,8 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ##     ... = format of date/time variables (e.g., "d/m/y h:m:s"
   ##           OR "FD" if fractional days are used)
   ## output:
-  ##     data.out = data.frame ( date/time variables, data variables )
+  ##     data.out = data.frame ( date/time chron variables,
+  ##                             data variables )
   ## ------------------------------------------------------------
   ## load data file
   data.file <- paste(data.dir, data.fn, sep="")

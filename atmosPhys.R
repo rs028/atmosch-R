@@ -98,7 +98,7 @@ fSolar <- function(lat, long, dt.chron) {
   ## input:
   ##     lat = latitude (degrees)
   ##     long = longitude (degrees)
-  ##     dt.chron = chron vector in "d-m-y h:m:s" format (GMT/UTC)
+  ##     dt.chron = chron variable in "d-m-y h:m:s" format (GMT/UTC)
   ## output:
   ##     df.out = data.frame ( DEC = sun declination,
   ##                           LHA = local hour angle,
@@ -140,6 +140,6 @@ fSolar <- function(lat, long, dt.chron) {
   sea <- pi/2 - sza
   ## output data.frame
   df.out <- data.frame(dt.chron, dec, lha, sza, sea)
-  colnames(df.out) <- c("GMT","DEC","LHA","SZA","SEA")
+  colnames(df.out) <- c("GMT", "DEC", "LHA", "SZA", "SEA")
   return(df.out)
 }
