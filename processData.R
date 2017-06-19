@@ -198,7 +198,7 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   ##                      data.frame ( mean, median, standard deviation,
   ##                                   n. averaged points, n. NA points ),
   ##                     ... )
-  ##     --> pdf file : `fn.str'.pdf
+  ##     --> pdf file : `fn.str`.pdf
   ## ------------------------------------------------------------
   if (!is.data.frame(df.orig) | !is.data.frame(tst.df)) {
     stop("input must be a data.frame")

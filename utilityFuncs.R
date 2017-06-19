@@ -17,7 +17,7 @@ fClearWS <- function() {
   ## * keep atmosch-R functions
   ## * close plot windows
   ##
-  ## the names of all atmosch-R functions begin with lowercase `f'
+  ## the names of all atmosch-R functions begin with lowercase `f`
   ## followed by the capitalized function name
   ## ------------------------------------------------------------
   rm(list=base::setdiff(ls(pos=.GlobalEnv),

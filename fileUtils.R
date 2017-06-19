@@ -1,6 +1,6 @@
 ### ---------------------------------------------------------------- ###
 ### functions to import/export data files:
-### - fImportTXT()  : delimited text files
+### - fImportTXT() : delimited text files
 ###
 ### version 1.1, Nov 2016
 ### author: RS
@@ -11,15 +11,13 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ## semicolon, etc...); convert the date/time variables to chron,
   ## replace missing data points with NA
   ##
-  ## the data files must be without header, except one row with the
-  ## names of the variables, and must have one or more date/time
-  ## variables:
+  ## the data files have no header, except one row with the names of
+  ## the variables, and have one or more date/time variables:
   ##
-  ##    time      variable 1     variable 2   variable 3
-  ##  12:00:00        10             25           30
-  ##  12:30:00        25             30           45
-  ##  13:00:00        40             55           60
-  ##   ...
+  ##       date          time      var1   var2   var3
+  ##    12/01/2009     12:00:00     10     25     30
+  ##    12/01/2009     12:30:00     25     30     45
+  ##    12/01/2009     13:00:00     40     55     60
   ##
   ## input:
   ##     data.dir = data file directory

@@ -31,7 +31,7 @@ fAtchemIn <- function(input.dir, input.df, start.str) {
   ##     start.str = model start datetime string ("d-m-y h:m:s")
   ## output:
   ##     init = list of values at model start datetime
-  ##     --> input files in `input.dir'
+  ##     --> input files in `input.dir`
   ## ------------------------------------------------------------
   if (!is.data.frame(input.df)) {
     df.name <- deparse(substitute(input.df))

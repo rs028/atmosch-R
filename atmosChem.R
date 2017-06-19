@@ -1,15 +1,14 @@
 ### ---------------------------------------------------------------- ###
 ### functions for atmospheric chemistry:
-### - fAirND() : number density of air, O2, N2
+### - fAirND() : number density of air
 ###
 ### version 2.0, Nov 2016
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fAirND <- function(temp, press) {
-  ## calculate the number density (molecule cm-3) of air, oxygen (O2)
-  ## and nitrogen (N2) in the atmosphere at given temperature and
-  ## pressure
+  ## calculate the number density (molecule cm-3) of air, oxygen and
+  ## nitrogen in the atmosphere at given temperature and pressure
   ##
   ## input:
   ##     temp = temperature (K)
@@ -28,6 +27,6 @@ fAirND <- function(temp, press) {
   n2.air <- 0.78 * m.air
   ## output data.frame
   df.out <- data.frame(m.air, o2.air, n2.air)
-  colnames(df.out) <- c("M","O2","N2")
+  colnames(df.out) <- c("M", "O2", "N2")
   return(df.out)
 }

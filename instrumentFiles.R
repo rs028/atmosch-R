@@ -9,11 +9,11 @@
 fRead_TS49i <- function(data.dir, data.fn, data.log, data.var=NULL) {
   ## Thermo Scientific Ozone monitor (model 49i)
   ##
-  ## logs data in two ways:
+  ## data can be logged in two ways:
   ## 1) using the iPort program which exports to a csv file
   ## 2) streaming to a terminal which writes to a space-delimited
   ## file. the streaming variables can be set by the user, if
-  ## different from the default settings.
+  ## different from the default variables.
   ##
   ## input:
   ##     data.dir = data file directory
@@ -25,7 +25,7 @@ fRead_TS49i <- function(data.dir, data.fn, data.log, data.var=NULL) {
   ##     data.out = data.frame ( date/time chron variables,
   ##                             data variables )
   ## ------------------------------------------------------------
-  ## open data file
+  ## load data file
   data.file <- paste(data.dir, data.fn, sep="")
   if (data.log == "iport") {       # log with iPort
     data.df <- read.delim(data.file, header=TRUE, sep="", skip=5)
@@ -36,8 +36,9 @@ fRead_TS49i <- function(data.dir, data.fn, data.log, data.var=NULL) {
       print(ncol(data.df))
       colnames(data.df) <- data.var
     } else {                  # default streaming variables
-      colnames(data.df) <- c("Time", "Date", "Flags", "o3", "cellai", "cellbi",
-                             "noisa", "noisb", "flowa", "flowb", "pres")
+      colnames(data.df) <- c("Time", "Date", "Flags", "o3", "cellai",
+                             "cellbi", "noisa", "noisb", "flowa",
+                             "flowb", "pres")
     }
   } else {                         # log unknown
     stop("INPUT ERROR: logger not found")

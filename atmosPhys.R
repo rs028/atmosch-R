@@ -39,7 +39,7 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
   press.h <- fConvPress(press, "Pa", "hPa")
   ## water vapour saturation pressure (hPa)
   pws <- 6.116441 * 10^( (7.591386 * temp.c) / (temp.c + 240.7263) )
-  ## calculate water vapour pressure (hPa) from original humidity data
+  ## water vapour pressure (hPa) from original humidity data
   switch(meas.in,
          "AH" = {
            pw <- 1.0e-02 * (data.in * temp) / 2.16679
@@ -58,7 +58,7 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
          },
          stop("INPUT ERROR: unit not found")
          )
-  ## calculate final humidity data from water vapour pressure (hPa)
+  ## final humidity data from water vapour pressure (hPa)
   switch(meas.out,
          "AH" = {
            data.out <- 1.0e+02 * (pw * 2.16679) / temp
@@ -82,15 +82,15 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
 }
 
 fSolar <- function(lat, long, dt.chron) {
-  ## calculate Earth-Sun angles:
+  ## calculate Earth-Sun angles (in radians):
   ## * sun declination = "DEC"
-  ##   angle between center of the Sun and Earth's equatorial plane (rad)
+  ##   angle between center of the Sun and Earth's equatorial plane
   ## * local hour angle = "LHA"
-  ##   angle between observer's meridian and Sun's meridian (rad)
+  ##   angle between observer's meridian and Sun's meridian
   ## * solar zenith angle = "SZA"
-  ##   angle between local vertical and center of the Sun (rad)
+  ##   angle between local vertical and center of the Sun
   ## * solar elevation angle = "SEA"
-  ##   angle between local horizontal and center of the Sun (rad)
+  ##   angle between local horizontal and center of the Sun
   ##
   ## from "The Atmosphere and UV-B Radiation at Ground Level" by
   ## S. Madronich (Environmental UV Photobiology, 1993)
@@ -98,7 +98,7 @@ fSolar <- function(lat, long, dt.chron) {
   ## input:
   ##     lat = latitude (degrees)
   ##     long = longitude (degrees)
-  ##     dt.chron = chron variable in "d-m-y h:m:s" format (GMT/UTC)
+  ##     dt.chron = chron variable ("d-m-y h:m:s", GMT/UTC)
   ## output:
   ##     df.out = data.frame ( DEC = sun declination,
   ##                           LHA = local hour angle,
@@ -106,8 +106,8 @@ fSolar <- function(lat, long, dt.chron) {
   ##                           SEA = solar elevation angle )
   ## ---------------------------------------------------------------------
   ## latitude and longitude in radians
-  lat.r <- fConvAngle(lat,'deg','rad')
-  long.r <- fConvAngle(long,'deg','rad')
+  lat.r <- fConvAngle(lat, "deg", "rad")
+  long.r <- fConvAngle(long, "deg", "rad")
   ## day of year (1 Jan = 1) and fractional time
   jan1 <- chron(paste("01/01/", years(dt.chron), sep=""))
   fracd <- as.numeric(dt.chron - jan1 + 1)

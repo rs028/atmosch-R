@@ -3,7 +3,7 @@
 ### - fConstant() : physical/chemical constants
 ### - fPeriodic() : periodic table
 ###
-### data from the NIST Standard Reference Database:
+### data from NIST Standard Reference Database:
 ###    http://www.nist.gov/pml/data/physicalconst.cfm
 ###    http://www.nist.gov/pml/data/edi.cfm
 ###
