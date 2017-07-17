@@ -48,14 +48,13 @@ fAtchemIn <- function(input.dir, input.df, start.str) {
     inp.var <- ifelse(input.df[[c]] < 0, 0, input.df[[c]])
     df.in <- data.frame(SEC=input.df$SEC, VAR=inp.var)
     df.in <- df.in[which(!is.na(df.in$VAR)),]
-    ## get initial value of variable
+    ## find initial value of variable
     a1 <- fFindIdx(df.in$SEC, "LE", 0)
     init <- rbind(init, c(inp.str, df.in[a1,2]))
     ## write variable to file
     in.str <- fVarName(input.df[c])
-    write(nrow(df.in), file=paste(input.dir, in.str, sep=""))
     write.table(df.in, file=paste(input.dir, in.str, sep=""),
-                append=T, sep="\t", row.names=F, col.names=F)
+                sep="\t", row.names=F, col.names=F)
   }
   return(init)
 }
