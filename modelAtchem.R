@@ -3,7 +3,7 @@
 ### - fAtchemIn()  : AtChem input files
 ### - fAtchemOut() : AtChem output files
 ###
-### version 1.0, Mar 2017
+### version 1.1, Jul 2017
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
