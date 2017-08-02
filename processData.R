@@ -53,7 +53,7 @@ fOpenair <- function(data.df, time.str, ws.str, wd.str) {
   }
 }
 
-fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
+fMakeStartStop <- function(start.str, stop.str, step.str, interv.str) {
   ## make start, mid, stop datetime chron variables with given time step
   ## and interval (format: "d-m-y h:m:s")
   ##
@@ -66,8 +66,8 @@ fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
   ## input:
   ##     start.str = start datetime string ("d-m-y h:m:s")
   ##     stop.str = stop datetime string ("d-m-y h:m:s")
-  ##     tstep.str = time step between start (minutes)
-  ##     inter.str = interval between start and stop (minutes)
+  ##     step.str = time step between start (minutes)
+  ##     interv.str = interval between start and stop (minutes)
   ## output:
   ##     df.out = data.frame ( StartTime = start chron,
   ##                           MidTime = mid chron,
@@ -77,15 +77,15 @@ fMakeStartStop <- function(start.str, stop.str, tstep.str, inter.str) {
   begin.start <- fChronStr(start.str, "d-m-y h:m:s")
   end.start <- fChronStr(stop.str, "d-m-y h:m:s")
   ## time step and interval in fraction of day
-  tstep.fd <- fConvTime(as.numeric(tstep.str), "min", "day")
-  inter.fd <- fConvTime(as.numeric(inter.str), "min", "day")
+  step.fd <- fConvTime(as.numeric(step.str), "min", "day")
+  interv.fd <- fConvTime(as.numeric(interv.str), "min", "day")
   ## start and mid chron variables
-  start.dt <- seq(begin.start, end.start, by=tstep.fd)
-  mid.dt <- start.dt + (inter.fd / 2)
+  start.dt <- seq(begin.start, end.start, by=step.fd)
+  mid.dt <- start.dt + (interv.fd / 2)
   ## stop chron variable
-  begin.stop <- begin.start + inter.fd
-  end.stop <- end.start + inter.fd
-  stop.dt <- seq(begin.stop, end.stop, by=tstep.fd)
+  begin.stop <- begin.start + interv.fd
+  end.stop <- end.start + interv.fd
+  stop.dt <- seq(begin.stop, end.stop, by=step.fd)
   stop.dt <- stop.dt - fConvTime(1, "sec", "day")
   ## output data.frame
   df.out <- data.frame(StartTime = start.dt,
