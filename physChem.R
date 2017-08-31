@@ -70,8 +70,8 @@ fKBi <- function(aa, ea.r, temp) {
   } else {
     df.out <- data.frame(kt, temp)
   }
-  colnames(df.out) <- c(paste("k", seq(1, (ncol(kt)-1), 1), sep=""),
-                        "Temp.K")
+  nr <- ncol(df.out) - 1
+  colnames(df.out) <- c(paste("k", seq(1, nr, by=1), sep=""), "Temp.K")
   return(df.out)
 }
 
@@ -105,8 +105,8 @@ fKBix <- function(aa, t0, nn, ea.r, temp) {
   } else {
     df.out <- data.frame(kt, temp)
   }
-  colnames(df.out) <- c(paste("k", seq(1, (ncol(kt)-1), 1), sep=""),
-                        "Temp.K")
+  nr <- ncol(df.out) - 1
+  colnames(df.out) <- c(paste("k", seq(1, nr, by=1), sep=""), "Temp.K")
   return(df.out)
 }
 
