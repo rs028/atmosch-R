@@ -6,7 +6,7 @@
 ### - fKTer()   : rate coefficient of termolecular reaction
 ### - fLifeT()  : chemical lifetime and half-life
 ###
-### version 2.0, Feb 2017
+### version 2.1, Aug 2017
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -58,7 +58,6 @@ fKBi <- function(aa, ea.r, temp) {
   ##     df.out = data.frame ( rate coeff 1, rate coeff 2, ...,
   ##                           temperature )
   ## ------------------------------------------------------------
-  ## format input
   aa <- as.matrix(aa)
   ea.r <- as.matrix(ea.r)
   temp <- as.matrix(temp)
@@ -92,14 +91,13 @@ fKBix <- function(aa, t0, nn, ea.r, temp) {
   ##     df.out = data.frame ( rate coeff 1, rate coeff 2, ...,
   ##                           temperature )
   ## ------------------------------------------------------------
-  ## format input
   aa <- as.matrix(aa)
   t0 <- as.matrix(t0)
   nn <- as.matrix(nn)
   ea.r <- as.matrix(ea.r)
   temp <- as.matrix(temp)
   ## calculate rate coefficients (expanded Arrhenius)
-  kt <- sapply(temp, function(x) aa * (x / t0)^nn) * exp(ea.r / x))
+  kt <- sapply(temp, function(x) aa * (x / t0)^nn * exp(ea.r / x))
   kt <- as.matrix(kt)
   ## output data.frame
   if (dim(kt)[2] == dim(temp)[1]) {
