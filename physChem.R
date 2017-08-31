@@ -45,8 +45,8 @@ fGasLaw <- function(press, volum, n.mol, temp) {
 }
 
 fKBi <- function(aa, ea.r, temp) {
-  ## calculate the rate coefficient (cm3 molecule-1 s-1) of a
-  ## bimolecular reaction at given and standard temperature using the
+  ## calculate the rate coefficient (cm3 molecule-1 s-1) of one or
+  ## more bimolecular reactions at given temperature using the
   ## Arrhenius equation:
   ##    k = A * exp(-Ea/RT)
   ##
@@ -55,46 +55,60 @@ fKBi <- function(aa, ea.r, temp) {
   ##     ea.r = -Ea/R (J mol-1 / J K-1 mol-1)
   ##     temp = temperature (K)
   ## output:
-  ##     df.out = data.frame ( kt = rate coefficient,
-  ##                           k298 = standard rate coefficient )
+  ##     df.out = data.frame ( rate coeff 1, rate coeff 2, ...,
+  ##                           temperature )
   ## ------------------------------------------------------------
-  if (is.list(temp) | length(temp) > 1) {
-    stop("INPUT ERROR: only one temperature value allowed")
-  }
-  ## standard Arrhenius
-  k.gas <- aa * exp(ea.r / temp)
-  k.std <- aa * exp(ea.r / 298)
+  ## format input
+  aa <- as.matrix(aa)
+  ea.r <- as.matrix(ea.r)
+  temp <- as.matrix(temp)
+  ## calculate rate coefficients (standard Arrhenius)
+  kt <- sapply(temp, function(x) aa * exp(ea.r / x))
+  kt <- as.matrix(kt)
   ## output data.frame
-  df.out <- data.frame(k.gas, k.std)
-  colnames(df.out) <- c("kt", "k298")
+  if (dim(kt)[2] == dim(temp)[1]) {
+    df.out <- data.frame(t(kt), temp)
+  } else {
+    df.out <- data.frame(kt, temp)
+  }
+  colnames(df.out) <- c(paste("k", seq(1, (ncol(kt)-1), 1), sep=""),
+                        "Temp.K")
   return(df.out)
 }
 
 fKBix <- function(aa, t0, nn, ea.r, temp) {
-  ## calculate the rate coefficient (cm3 molecule-1 s-1) of a
-  ## bimolecular reaction at given and standard temperature using the
+  ## calculate the rate coefficient (cm3 molecule-1 s-1) of one or
+  ## more bimolecular reactions at given temperature using the
   ## expanded Arrhenius equation:
   ##    k = A * (T/T0)^n * exp(-Ea/RT)
   ##
   ## input:
   ##     aa = pre-exponential factor (cm3 molecule-1 s-1)
-  ##     t0 = reference temperature (K)        -> 1 if not used
-  ##     nn = reference temperature exponent   -> 0 if not used
-  ##     ea.r = -Ea/R (J mol-1 / J K-1 mol-1)  -> 0 if not used
+  ##     t0 = reference temperature (K)         -> 1 if not used
+  ##     nn = reference temperature exponent    -> 0 if not used
+  ##     ea.r = -Ea/R (J mol-1 / J K-1 mol-1)   -> 0 if not used
   ##     temp = temperature (K)
   ## output:
-  ##     df.out = data.frame ( kt = rate coefficient,
-  ##                           k298 = standard rate coefficient )
+  ##     df.out = data.frame ( rate coeff 1, rate coeff 2, ...,
+  ##                           temperature )
   ## ------------------------------------------------------------
-  if (is.list(temp) | length(temp) > 1) {
-    stop("INPUT ERROR: only one temperature value allowed")
-  }
-  ## expanded Arrhenius
-  k.gas <- (aa * (temp / t0)^nn) * exp(ea.r / temp)
-  k.std <- (aa * (298 / t0)^nn) * exp(ea.r / 298)
+  ## format input
+  aa <- as.matrix(aa)
+  t0 <- as.matrix(t0)
+  nn <- as.matrix(nn)
+  ea.r <- as.matrix(ea.r)
+  temp <- as.matrix(temp)
+  ## calculate rate coefficients (expanded Arrhenius)
+  kt <- sapply(temp, function(x) aa * (x / t0)^nn) * exp(ea.r / x))
+  kt <- as.matrix(kt)
   ## output data.frame
-  df.out <- data.frame(k.gas, k.std)
-  colnames(df.out) <- c("kt", "k298")
+  if (dim(kt)[2] == dim(temp)[1]) {
+    df.out <- data.frame(t(kt), temp)
+  } else {
+    df.out <- data.frame(kt, temp)
+  }
+  colnames(df.out) <- c(paste("k", seq(1, (ncol(kt)-1), 1), sep=""),
+                        "Temp.K")
   return(df.out)
 }
 

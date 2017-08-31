@@ -3,18 +3,19 @@
 ### - fAtchemIn()  : AtChem input files
 ### - fAtchemOut() : AtChem output files
 ###
-### version 1.1, Jul 2017
+### version 1.3, Aug 2017
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fAtchemIn <- function(input.dir, input.df, start.str) {
   ## make input files for the AtChem/MCM model:
-  ## * concentrations in molecule cm-3
-  ## * temperature in K
-  ## * pressure in Pa
-  ## * relative humidity in %
-  ## * photolysis rates in s-1
-  ## * sun declination in rad
+  ## * concentrations (molecule cm-3)
+  ## * temperature (K)
+  ## * pressure (mbar)
+  ## * relative humidity (%)
+  ## * photolysis rates (s-1)
+  ## * sun declination (rad)
+  ## * JFAC (scaling factor for photolysis rates)
   ##
   ## NB: the data.frame with the input data must have one datetime
   ## chron variable (TIME) and one or more data variables:
@@ -62,7 +63,7 @@ fAtchemIn <- function(input.dir, input.df, start.str) {
 fAtchemOut <- function(output.dir, output.lst, start.str) {
   ## load output files from the AtChem/MCM model:
   ## * concentration of chemical species
-  ## * environmental variables
+  ## * environment variables
   ## * photolysis rates
   ## * model parameters
   ##
@@ -82,11 +83,11 @@ fAtchemOut <- function(output.dir, output.lst, start.str) {
   if (length(output.lst) > 1) {
     for (i in 2:length(output.lst)) {
       res.i <- read.delim(paste(output.dir, output.lst[i], sep=""), header=TRUE, sep="")
-      df.res <- merge(df.res, res.i, by="time")
+      df.res <- merge(df.res, res.i, by="t")
     }
   }
   ## add timestamp (model time in seconds since start)
-  df.out <- data.frame(SEC=df.res$time)
+  df.out <- data.frame(SEC=df.res$t)
   df.out$datetime <- df.out$SEC/86400 + fChronStr(start.str, "d-m-y h:m:s")
   ## output data.frame
   df.out <- cbind(df.out, df.res[-1])
