@@ -1,5 +1,6 @@
 ### ---------------------------------------------------------------- ###
 ### utilities and tools for atmosch-R functions:
+### - fListWS()   : show variables in workspace
 ### - fClearWS()  : clear workspace
 ### - fMergeDF()  : merge list of data.frame
 ### - fFindPnt()  ==>  OBSOLETE !!!
@@ -7,9 +8,34 @@
 ### - fVarName()  : name of variable(s) in data.frame
 ### - fChronStr() : convert date/time string to chron
 ###
-### version 2.2, Apr 2017
+### version 2.3, Nov 2017
 ### author: RS
 ### ---------------------------------------------------------------- ###
+
+fListWS <- function(arg="") {
+  ## show variables in R workspace:
+  ## * if no argument is given, atmosch-R functions/variables are
+  ##   excluded
+  ## * if argument is "atmosch", only the atmosch-R
+  ## * functions/variables are shown
+  ##
+  ## NB: the names of all atmosch-R functions/variables begin with
+  ## lowercase `f` followed by the capitalized function name -- see
+  ## documentation of fClearWS() and of base function ls()
+  ## ------------------------------------------------------------
+  vv1 <- ls(pos=.GlobalEnv)
+  vv2 <- ls(pos=.GlobalEnv, pattern="^f[.A-Z]")
+  vv3 <- ls(pos=.GlobalEnv, pattern="^f[A-Z]")
+  vv4 <- ls(pos=.GlobalEnv, pattern="^f[.]")
+  if (arg == "atmosch") {
+    cat("\natmosch-R variables:\n")
+    print(vv4)
+    cat("\natmosch-R functions:\n")
+    print(vv3)
+  } else {
+    print(base::setdiff(vv1, vv2))
+  }
+}
 
 fClearWS <- function() {
   ## clear R workspace:
@@ -17,12 +43,13 @@ fClearWS <- function() {
   ## * keep atmosch-R functions
   ## * close plot windows
   ##
-  ## the names of all atmosch-R functions begin with lowercase `f`
-  ## followed by the capitalized function name
+  ## NB: the names of all atmosch-R functions/variables begin with
+  ## lowercase `f` followed by the capitalized function name -- see
+  ## documentation of fListWS()
   ## ------------------------------------------------------------
-  rm(list=base::setdiff(ls(pos=.GlobalEnv),
-                        ls(pos=.GlobalEnv, pattern="^f[.A-Z]")),
-     pos=.GlobalEnv)
+  vv1 <- ls(pos=.GlobalEnv)
+  vv2 <- ls(pos=.GlobalEnv, pattern="^f[.A-Z]")
+  rm(list=base::setdiff(vv1, vv2), pos=.GlobalEnv)
   graphics.off()
 }
 
@@ -30,7 +57,7 @@ fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
   ## merge list of data.frame by a common variable and rename the
   ## other variables
   ##
-  ## NB: see documentation of merge()
+  ## NB: see documentation of base function merge()
   ##
   ## input:
   ##     df.lst = list of data.frame to merge
