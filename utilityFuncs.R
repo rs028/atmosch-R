@@ -20,8 +20,9 @@ fListWS <- function(arg="") {
   ## * functions/variables are shown
   ##
   ## NB: the names of all atmosch-R functions/variables begin with
-  ## lowercase `f` followed by the capitalized function name -- see
-  ## documentation of fClearWS() and of base function ls()
+  ## lowercase `f` followed by a capital letter (functions) or by a
+  ## dot (variables) -- see documentation of fClearWS() and of base
+  ## function ls()
   ## ------------------------------------------------------------
   vv1 <- ls(pos=.GlobalEnv)
   vv2 <- ls(pos=.GlobalEnv, pattern="^f[.A-Z]")
@@ -40,12 +41,12 @@ fListWS <- function(arg="") {
 fClearWS <- function() {
   ## clear R workspace:
   ## * delete all variables
-  ## * keep atmosch-R functions
+  ## * keep atmosch-R functions/variables
   ## * close plot windows
   ##
   ## NB: the names of all atmosch-R functions/variables begin with
-  ## lowercase `f` followed by the capitalized function name -- see
-  ## documentation of fListWS()
+  ## lowercase `f` followed by a capital letter (functions) or by a
+  ## dot (variables) -- see documentation of fListWS()
   ## ------------------------------------------------------------
   vv1 <- ls(pos=.GlobalEnv)
   vv2 <- ls(pos=.GlobalEnv, pattern="^f[.A-Z]")
