@@ -5,11 +5,10 @@
 ### - fAvgStartStop()   : average variable using start/stop
 ### - fAvgStartStopDF() : average data.frame using start/stop
 ###
-### version 1.9, Mar 2017
+### version 2.1, Oct 2017
 ### author: RS
-###
-### NB: the functions fMakeStartStop(), fAvgStartStop() are based on
-### code written by DS (NOAA Aeronomy Lab) in Wavemetrics Igor
+### credits: functions fMakeStartStop(), fAvgStartStop() are based on
+### code written in Wavemetrics Igor by DS (NOAA Aeronomy Lab)
 ### ---------------------------------------------------------------- ###
 
 fOpenair <- function(data.df, time.str, ws.str, wd.str) {
@@ -141,27 +140,27 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
         ## cat("\t"); print(tst.orig[stop.pt])
         ## cat("stop:"); print(tst.stop[i])
       ## average data between time intervals
-      if ((tst.orig[start.pt,1] >= tst.start[i]) &
-          (tst.orig[stop.pt,1] <= tst.stop[i])) {
+      if ((tst.orig[start.pt] >= tst.start[i]) &
+          (tst.orig[stop.pt] <= tst.stop[i])) {
           if ((stop.pt - start.pt) >= 1) {         # multiple data points
-            vect.avg[i] <- mean(dat.orig[start.pt:stop.pt,1], na.rm=TRUE)
-            vect.med[i] <- median(dat.orig[start.pt:stop.pt,1], na.rm=TRUE)
-            vect.std[i] <- sd(dat.orig[start.pt:stop.pt,1], na.rm=TRUE)
-            vect.npt[i] <- sum(!is.na(dat.orig[start.pt:stop.pt,1]))
-            vect.nan[i] <- sum(is.na(dat.orig[start.pt:stop.pt,1]))
+            vect.avg[i] <- mean(dat.orig[start.pt:stop.pt], na.rm=TRUE)
+            vect.med[i] <- median(dat.orig[start.pt:stop.pt], na.rm=TRUE)
+            vect.std[i] <- sd(dat.orig[start.pt:stop.pt], na.rm=TRUE)
+            vect.npt[i] <- sum(!is.na(dat.orig[start.pt:stop.pt]))
+            vect.nan[i] <- sum(is.na(dat.orig[start.pt:stop.pt]))
           } else if ((stop.pt - start.pt) == 0) {  # one data point
-            vect.avg[i] <- dat.orig[start.pt,1]
-            vect.med[i] <- dat.orig[start.pt,1]
+            vect.avg[i] <- dat.orig[start.pt]
+            vect.med[i] <- dat.orig[start.pt]
             vect.std[i] <- 0
             vect.npt[i] <- 1
-            vect.nan[i] <- as.numeric(is.na(dat.orig[start.pt,1]))
+            vect.nan[i] <- as.numeric(is.na(dat.orig[start.pt]))
           }
       }
     }
     ## make plot of original and averaged data
     if (pl == "yes") {
       vect.name <- fVarName(dat.orig)
-      plot(tst.orig[,1], dat.orig[,1], type="l", col="red", lwd=2,
+      plot(tst.orig, dat.orig, type="l", col="red", lwd=2,
            xlab="Time", ylab=vect.name)
       lines(tst.df$StartTime, vect.avg, col="blue", lwd=1)
       grid()
