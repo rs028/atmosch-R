@@ -6,18 +6,18 @@
 ### - fKTer()   : rate coefficient of termolecular reaction
 ### - fLifeT()  : chemical lifetime and half-life
 ###
-### version 2.1, Aug 2017
+### version 2.2, Dec 2017
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
-fGasLaw <- function(press, volum, n.mol, temp) {
+fGasLaw <- function(press, vol, mol, temp) {
   ## solve the equation of state of a gas using the ideal gas law:
   ##    PV = nRT
   ##
   ## input:     [ "?" for unknown variable ]
   ##     press = pressure (Pa)
-  ##     volum = volume (m3 = 1000 L)
-  ##     n.mol = number of moles
+  ##     vol = volume (m3 = 1000 L)
+  ##     mol = number of moles
   ##     temp = temperature (K)
   ## output:
   ##     df.out = data.frame( unknown variable )
@@ -25,18 +25,18 @@ fGasLaw <- function(press, volum, n.mol, temp) {
   ## gas constant
   r.gas <- fConstant("R")$Value
   ## calculate unknown variable
-  if (all(press == "?")) {         # pressure
-    var.x <- (n.mol * r.gas * temp) / volum
-    str.x <- "Pressure"
-  } else if (all(volum == "?")) {  # volume
-    var.x <- (n.mol * r.gas * temp) / press
-    str.x <- "Volume"
-  } else if (all(n.mol == "?")) {  # moles
-    var.x <- (press * volum) / (r.gas * temp)
-    str.x <- "n.Mol"
-  } else if (all(temp == "?")) {   # temperature
-    var.x <- (press * volum) / (n.mol * r.gas)
-    str.x <- "Temperature"
+  if (all(press == "?")) {       # pressure
+    var.x <- (mol * r.gas * temp) / vol
+    str.x <- "Press"
+  } else if (all(vol == "?")) {  # volume
+    var.x <- (mol * r.gas * temp) / press
+    str.x <- "Vol"
+  } else if (all(mol == "?")) {  # moles
+    var.x <- (press * vol) / (r.gas * temp)
+    str.x <- "Mol"
+  } else if (all(temp == "?")) { # temperature
+    var.x <- (press * vol) / (mol * r.gas)
+    str.x <- "Temp"
   }
   ## output data.frame
   df.out <- data.frame(var.x)
@@ -44,7 +44,7 @@ fGasLaw <- function(press, volum, n.mol, temp) {
   return(df.out)
 }
 
-fKBi <- function(aa, ea.r, temp) {
+fKBi <- function(aa, ea.r, temp=298) {
   ## calculate the rate coefficient (cm3 molecule-1 s-1) of one or
   ## more bimolecular reactions at given temperature using the
   ## Arrhenius equation:
@@ -71,11 +71,11 @@ fKBi <- function(aa, ea.r, temp) {
     df.out <- data.frame(kt, temp)
   }
   nr <- ncol(df.out) - 1
-  colnames(df.out) <- c(paste("k", seq(1, nr, by=1), sep=""), "Temp.K")
+  colnames(df.out) <- c(paste("k", seq(1, nr, by=1), sep=""), "Temp")
   return(df.out)
 }
 
-fKBix <- function(aa, t0, nn, ea.r, temp) {
+fKBix <- function(aa, t0, nn, ea.r, temp=298) {
   ## calculate the rate coefficient (cm3 molecule-1 s-1) of one or
   ## more bimolecular reactions at given temperature using the
   ## expanded Arrhenius equation:
@@ -106,7 +106,7 @@ fKBix <- function(aa, t0, nn, ea.r, temp) {
     df.out <- data.frame(kt, temp)
   }
   nr <- ncol(df.out) - 1
-  colnames(df.out) <- c(paste("k", seq(1, nr, by=1), sep=""), "Temp.K")
+  colnames(df.out) <- c(paste("k", seq(1, nr, by=1), sep=""), "Temp")
   return(df.out)
 }
 
