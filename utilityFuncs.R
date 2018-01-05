@@ -5,10 +5,10 @@
 ### - fMergeDF()  : merge list of data.frame
 ### - fFindPnt()  ==>  OBSOLETE !!!
 ### - fFindIdx()  : find point in vector greater/less than value
-### - fVarName()  : name of variable(s) in data.frame
 ### - fChronStr() : convert date/time string to chron
+### - fVarName()  : name of variable(s) in data.frame
 ###
-### version 2.3, Nov 2017
+### version 2.4, Jan 2018
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -21,8 +21,7 @@ fListWS <- function(arg="") {
   ##
   ## NB: the names of all atmosch-R functions/variables begin with
   ## lowercase `f` followed by a capital letter (functions) or by a
-  ## dot (variables) -- see documentation of fClearWS() and of base
-  ## function ls()
+  ## dot (variables) -- see documentation of fClearWS() and ls()
   ## ------------------------------------------------------------
   vv1 <- ls(pos=.GlobalEnv)
   vv2 <- ls(pos=.GlobalEnv, pattern="^f[.A-Z]")
@@ -55,13 +54,14 @@ fClearWS <- function() {
 }
 
 fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
-  ## merge list of data.frame by a common variable and rename the
-  ## other variables
+  ## merge two or more data.frames using a common variable and rename
+  ## the other variables
   ##
-  ## NB: see documentation of base function merge()
+  ## NB: the base function merge() only works on two data.frames at a
+  ## time -- see documentation of merge()
   ##
   ## input:
-  ##     df.lst = list of data.frame to merge
+  ##     df.lst = list of data.frames to merge
   ##     var.str = name of common variable
   ##     all.str = type of merge operation ("TRUE" OR "FALSE")
   ##     suff.lst = list of suffixes to rename variables
@@ -72,20 +72,19 @@ fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
     lst.name <- deparse(substitute(df.lst))
     stop(paste(lst.name, "must be a list", sep=" "))
   }
-  if (length(df.lst) == 2 ) {  # two data.frame
-    df.merg <- merge(df.lst[1], df.lst[2], by.x=var.str, by.y=var.str,
-                     all=as.logical(all.str),
+  if (length(df.lst) == 2 ) {  # two data.frames
+    df.merg <- merge(df.lst[1], df.lst[2], by=var.str, all=as.logical(all.str),
                      suffixes=unlist(suff.lst))
-  } else {                     # multiple data.frame
-    df.merg <- data.frame(df.lst[1])
-    colnames(df.merg)[-1] <- paste(colnames(df.merg)[-1],
-                                   suff.lst[[1]], sep="")
+  } else {                     # multiple data.frames
+    df.merg <- as.data.frame(df.lst[1])
+    var.n <- which(colnames(df.merg) == var.str)
+    colnames(df.merg)[-var.n] <- paste(colnames(df.merg)[-var.n],
+                                       suff.lst[[1]], sep="")
     for (i in 2:length(df.lst)) {
-      df.i <- data.frame(df.lst[i])
-      colnames(df.i)[-1] <- paste(colnames(df.i)[-1],
-                                  suff.lst[[i]], sep="")
-      df.merg <- merge(df.merg, df.i, by.x=var.str, by.y=var.str,
-                       all=as.logical(all.str))
+      df.i <- as.data.frame(df.lst[i])
+      colnames(df.i)[-var.n] <- paste(colnames(df.i)[-var.n],
+                                      suff.lst[[i]], sep="")
+      df.merg <- merge(df.merg, df.i, by=var.str, all=as.logical(all.str))
     }
   }
   ## merged data.frame
@@ -204,32 +203,6 @@ fFindIdx <- function(vecd, ops, xval) {
   return(xv)
 }
 
-fVarName <- function(var.dat) {
-  ## return a string with the name of one or more variables in a
-  ## data.frame
-  ##
-  ## NB: a variable can be addressed by column number (df[1], df[,1])
-  ## or by name df["A"]) or with the $ operator (df$A)
-  ##
-  ## input:
-  ##    var.dat = variable(s) in data.frame
-  ## output:
-  ##    var.name = name of variable(s)
-  ## ------------------------------------------------------------
-  if (is.data.frame(var.dat)) {              # df[1] OR df["A"]
-    var.name <- colnames(var.dat)
-  } else {
-    var.char <- deparse(substitute(var.dat))
-    if (grepl("$", var.char, fixed=TRUE)) {  # df$A
-      var.str <- strsplit(var.char, "$", fixed=TRUE)
-      var.name <- unlist(var.str)[2]
-    } else {                                 # df[,1]
-      var.name <- "" #! FIX THIS !#
-    }
-  }
-  return(var.name)
-}
-
 fChronStr <- function(dt.str, dt.fmt) {
   ## convert date, time, datetime string vector to chron vector with
   ## format "d-m-y h:m:s"
@@ -279,4 +252,30 @@ fChronStr <- function(dt.str, dt.fmt) {
          )
   ## output chron vector
   return(dt.chron)
+}
+
+fVarName <- function(var.dat) {
+  ## return a string with the name of one or more variables in a
+  ## data.frame
+  ##
+  ## NB: a variable can be addressed by column number (df[1], df[,1])
+  ## or by name df["A"]) or with the $ operator (df$A)
+  ##
+  ## input:
+  ##    var.dat = variable(s) in data.frame
+  ## output:
+  ##    var.name = name of variable(s)
+  ## ------------------------------------------------------------
+  if (is.data.frame(var.dat)) {              # df[1] OR df["A"]
+    var.name <- colnames(var.dat)
+  } else {
+    var.char <- deparse(substitute(var.dat))
+    if (grepl("$", var.char, fixed=TRUE)) {  # df$A
+      var.str <- strsplit(var.char, "$", fixed=TRUE)
+      var.name <- unlist(var.str)[2]
+    } else {                                 # df[,1]
+      var.name <- "" #! FIX THIS !#
+    }
+  }
+  return(var.name)
 }
