@@ -11,7 +11,7 @@
 ### conversion factors from WolframAlpha:
 ###    http://www.wolframalpha.com/
 ###
-### version 1.8, Mar 2017
+### version 1.9, Feb 2018
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -62,7 +62,6 @@ fConvPress <- function(data.in, unit.in, unit.out) {
   ## convert between units of pressure:
   ## * pascal      = "Pa"
   ## * hectopascal = "hPa"
-  ## * kilopascal  = "kPa"
   ## * atmosphere  = "atm"
   ## * torr = mmHg = "torr"
   ## * bar         = "bar"
@@ -83,9 +82,6 @@ fConvPress <- function(data.in, unit.in, unit.out) {
          },
          "hPa" = {
            data.ref <- data.in * 1.0e+02
-         },
-         "kPa" = {
-           data.ref <- data.in * 1.0e+03
          },
          "atm" = {
            data.ref <- data.in * 1.01325e+05
@@ -111,9 +107,6 @@ fConvPress <- function(data.in, unit.in, unit.out) {
          },
          "hPa" = {
            data.out <- data.ref / 1.0e+02
-         },
-         "kPa" = {
-           data.out <- data.ref / 1.0e+03
          },
          "atm" = {
            data.out <- data.ref / 1.01325e+05
