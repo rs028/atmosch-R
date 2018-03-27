@@ -3,7 +3,7 @@
 ### - fHumid() : humidity measurements
 ### - fSolar() : Earth-Sun angles
 ###
-### version 1.5, Mar 2017
+### version 1.6, Mar 2018
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -100,7 +100,10 @@ fSolar <- function(lat, long, dt.chron) {
   ##     long = longitude (degrees)
   ##     dt.chron = chron variable ("d-m-y h:m:s", GMT/UTC)
   ## output:
-  ##     df.out = data.frame ( DEC = sun declination,
+  ##     df.out = data.frame ( GMT = fractional time,
+  ##                           THETA = day angle,
+  ##                           DEC = sun declination,
+  ##                           EQT = equation of time,
   ##                           LHA = local hour angle,
   ##                           SZA = solar zenith angle,
   ##                           SEA = solar elevation angle )
@@ -126,7 +129,7 @@ fSolar <- function(lat, long, dt.chron) {
   b6 <-  0.001480
   dec <- b0 + b1 * cos(theta) + b2 * sin(theta) + b3 * cos(2 * theta) +
          b4 * sin(2 * theta) + b5 * cos(3 * theta) + b6 * sin(3 * theta)
-  ## local hour angle
+  ## equation of time, local hour angle
   c0 <-  0.000075
   c1 <-  0.001868
   c2 <- -0.032077
@@ -135,11 +138,11 @@ fSolar <- function(lat, long, dt.chron) {
   eqt <- c0 + c1 * cos(theta) + c2 * sin(theta) + c3 * cos(2 * theta) +
          c4 * sin(2 * theta)
   lha <- pi * (gmt / 12 - (1 + long / 180)) + eqt
-  ## solar zenith angle and solar elevation angle
+  ## solar zenith angle, solar elevation angle
   sza <- acos(sin(dec) * sin(lat.r) + cos(dec) * cos(lat.r) * cos(lha))
   sea <- pi/2 - sza
   ## output data.frame
-  df.out <- data.frame(dt.chron, dec, lha, sza, sea)
-  colnames(df.out) <- c("GMT", "DEC", "LHA", "SZA", "SEA")
+  df.out <- data.frame(dt.chron, theta, dec, eqt, lha, sza, sea)
+  colnames(df.out) <- c("GMT", "THETA", "DEC", "EQT", "LHA", "SZA", "SEA")
   return(df.out)
 }
