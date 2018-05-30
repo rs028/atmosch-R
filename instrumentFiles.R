@@ -7,20 +7,24 @@
 ### ---------------------------------------------------------------- ###
 
 fRead_TS49i <- function(data.dir, data.fn, data.log, data.var=NULL) {
-  ## Thermo Scientific Ozone monitor (model 49i)
+  ## Thermo Scientific Ozone monitor (model 49i).
   ##
-  ## the monitor logs data in two ways:
-  ## [1] using the iPort program which exports to a csv file
-  ## [2] streaming to a terminal which writes to a space-delimited
-  ## file; the streaming variables can be set by the user, if
-  ## different from the default variables.
+  ## The TS 49i monitor can log data in two ways:
+  ## 1. using the default iPort program which exports to a csv file
+  ##    with header.
+  ## 2. streaming to a terminal (e.g., TeraTerm) which saves to a
+  ##    space-delimited file without header.
+  ##
+  ## NB: the instrument streams 8 variables (plus timestamp and flags)
+  ## by default; the streaming variables can be changed by the user
+  ## from the instrument controls panel.
   ##
   ## input:
   ##     data.dir = data file directory
   ##     data.fn = name of data file
   ##     data.log = "iport" (iPort program) OR
   ##                "term" (terminal)
-  ##     data.var = user-set streaming variables     [OPTIONAL]
+  ##     data.var = user-set streaming variables     [ OPTIONAL ]
   ## output:
   ##     data.out = data.frame ( date/time chron variables,
   ##                             data variables )
@@ -36,8 +40,9 @@ fRead_TS49i <- function(data.dir, data.fn, data.log, data.var=NULL) {
       print(ncol(data.df))
       colnames(data.df) <- data.var
     } else {                  # default streaming variables
-      colnames(data.df) <- c("Time", "Date", "Flags", "o3", "cellai", "cellbi",
-                             "noisa", "noisb", "flowa", "flowb", "pres")
+      colnames(data.df) <- c("Time", "Date", "Flags", "o3",
+                             "cellai", "cellbi", "noisa", "noisb",
+                             "flowa", "flowb", "pres")
     }
   } else {                         # log unknown
     stop("INPUT ERROR: logger not found")

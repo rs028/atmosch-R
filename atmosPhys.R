@@ -8,7 +8,8 @@
 ### ---------------------------------------------------------------- ###
 
 fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
-  ## convert between measurements of humidity at given temperature:
+  ## Convert between measurements of humidity at given temperature and
+  ## pressure:
   ## * absolute humidity = "AH"
   ##   mass of water vapour per volume air (g/m3)
   ## * specific humidity = "SH"
@@ -20,10 +21,10 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
   ## * parts per million = "PPM"
   ##   volume of water vapour per volume of dry air (ppm)
   ##
-  ## from "Humidity Conversion Formulas" published by Vaisala
-  ## (http://www.vaisala.com/)
+  ## [ from "Humidity Conversion Formulas" published by Vaisala:
+  ##   http://www.vaisala.com/ ]
   ##
-  ## NB: pressure is required only for conversions to/from "PPM"
+  ## NB: pressure is required only for conversions to/from "PPM".
   ##
   ## input:
   ##     data.in = original humidity data
@@ -82,7 +83,7 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
 }
 
 fSolar <- function(lat, long, dt.chron) {
-  ## calculate Earth-Sun angles (in radians):
+  ## Calculate Earth-Sun angles (in radians):
   ## * sun declination = "DEC"
   ##   angle between center of the Sun and Earth's equatorial plane
   ## * local hour angle = "LHA"
@@ -92,8 +93,8 @@ fSolar <- function(lat, long, dt.chron) {
   ## * solar elevation angle = "SEA"
   ##   angle between local horizontal and center of the Sun
   ##
-  ## from "The Atmosphere and UV-B Radiation at Ground Level" by
-  ## S. Madronich (Environmental UV Photobiology, 1993)
+  ## [ from "The Atmosphere and UV-B Radiation at Ground Level" by
+  ##   S. Madronich (Environmental UV Photobiology, 1993) ]
   ##
   ## input:
   ##     lat = latitude (degrees)

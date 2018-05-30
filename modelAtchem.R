@@ -8,7 +8,7 @@
 ### ---------------------------------------------------------------- ###
 
 fAtchemIn <- function(input.dir, input.df, start.str) {
-  ## make input files for the AtChem/MCM model:
+  ## Generate input files for the AtChem/MCM model:
   ## * concentrations (molecule cm-3)
   ## * temperature (K)
   ## * pressure (mbar)
@@ -20,11 +20,11 @@ fAtchemIn <- function(input.dir, input.df, start.str) {
   ## NB: the data.frame with the input data must have one datetime
   ## chron variable (TIME) and one or more data variables:
   ##
-  ##        TIME           variable 1     variable 2   variable 3
-  ##  21-01-15 12:00:00        10             25           30
-  ##  21-01-15 12:30:00        25             30           45
-  ##  21-01-15 13:00:00        40             55           60
-  ##   ...
+  ##        TIME           variable 1    variable 2    variable 3
+  ##  21-01-15 12:00:00        10            25            30
+  ##  21-01-15 12:30:00        25            30            45
+  ##  21-01-15 13:00:00        40            55            60
+  ##  ...                      ...           ...           ...
   ##
   ## input:
   ##     input.dir = directory for input files
@@ -61,7 +61,7 @@ fAtchemIn <- function(input.dir, input.df, start.str) {
 }
 
 fAtchemOut <- function(output.dir, output.lst, start.str) {
-  ## load output files from the AtChem/MCM model:
+  ## Import output files from the AtChem/MCM model:
   ## * concentration of chemical species
   ## * environment variables
   ## * photolysis rates

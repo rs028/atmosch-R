@@ -2,22 +2,23 @@
 ### functions for data processing and analysis:
 ### - fOpenair()        : convert data.frame to openair format
 ### - fMakeStartStop()  : make start/mid/stop chron variables
-### - fAvgStartStop()   : average variable using start/stop
+### - fAvgStartStop()   : average one variable using start/stop
 ### - fAvgStartStopDF() : average data.frame using start/stop
 ###
 ### version 2.2, Nov 2017
 ### author: RS
-### credits: functions fMakeStartStop(), fAvgStartStop() are based on
-### code written in Wavemetrics Igor by DS (NOAA Aeronomy Lab)
+###
+### additional credits: the functions fMakeStartStop() and
+### fAvgStartStop() are based on code written in Wavemetrics Igor by
+### DS (NOAA Aeronomy Lab).
 ### ---------------------------------------------------------------- ###
 
 fOpenair <- function(data.df, time.str, ws.str, wd.str) {
-  ## convert a data.frame to the openair format:
-  ## * openair naming standard for datetime, wind data
-  ## * datetime from chron to POSIX format
-  ##
-  ## openair is an R package for the analysis of air pollution data
-  ## (http://www.openair-project.org/)
+  ## Convert a data.frame for use with the openair package
+  ## (http://www.openair-project.org/):
+  ## * use openair naming convention for date, time, wind speed and
+  ##   direction
+  ## * convert datetime from chron to POSIX format
   ##
   ## input:
   ##     data.df = input data.frame
@@ -53,19 +54,20 @@ fOpenair <- function(data.df, time.str, ws.str, wd.str) {
 }
 
 fMakeStartStop <- function(start.str, stop.str, step.str, interv.str) {
-  ## make start, mid, stop datetime chron variables with given time step
-  ## and interval (format: "d-m-y h:m:s")
+  ## Generate start, mid, stop datetime chron variables with given
+  ## step and interval (in minutes).
   ##
-  ## e.g., 30 minutes time step with 5 minutes interval:
-  ##     start     mid       stop
-  ##   12:00:00  12:02:30  12:04:59
-  ##   12:30:00  12:32:30  12:34:59
-  ##   01:00:00  01:02:30  01:04:59
+  ## For example, 30 minutes step with 5 minutes interval:
+  ##     start       mid         stop
+  ##   12:00:00    12:02:30    12:04:59
+  ##   12:30:00    12:32:30    12:34:59
+  ##   01:00:00    01:02:30    01:04:59
+  ##   ...         ...         ...
   ##
   ## input:
   ##     start.str = start datetime string ("d-m-y h:m:s")
   ##     stop.str = stop datetime string ("d-m-y h:m:s")
-  ##     step.str = time step between start (minutes)
+  ##     step.str = step between start (minutes)
   ##     interv.str = interval between start and stop (minutes)
   ## output:
   ##     df.out = data.frame ( StartTime = start chron,
@@ -75,7 +77,7 @@ fMakeStartStop <- function(start.str, stop.str, step.str, interv.str) {
   ## datetime chron variable
   begin.start <- fChronStr(start.str, "d-m-y h:m:s")
   end.start <- fChronStr(stop.str, "d-m-y h:m:s")
-  ## time step and interval in fraction of day
+  ## step and interval in fraction of day
   step.fd <- fConvTime(as.numeric(step.str), "min", "day")
   interv.fd <- fConvTime(as.numeric(interv.str), "min", "day")
   ## start and mid chron variables
@@ -94,12 +96,12 @@ fMakeStartStop <- function(start.str, stop.str, step.str, interv.str) {
 }
 
 fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
-  ## calculate statistics (mean, median, standard deviation, etc...)
-  ## of a variable between time intervals defined by start/stop chron
-  ## variables
+  ## Calculate statistics (mean, median, standard deviation, etc...)
+  ## of one variable between time intervals defined by start/stop
+  ## chron variables.
   ##
-  ## NB: use fMakeStartStop() to create the start/mid/stop chron
-  ## variable (tst.df)
+  ## NB: use fMakeStartStop() to create the start/mid/stop datetime
+  ## chron variable `tst.df`.
   ##
   ## input:
   ##     tst.orig = original chron variable ("d-m-y h:m:s")
@@ -178,12 +180,13 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
 }
 
 fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
-  ## calculate statistics (mean, median, standard deviation, etc...)
+  ## Calculate statistics (mean, median, standard deviation, etc...)
   ## of all variables in a data.frame between time intervals defined
-  ## by start/stop chron variables save plots of averaged data to pdf if
-  ## filename given
+  ## by start/stop chron variables.
   ##
-  ## NB: see documentation of fMakeStartStop() and fAvgStartStop()
+  ## Optional: save plots of averaged data to pdf file.
+  ##
+  ## NB: see documentation of fMakeStartStop() and fAvgStartStop().
   ##
   ## input:
   ##     df.orig = original data.frame (first column must be a
@@ -203,7 +206,7 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
     stop("input must be a data.frame")
   }
   ## initialize output list with chron variable
-  lst.out <- tst.df
+  lst.out <- list(tst.df)
   ## open pdf file to save plots
   if (fn.str != "") {
     pdf(paste(fn.str, ".pdf", sep=""), paper="a4r", width=0, height=0)

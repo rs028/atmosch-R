@@ -9,14 +9,14 @@
 ### - fConcAq()    : concentration (aqueous-phase)
 ###
 ### conversion factors from WolframAlpha:
-###    http://www.wolframalpha.com/
+###   http://www.wolframalpha.com/
 ###
 ### version 1.9, Feb 2018
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fConvTemp <- function(data.in, unit.in, unit.out) {
-  ## convert between units of temperature:
+  ## Convert between units of temperature:
   ## * kelvin    = "K"
   ## * celsius   = "C"
   ## * fahreneit = "F"
@@ -59,7 +59,7 @@ fConvTemp <- function(data.in, unit.in, unit.out) {
 }
 
 fConvPress <- function(data.in, unit.in, unit.out) {
-  ## convert between units of pressure:
+  ## Convert between units of pressure:
   ## * pascal      = "Pa"
   ## * hectopascal = "hPa"
   ## * atmosphere  = "atm"
@@ -130,7 +130,7 @@ fConvPress <- function(data.in, unit.in, unit.out) {
 }
 
 fConvAngle <- function(data.in, unit.in, unit.out) {
-  ## convert between units of angle:
+  ## Convert between units of angle:
   ## * radian = "rad"
   ## * degree = "deg"
   ##
@@ -157,7 +157,7 @@ fConvAngle <- function(data.in, unit.in, unit.out) {
            data.out <- data.ref
          },
          "deg" = {
-           data.out <- data.ref / (pi / 180)
+           data.out <- data.ref * (180 / pi)
          },
          stop("INPUT ERROR: unit not found")
          )
@@ -166,7 +166,7 @@ fConvAngle <- function(data.in, unit.in, unit.out) {
 }
 
 fConvTime <- function(data.in, unit.in, unit.out) {
-  ## convert between units of time:
+  ## Convert between units of time:
   ## * second = "sec"
   ## * minute = "min"
   ## * hour   = "hr"
@@ -223,7 +223,7 @@ fConvTime <- function(data.in, unit.in, unit.out) {
 }
 
 fConvSI <- function(data.in, unit.in, unit.out) {
-  ## convert between multiples of SI units:
+  ## Convert between multiples of SI units:
   ## * exa       = "Ex"
   ## * peta      = "P"
   ## * tera      = "T"
@@ -364,7 +364,7 @@ fConvSI <- function(data.in, unit.in, unit.out) {
 }
 
 fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
-  ## convert between units of concentration (gas-phase):
+  ## Convert between units of concentration (gas-phase):
   ## * molecule cm-3 = "ND"
   ## * ppth          = "ppth"
   ## * ppm           = "ppm"
@@ -373,7 +373,7 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   ## * mole m-3      = "MD"
   ## * ug m-3        = "UG"
   ##
-  ## NB: molar mass is required only for conversions to/from "UG"
+  ## NB: molar mass is required only for conversions to/from "UG".
   ##
   ## input:
   ##     data.in = data in original unit
@@ -456,7 +456,7 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
 }
 
 fConcAq <- function(data.in, unit.in, unit.out, m.mass=NULL) {
-  ## convert between units of concentration (aqueous-phase):
+  ## Convert between units of concentration (aqueous-phase):
   ## * molarity (mole/L, mole/dm3) = "M"
   ## * mole m-3                    = "MD"
   ## * ug m-3                      = "UG"

@@ -8,8 +8,8 @@
 ### ---------------------------------------------------------------- ###
 
 fAirND <- function(temp, press) {
-  ## calculate the number density (molecule cm-3) of air, oxygen and
-  ## nitrogen at given temperature and pressure
+  ## Calculate the number density (molecule cm-3) of air, oxygen and
+  ## nitrogen at given temperature and pressure.
   ##
   ## input:
   ##     temp = temperature (K)
@@ -35,11 +35,11 @@ fAirND <- function(temp, press) {
 }
 
 fFractO1D <- function(h2o, temp, press) {
-  ## calculate the fraction of singlet oxygen atoms (O1D) which reacts
-  ## with water vapour to form OH radicals -- instead of being
-  ## quenched by collision with atmospheric oxygen and nitrogen
+  ## Calculate the fraction of singlet oxygen atoms (O1D) which reacts
+  ## with water vapour to form OH radicals (instead of being quenched
+  ## by collision with atmospheric oxygen and nitrogen).
   ##
-  ## from Ravishankara et al., Geophys. Res. Lett., 2002
+  ## [ from Ravishankara et al., Geophys. Res. Lett., 2002 ]
   ##
   ## input:
   ##     h2o = water concentration (molecule cm-3)

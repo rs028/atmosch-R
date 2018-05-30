@@ -7,17 +7,19 @@
 ### ---------------------------------------------------------------- ###
 
 fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
-  ## import data from a delimited text file (tab, space, comma,
-  ## semicolon, etc...); convert the date/time variables to chron,
-  ## replace missing data points with NA
+  ## Import data from a delimited text file (tab, space, comma,
+  ## semicolon). Convert the date/time variables to chron and replace
+  ## missing data points with NA.
   ##
-  ## the data files have no header, except one row with the names of
-  ## the variables, and have one or more date/time variables:
+  ## NB: the data files must have no header, except one row with the
+  ## names of the variables, and must have one or more date/time
+  ## variables:
   ##
-  ##       date          time      var1   var2   var3
-  ##    12/01/2009     12:00:00     10     25     30
-  ##    12/01/2009     12:30:00     25     30     45
-  ##    12/01/2009     13:00:00     40     55     60
+  ##  date variable    time variable    variable 1    variable 2
+  ##    12/01/2009       12:00:00           10            25
+  ##    12/01/2009       12:30:00           25            30
+  ##    12/01/2009       13:00:00           40            55
+  ##    ...              ...                ...           ...
   ##
   ## input:
   ##     data.dir = data file directory
