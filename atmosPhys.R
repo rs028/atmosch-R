@@ -22,7 +22,7 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
   ##   volume of water vapour per volume of dry air (ppm)
   ##
   ## [ from "Humidity Conversion Formulas" published by Vaisala:
-  ##   http://www.vaisala.com/ ]
+  ##   https://www.vaisala.com/ ]
   ##
   ## NB: pressure is required only for conversions to/from "PPM".
   ##

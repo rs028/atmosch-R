@@ -9,7 +9,7 @@
 ### - fConcAq()    : concentration (aqueous-phase)
 ###
 ### conversion factors from WolframAlpha:
-###   http://www.wolframalpha.com/
+###   https://www.wolframalpha.com/
 ###
 ### version 1.9, Feb 2018
 ### author: RS
