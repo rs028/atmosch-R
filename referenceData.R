@@ -13,13 +13,14 @@
 
 fConstant <- function(symb.in) {
   ## Return name, symbol, value, unit of physical/chemical constants:
-  ## * Avogadro number           = "Na"
-  ## * Boltzmann constant        = "kB"
-  ## * gas constant              = "R"
-  ## * Planck constant           = "h"
-  ## * Stefan-Boltzmann constant = "kSB"
-  ## * standard gravity          = "g0"
-  ## * speed of light            = "c0"
+  ## * Avogadro number            = "Na"
+  ## * Boltzmann constant         = "kB"
+  ## * gas constant               = "R"
+  ## * Planck constant            = "h"
+  ## * Stefan-Boltzmann constant  = "kSB"
+  ## * Wien displacement constant = "Wb"
+  ## * standard gravity           = "g0"
+  ## * speed of light             = "c0"
   ##
   ## input:
   ##     symb.in = symbol of constant
@@ -33,7 +34,7 @@ fConstant <- function(symb.in) {
   n02 <- c("Boltzmann constant", "kB", 1.3806504e-23, "J K-1")
   n03 <- c("gas constant", "R", 8.314472, "J mol-1 K-1")
   n04 <- c("Planck constant", "h", 6.6260693e-34, "J s")
-  n05 <- c("Stefan-Boltzmann constant", "kSB", 5.670400e-08, "W m-2 K-4")
+  n05 <- c("Stefan-Boltzmann constant", "kSB", 5.6704e-08, "W m-2 K-4")
   n06 <- c("Wien constant", "Wb", 2.8978e-03, "m K")
   n07 <- c("standard gravity", "g0", 9.80665, "m s-2")
   n08 <- c("speed of light", "c0", 299792458, "m s-1")

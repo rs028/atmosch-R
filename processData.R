@@ -45,7 +45,7 @@ fOpenair <- function(data.df, time.str, ws.str, wd.str) {
     ## convert datetime to POSIX format
     time.x <- as.POSIXlt(df.out$date, tz="GMT")
     time.x <- round.POSIXt(time.x)
-    df.out$date <- as.POSIXct(time.x)#, tz="GMT")
+    df.out$date <- as.POSIXct(time.x)
     ## output data.frame
     return(df.out)
   } else {
@@ -97,7 +97,7 @@ fMakeStartStop <- function(start.str, stop.str, step.str, interv.str) {
 
 fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
   ## Calculate statistics (mean, median, standard deviation, etc...)
-  ## of one variable between time intervals defined by start/stop
+  ## of one variable between the time intervals defined by start/stop
   ## chron variables.
   ##
   ## NB: use fMakeStartStop() to create the start/mid/stop datetime
@@ -181,8 +181,8 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
 
 fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   ## Calculate statistics (mean, median, standard deviation, etc...)
-  ## of all variables in a data.frame between time intervals defined
-  ## by start/stop chron variables.
+  ## and make plots of all variables in a data.frame between the time
+  ## intervals defined by start/stop chron variables.
   ##
   ## Optional: save plots of averaged data to pdf file.
   ##
@@ -205,8 +205,8 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   if (!is.data.frame(df.orig) | !is.data.frame(tst.df)) {
     stop("input must be a data.frame")
   }
-  ## initialize output list with chron variable
-  lst.out <- list(tst.df)
+  ## add start/mid/stop chron variables to output list
+  lst.out <- tst.df
   ## open pdf file to save plots
   if (fn.str != "") {
     pdf(paste(fn.str, ".pdf", sep=""), paper="a4r", width=0, height=0)
