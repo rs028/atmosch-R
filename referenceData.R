@@ -106,7 +106,7 @@ fPeriodic <- function(symb.in) {
   n40 <- c("Zirconium", "Zr", 40, 91.224)
   n41 <- c("Niobium", "Nb", 41, 92.90638)
   n42 <- c("Molybdenum", "Mo", 42, 95.96)
-  n43 <- c("Technetium", "Tc", 43, 98)      # no stable isotopes
+  n43 <- c("Technetium", "Tc", 43, 98)   # no stable isotopes
   n44 <- c("Ruthenium", "Ru", 44, 101.07)
   n45 <- c("Rhodium", "Rh", 45, 102.9055)
   n46 <- c("Palladium", "Pd", 46, 106.42)
@@ -124,7 +124,7 @@ fPeriodic <- function(symb.in) {
   n58 <- c("Cerium", "Ce", 58, 140.116)
   n59 <- c("Praseodymium", "Pr", 59, 140.90765)
   n60 <- c("Neodymium", "Nd", 60, 144.242)
-  n61 <- c("Promethium", "Pm", 61, 145)     # no stable isotopes
+  n61 <- c("Promethium", "Pm", 61, 145)  # no stable isotopes
   n62 <- c("Samarium", "Sm", 62, 150.36)
   n63 <- c("Europium", "Eu", 63, 151.964)
   n64 <- c("Gadolinium", "Gd", 64, 157.25)
@@ -147,12 +147,12 @@ fPeriodic <- function(symb.in) {
   n81 <- c("Thallium", "Tl", 81, 204.3833)
   n82 <- c("Lead", "Pb", 82, 207.2)
   n83 <- c("Bismuth", "Bi", 83, 208.9804)
-  n84 <- c("Polonium", "Po", 84, 209)       # no stable isotopes
-  n85 <- c("Astatine", "At", 85, 210)       # no stable isotopes
-  n86 <- c("Radon", "Rn", 86, 222)          # no stable isotopes
-  n87 <- c("Francium", "Fr", 87, 223)       # no stable isotopes
-  n88 <- c("Radium", "Ra", 88, 226)         # no stable isotopes
-  n89 <- c("Actinium", "Ac", 89, 227)       # no stable isotopes
+  n84 <- c("Polonium", "Po", 84, 209)    # no stable isotopes
+  n85 <- c("Astatine", "At", 85, 210)    # no stable isotopes
+  n86 <- c("Radon", "Rn", 86, 222)       # no stable isotopes
+  n87 <- c("Francium", "Fr", 87, 223)    # no stable isotopes
+  n88 <- c("Radium", "Ra", 88, 226)      # no stable isotopes
+  n89 <- c("Actinium", "Ac", 89, 227)    # no stable isotopes
   n90 <- c("Thorium", "Th", 90, 232.03806)
   n91 <- c("Protactinium", "Pa", 91, 231.0359)
   n92 <- c("Uranium", "U", 92, 238.02891)

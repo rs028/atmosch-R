@@ -13,7 +13,7 @@
 ### ---------------------------------------------------------------- ###
 
 fListWS <- function(arg="") {
-  ## show variables in R workspace:
+  ## Show variables in R workspace:
   ## * if no argument is given, atmosch-R functions/variables are
   ##   excluded
   ## * if argument is "atmosch", only the atmosch-R
@@ -21,7 +21,7 @@ fListWS <- function(arg="") {
   ##
   ## NB: the names of all atmosch-R functions/variables begin with
   ## lowercase `f` followed by a capital letter (functions) or by a
-  ## dot (variables) -- see documentation of fClearWS() and ls()
+  ## dot (variables) -- see documentation of fClearWS() and ls().
   ## ------------------------------------------------------------
   vv1 <- ls(pos=.GlobalEnv)
   vv2 <- ls(pos=.GlobalEnv, pattern="^f[.A-Z]")
@@ -38,14 +38,14 @@ fListWS <- function(arg="") {
 }
 
 fClearWS <- function() {
-  ## clear R workspace:
+  ## Clear R workspace:
   ## * delete all variables
   ## * keep atmosch-R functions/variables
   ## * close plot windows
   ##
   ## NB: the names of all atmosch-R functions/variables begin with
   ## lowercase `f` followed by a capital letter (functions) or by a
-  ## dot (variables) -- see documentation of fListWS()
+  ## dot (variables) -- see documentation of fListWS().
   ## ------------------------------------------------------------
   vv1 <- ls(pos=.GlobalEnv)
   vv2 <- ls(pos=.GlobalEnv, pattern="^f[.A-Z]")
@@ -54,8 +54,8 @@ fClearWS <- function() {
 }
 
 fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
-  ## merge two or more data.frames using a common variable and rename
-  ## the other variables
+  ## Merge two or more data.frames using a common variable and rename
+  ## the other variables.
   ##
   ## NB: the base function merge() only works on two data.frames at a
   ## time -- see documentation of merge()
@@ -66,7 +66,7 @@ fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
   ##     all.str = type of merge operation ("TRUE" OR "FALSE")
   ##     suff.lst = list of suffixes to rename variables
   ## output:
-  ##     df.merg = data.frame ( merged data.frame )
+  ##     df.merg = data.frame ( merged data )
   ## ------------------------------------------------------------
   if (!is.list(df.lst)) {
     lst.name <- deparse(substitute(df.lst))
@@ -151,8 +151,8 @@ fFindPnt <- function(vecd, ops, xval, xst) {  ## ==> OBSOLETE !!!
 }
 
 fFindIdx <- function(vecd, ops, xval) {
-  ## find the first point greater/less than a reference value in an
-  ## ordered data/chron vector
+  ## Find the first point greater/less than a reference value in an
+  ## ordered data/chron vector.
   ##
   ## input:
   ##     vecd = ordered data/chron vector
@@ -204,8 +204,8 @@ fFindIdx <- function(vecd, ops, xval) {
 }
 
 fChronStr <- function(dt.str, dt.fmt) {
-  ## convert date, time, datetime string vector to chron vector with
-  ## format "d-m-y h:m:s"
+  ## Convert date, time, datetime string vector to chron vector with
+  ## format "d-m-y h:m:s".
   ##
   ## input:
   ##     dt.str = date/time string vector
@@ -255,11 +255,11 @@ fChronStr <- function(dt.str, dt.fmt) {
 }
 
 fVarName <- function(var.dat) {
-  ## return a string with the name of one or more variables in a
-  ## data.frame
+  ## Return a string with the name of one or more variables in a
+  ## data.frame.
   ##
   ## NB: a variable can be addressed by column number (df[1], df[,1])
-  ## or by name df["A"]) or with the $ operator (df$A)
+  ## or by name df["A"]) or with the $ operator (df$A).
   ##
   ## input:
   ##    var.dat = variable(s) in data.frame

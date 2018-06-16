@@ -36,15 +36,15 @@ fRead_TS49i <- function(data.dir, data.fn, data.log, data.var=NULL) {
     data.df$Time <- paste(data.df$Time, "00", sep=":")
   } else if (data.log == "term"){  # log with terminal
     data.df <- read.delim(data.file, header=F, sep="")
-    if (!is.null(data.var)) { # user-set streaming variables
+    if (!is.null(data.var)) {  # user-set streaming variables
       print(ncol(data.df))
       colnames(data.df) <- data.var
-    } else {                  # default streaming variables
+    } else {                   # default streaming variables
       colnames(data.df) <- c("Time", "Date", "Flags", "o3",
                              "cellai", "cellbi", "noisa", "noisb",
                              "flowa", "flowb", "pres")
     }
-  } else {                         # log unknown
+  } else {                     # log unknown
     stop("INPUT ERROR: logger not found")
   }
   ## convert date/time variables to chron
