@@ -25,16 +25,16 @@ fGasLaw <- function(press, vol, mol, temp) {
   ## gas constant
   r.gas <- fConstant("R")$Value
   ## calculate unknown variable
-  if (all(press == "?")) {       # pressure
+  if (all(press == "?")) {        # pressure
     var.x <- (mol * r.gas * temp) / vol
     str.x <- "Press"
-  } else if (all(vol == "?")) {  # volume
+  } else if (all(vol == "?")) {   # volume
     var.x <- (mol * r.gas * temp) / press
     str.x <- "Vol"
-  } else if (all(mol == "?")) {  # moles
+  } else if (all(mol == "?")) {   # moles
     var.x <- (press * vol) / (r.gas * temp)
     str.x <- "Mol"
-  } else if (all(temp == "?")) { # temperature
+  } else if (all(temp == "?")) {  # temperature
     var.x <- (press * vol) / (mol * r.gas)
     str.x <- "Temp"
   }

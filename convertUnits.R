@@ -11,7 +11,7 @@
 ### conversion factors from WolframAlpha:
 ###   https://www.wolframalpha.com/
 ###
-### version 1.9, Feb 2018
+### version 2.0, Sep 2018
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -224,14 +224,13 @@ fConvTime <- function(data.in, unit.in, unit.out) {
 
 fConvSI <- function(data.in, unit.in, unit.out) {
   ## Convert between multiples of SI units:
-  ## * exa       = "Ex"
   ## * peta      = "P"
   ## * tera      = "T"
   ## * giga      = "G"
   ## * mega      = "M"
-  ## * kilo      = "k"
-  ## * hecto     = "h"
-  ## * deca      = "da"
+  ## * kilo      = "K"
+  ## * hecto     = "H"
+  ## * deca      = "D"
   ## * base unit = "-"
   ## * deci      = "d"
   ## * centi     = "c"
@@ -240,7 +239,6 @@ fConvSI <- function(data.in, unit.in, unit.out) {
   ## * nano      = "n"
   ## * pico      = "p"
   ## * femto     = "f"
-  ## * atto      = "a"
   ##
   ## input:
   ##     data.in = data in original unit
@@ -251,9 +249,6 @@ fConvSI <- function(data.in, unit.in, unit.out) {
   ## ------------------------------------------------------------
   ## data in original unit to reference unit (base unit)
   switch(unit.in,
-         "Ex" = {
-           data.ref <- data.in * 1.0e+18
-         },
          "P" = {
            data.ref <- data.in * 1.0e+15
          },
@@ -266,13 +261,13 @@ fConvSI <- function(data.in, unit.in, unit.out) {
          "M" = {
            data.ref <- data.in * 1.0e+06
          },
-         "k" = {
+         "K" = {
            data.ref <- data.in * 1.0e+03
          },
-         "h" = {
+         "H" = {
            data.ref <- data.in * 1.0e+02
          },
-         "da" = {
+         "D" = {
            data.ref <- data.in * 1.0e+01
          },
          "-" = {
@@ -299,16 +294,10 @@ fConvSI <- function(data.in, unit.in, unit.out) {
          "f" = {
            data.ref <- data.in * 1.0e-15
          },
-         "a" = {
-           data.ref <- data.in * 1.0e-18
-         },
          stop("INPUT ERROR: unit not found")
          )
   ## data in reference unit (base unit) to final unit
   switch(unit.out,
-         "Ex" = {
-           data.out <- data.ref / 1.0e+18
-         },
          "P" = {
            data.out <- data.ref / 1.0e+15
          },
@@ -321,13 +310,13 @@ fConvSI <- function(data.in, unit.in, unit.out) {
          "M" = {
            data.out <- data.ref / 1.0e+06
          },
-         "k" = {
+         "K" = {
            data.out <- data.ref / 1.0e+03
          },
-         "h" = {
+         "H" = {
            data.out <- data.ref / 1.0e+02
          },
-         "da" = {
+         "D" = {
            data.out <- data.ref / 1.0e+01
          },
          "-" = {
@@ -353,9 +342,6 @@ fConvSI <- function(data.in, unit.in, unit.out) {
          },
          "f" = {
            data.out <- data.ref / 1.0e-15
-         },
-         "a" = {
-           data.out <- data.ref / 1.0e-18
          },
          stop("INPUT ERROR: unit not found")
          )
