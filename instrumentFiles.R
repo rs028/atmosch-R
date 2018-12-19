@@ -17,7 +17,7 @@ fRead_TS49i <- function(data.dir, data.fn, data.log, data.var=NULL) {
   ##
   ## NB: the instrument streams 8 variables (plus timestamp and flags)
   ## by default; the streaming variables can be changed by the user
-  ## from the instrument controls panel.
+  ## from the instrument control panel.
   ##
   ## input:
   ##     data.dir = data file directory

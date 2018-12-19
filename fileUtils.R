@@ -11,9 +11,8 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ## semicolon). Convert the date/time variables to chron and replace
   ## missing data points with NA.
   ##
-  ## NB: the data files must have no header, except one row with the
-  ## names of the variables, and must have one or more date/time
-  ## variables:
+  ## The data files must have no header, except one row with the names
+  ## of the variables, and must have one or more date/time variables:
   ##
   ##  date variable    time variable    variable 1    variable 2
   ##    12/01/2009       12:00:00           10            25
