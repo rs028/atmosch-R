@@ -2,7 +2,7 @@
 ### functions for the AtChem/MCM model (https://github.com/AtChem/AtChem2):
 ### - fAtchemIn()  : AtChem constraint files
 ### - fAtchemOut() : AtChem output files
-### - fConstrGap() : gaps in constraint files
+### - fConstrGap() : find gaps in constrained data
 ###
 ### version 1.5, Feb 2019
 ### author: RS
@@ -102,8 +102,8 @@ fAtchemOut <- function(output.dir, output.lst, start.str) {
 }
 
 fConstrGap <- function(constr.dir, constr.lst, max.gap, fn.str) {
-  ## Parse the AtChem constraint files and find gaps in the data that
-  ## are larger than a given time interval.
+  ## Parse the AtChem constraint files and find gaps in the constraint
+  ## data that are larger than the data gap threshold.
   ##
   ## Optional: save plots of model constraints to pdf file.
   ##
@@ -115,14 +115,15 @@ fConstrGap <- function(constr.dir, constr.lst, max.gap, fn.str) {
   ##     max.gap = data gap threshold (seconds)
   ##     fn.str = name of pdf file to save plots OR ""
   ## output:
-  ##     df.out = data.frame ( )
+  ##     df.out = data.frame ( name of variable, start time of gap,
+  ##                           stop time of gap, duration of gap)
   ##     --> pdf file : `fn.str`.pdf
   ## ------------------------------------------------------------
   if (!is.list(constr.lst)) {
     lst.name <- deparse(substitute(constr.lst))
     stop(paste(lst.name, "must be a list", sep=" "))
   }
-  ## open pdf file to save plots
+  ## open pdf file to save plots [optional]
   if (fn.str != "") {
     pdf(paste(fn.str, ".pdf", sep=""), paper="a4r", width=0, height=0)
   }
@@ -130,7 +131,7 @@ fConstrGap <- function(constr.dir, constr.lst, max.gap, fn.str) {
   data.df <- data.frame()
   for (constr in constr.lst) {
     constr.df <- read.table(paste(constr.dir, constr, sep=""))
-    ## flag gaps in data
+    ## flag gaps in data larger than threshold
     constr.df$V3 <- c(NA, diff(constr.df$V1, 1))
     constr.df$V4 <- ifelse(constr.df$V3 > max.gap, 0, 1)
     flag1 <- which(constr.df$V4 != 1)

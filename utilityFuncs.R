@@ -96,9 +96,8 @@ fFindPnt <- function(vecd, ops, xval, xst) {  ## ==> OBSOLETE !!!
   ## value in a data vector starting from a given point in the data
   ## vector
   ##
-  ## ==> this function is inefficient and slow and is kept only for
-  ## backwards compatibility: the function fFindIdx() should be used
-  ## instead <==
+  ## !!! THIS FUNCTION IS INEFFICIENT AND SLOW. IT IS KEPT ONLY FOR
+  ## BACKWARDS COMPATIBILITY. USE fFindIdx() INSTEAD !!!
   ##
   ## input:
   ##     vecd = data vector
