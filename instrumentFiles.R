@@ -1,6 +1,7 @@
 ### ---------------------------------------------------------------- ###
 ### functions to read data files from commercial instruments:
 ### - fImport_TS49i() : Thermo Scientific O3 Monitor
+### - fSwitchFlag     : remove points before/after switch
 ###
 ### version 1.1, Feb 2019
 ### author: RS
@@ -57,5 +58,46 @@ fRead_TS49i <- function(data.dir, data.fn, data.log, data.var=NULL) {
   colnames(data.time) <- c("Datetime", "Date", "Time")
   ## output data.frame
   data.out <- data.frame(data.time, data.df[-1:-2])
+  return(data.out)
+}
+
+fSwitchFlag <- function(data.df, flag.var, flag.ref, skip.fore, skip.aft) {
+  ## Find a switch (e.g., of a valve) and flag the points before/after
+  ## the switch for later removal.
+  ##
+  ## input:
+  ##     data.df = data.frame of instrument data
+  ##     flag.var = flag used by the switch
+  ##     flag.ref = flag used as reference
+  ##     skip.fore = points to skip before
+  ##     skip.aft = points to skip after
+  ## output:
+  ##     data.out = data.frame of instrument data with flag added
+  ## ------------------------------------------------------------
+  if (!is.data.frame(data.df)) {
+    df.name <- deparse(substitute(data.df))
+    stop(paste(df.name, "must be a data.frame", sep=" "))
+  }
+  ## find switch
+  nf <- which(colnames(data.df) == flag.var)
+  fl1 <- data.df[,nf]
+  fl2 <- data.df[,nf]
+  fl1[which(data.df[,nf] == flag.ref) - skip.aft] <- 9999
+  fl2[which(data.df[,nf] == flag.ref) + skip.fore] <- 9999
+  ## remove extra points
+  n.data <- nrow(data.df)
+  if ((length(fl1) - n.data) != 0) {
+    fl1 <- fl1[-1:-(length(fl1)-n.data)]
+  }
+  if ((length(fl2) - n.data) != 0) {
+    fl2 <- fl2[-(n.data+1):-length(fl2)]
+  }
+  ## create flag
+  data.out <- data.df
+  data.out$fl1 <- fl1
+  data.out$fl2 <- fl2
+  data.out$Flag <- ifelse((fl1 == fl2 & fl1 == 9999), 1,
+                   ifelse((fl1 == fl2 & fl1 != 9999), 0, -1))
+  ## output data.frame
   return(data.out)
 }
