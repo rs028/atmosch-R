@@ -2,7 +2,7 @@
 ### functions to read data files from commercial instruments:
 ### - fImport_TS49i() : Thermo Scientific O3 Monitor
 ###
-### version 1.0, May 2017
+### version 1.1, Feb 2019
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -13,7 +13,7 @@ fRead_TS49i <- function(data.dir, data.fn, data.log, data.var=NULL) {
   ## 1. using the default iPort program which exports to a csv file
   ##    with header.
   ## 2. streaming to a terminal (e.g., TeraTerm) which saves to a
-  ##    space-delimited file without header.
+  ##    delimited text file without header.
   ##
   ## NB: the instrument streams 8 variables (plus timestamp and flags)
   ## by default; the streaming variables can be changed by the user
@@ -32,10 +32,10 @@ fRead_TS49i <- function(data.dir, data.fn, data.log, data.var=NULL) {
   ## load data file
   data.file <- paste(data.dir, data.fn, sep="")
   if (data.log == "iport") {       # log with iPort
-    data.df <- read.delim(data.file, header=TRUE, sep="", skip=5)
+    data.df <- read.table(data.file, header=TRUE, sep="", skip=5)
     data.df$Time <- paste(data.df$Time, "00", sep=":")
   } else if (data.log == "term"){  # log with terminal
-    data.df <- read.delim(data.file, header=F, sep="")
+    data.df <- read.table(data.file, header=F, sep="")
     if (!is.null(data.var)) {  # user-set streaming variables
       print(ncol(data.df))
       colnames(data.df) <- data.var

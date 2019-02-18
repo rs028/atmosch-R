@@ -4,7 +4,7 @@
 ### - fAtchemOut() : AtChem output files
 ### - fConstrGap() : gaps in constraint files
 ###
-### version 1.4, Jun 2018
+### version 1.5, Feb 2019
 ### author: RS
 ### ---------------------------------------------------------------- ###
 

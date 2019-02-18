@@ -2,7 +2,7 @@
 ### functions to import/export data files:
 ### - fImportTXT() : delimited text files
 ###
-### version 1.1, Nov 2016
+### version 1.2, Feb 2019
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -34,9 +34,9 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ## load data file
   data.file <- paste(data.dir, data.fn, sep="")
   if (data.sep == " ") {
-    data.df <- read.delim(data.file, header=TRUE, sep="")
+    data.df <- read.table(data.file, header=TRUE, sep="")
   } else {
-    data.df <- read.delim(data.file, header=TRUE, sep=data.sep)
+    data.df <- read.table(data.file, header=TRUE, sep=data.sep)
   }
   ## format of date/time variables
   time.fmt <- list(...)
