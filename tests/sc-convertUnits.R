@@ -1,9 +1,9 @@
 ### --------------------------------------------------------- ###
-### convertUnits.R
+### script to test the functions in convertUnits.R
 ### --------------------------------------------------------- ###
 require(testit)
 
-##
+## 
 x0 <- runif(10, -100, 100)
 x1 <- fConvTemp(x0, "C", "K")
 x2 <- fConvTemp(x1, "K", "F")
@@ -70,3 +70,5 @@ assert("unit conversion",
        all.equal(x16, x0, tolerance=1e-10),
        all.equal(fConvSI(101325, "-", "H"), 1013.25, tolerance=1e-10)
        )
+
+## 

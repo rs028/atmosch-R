@@ -1,16 +1,54 @@
 ### --------------------------------------------------------- ###
-### 
+### execute all testing scripts
 ### --------------------------------------------------------- ###
+library(testit)
 
-## 
-#source("test-atmosChem.R")
-#source("test-atmosPhys.R")
-source("test-convertUnits.R")
-#source("test-fileUtils.R")
-#source("test-instrumentFiles.R")
-#source("test-massSpec.R")
-#source("test-modelAtchem.R")
-#source("test-physChem.R")
-#source("test-processData.R")
-source("test-referenceData.R")
-#source("test-utilityFuncs.R")
+setwd(paste(f.repo, "tests/", sep=""))
+
+cat("\n\n")
+
+cat("* testing: atmosChem.R\n")
+source("sc-atmosChem.R")
+cat("  ..... OK\n")
+
+##cat("* testing: atmosPhys.R\n")
+##source("sc-atmosPhys.R")
+##cat("  ..... OK\n")
+
+cat("* testing: convertUnits.R\n")
+source("sc-convertUnits.R")
+cat("  ..... OK\n")
+
+##cat("* testing: fileUtils.R\n")
+##source("sc-fileUtils.R")
+##cat("  ..... OK\n")
+
+##cat("* testing: instrumentFiles.R\n")
+##source("sc-instrumentFiles.R")
+##cat("  ..... OK\n")
+
+##cat("* testing: massSpec.R\n")
+##source("sc-massSpec.R")
+##cat("  ..... OK\n")
+
+##cat("* testing: modelAtchem.R\n")
+##source("sc-modelAtchem.R")
+##cat("  ..... OK\n")
+
+##cat("* testing: physChem.R\n")
+##source("sc-physChem.R")
+##cat("  ..... OK\n")
+
+##cat("* testing: processData.R\n")
+##source("sc-processData.R")
+##cat("  ..... OK\n")
+
+cat("* testing: referenceData.R\n")
+source("sc-referenceData.R")
+cat("  ..... OK\n")
+
+##cat("* testing: utilityFuncs.R\n")
+##source("sc-utilityFuncs.R")
+##cat("  ..... OK\n")
+
+setwd("../")

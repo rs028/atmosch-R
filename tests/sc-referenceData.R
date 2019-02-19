@@ -1,30 +1,32 @@
 ### --------------------------------------------------------- ###
-### referenceData.R
+### script to test the functions in referenceData.R
 ### --------------------------------------------------------- ###
 require(testit)
 
+## verify input and output
+assert("fConstant input",
+       fConstant("Wb")$Value == fConstant("Wb")["Value"]
+)
 
-##
-assert("fConstant, fPeriodic input",
-       fConstant("Wb")$Value == fConstant("Wb")["Value"],
+assert("fPeriodic input",
        fPeriodic("Ti")$Atomic.W == fPeriodic("Ti")["Atomic.W"]
 )
 
-df1 <- fConstant("Wb")
+x0 <- fConstant("Wb")
 assert("fConstant output",
-       is.data.frame(df1),
-       nrow(df1) == 1,
-       ncol(df1) == 4
+       is.data.frame(x0),
+       nrow(x0) == 1,
+       ncol(x0) == 4
 )
 
-df1 <- fPeriodic("Ti")
+x0 <- fPeriodic("Ti")
 assert("fPeriodic output",
-       is.data.frame(df1),
-       nrow(df1) == 1,
-       ncol(df1) == 4
+       is.data.frame(x0),
+       nrow(x0) == 1,
+       ncol(x0) == 4
        )
 
-##
+## verify results
 assert("fConstant values",
        fConstant("Na")$Name == "Avogadro number",
        fConstant("Na")$Value == 6.02214179e+23,
