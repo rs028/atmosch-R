@@ -1,19 +1,19 @@
 ### --------------------------------------------------------- ###
-### execute all testing scripts
+### execute all test scripts
 ### --------------------------------------------------------- ###
 library(testit)
 
 setwd(paste(f.repo, "tests/", sep=""))
 
-cat("\n\n")
+cat("\nTest of atmosch-R functions\n\n")
 
 cat("* testing: atmosChem.R\n")
 source("sc-atmosChem.R")
 cat("  ..... OK\n")
 
-##cat("* testing: atmosPhys.R\n")
-##source("sc-atmosPhys.R")
-##cat("  ..... OK\n")
+cat("* testing: atmosPhys.R\n")
+source("sc-atmosPhys.R")
+cat("  ..... OK\n")
 
 cat("* testing: convertUnits.R\n")
 source("sc-convertUnits.R")
