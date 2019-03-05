@@ -1,15 +1,19 @@
 ### --------------------------------------------------------- ###
 ### script to test the functions in convertUnits.R
+###
+### TODO: fConcGas, fConcAq
 ### --------------------------------------------------------- ###
 require(testit)
 
-## 
+## -----------------------------------------------
+## conversion of physical units
+
 x0 <- runif(10, -100, 100)
 x1 <- fConvTemp(x0, "C", "K")
 x2 <- fConvTemp(x1, "K", "F")
 x3 <- fConvTemp(x2, "F", "F")
 x4 <- fConvTemp(x3, "F", "C")
-assert("temperature conversion",
+assert("fConvTemp() conversion",
        all.equal(x4, x0, tolerance=1e-10),
        all.equal(fConvTemp(25, "C", "K"), 298.15, tolerance=1e-10)
        )
@@ -23,7 +27,7 @@ x5 <- fConvPress(x4, "torr", "torr")
 x6 <- fConvPress(x5, "torr", "Pa")
 x7 <- fConvPress(x6, "Pa", "psi")
 x8 <- fConvPress(x7, "psi", "mbar")
-assert("pressure conversion",
+assert("fConvPress() conversion",
        all.equal(x8, x0, tolerance=1e-10),
        all.equal(fConvPress(755, "torr", "hPa"), 1006.584, tolerance=1e-10)
        )
@@ -32,7 +36,7 @@ x0 <- runif(10, 0, 360)
 x1 <- fConvAngle(x0, "deg", "deg")
 x2 <- fConvAngle(x1, "deg", "rad")
 x3 <- fConvAngle(x2, "rad", "deg")
-assert("angle conversion",
+assert("fConvAngle() conversion",
        all.equal(x3, x0, tolerance=1e-10),
        all.equal(fConvAngle(33, "deg", "rad"), 0.5759587, tolerance=1e-10)
        )
@@ -44,7 +48,7 @@ x3 <- fConvTime(x2, "sec", "day")
 x4 <- fConvTime(x3, "day", "min")
 x5 <- fConvTime(x4, "min", "min")
 x6 <- fConvTime(x5, "min", "hr")
-assert("time conversion",
+assert("fConvTime() conversion",
        all.equal(x6, x0, tolerance=1e-10),
        all.equal(fConvTime(8.25, "hr", "sec"), 29700, tolerance=1e-10)
        )
@@ -66,9 +70,10 @@ x13 <- fConvSI(x12, "G", "p")
 x14 <- fConvSI(x13, "p", "P")
 x15 <- fConvSI(x14, "P", "-")
 x16 <- fConvSI(x15, "-", "d")
-assert("unit conversion",
+assert("fConvSI() conversion",
        all.equal(x16, x0, tolerance=1e-10),
        all.equal(fConvSI(101325, "-", "H"), 1013.25, tolerance=1e-10)
        )
 
-## 
+## -----------------------------------------------
+## conversion of concentration units
