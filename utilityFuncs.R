@@ -3,12 +3,11 @@
 ### - fListWS()   : show variables in workspace
 ### - fClearWS()  : clear workspace
 ### - fMergeDF()  : merge list of data.frame
-### - fFindPnt()  ==>  OBSOLETE !!!
 ### - fFindIdx()  : find point in vector greater/less than value
 ### - fChronStr() : convert date/time string to chron
 ### - fVarName()  : name of variable(s) in data.frame
 ###
-### version 2.4, Jan 2018
+### version 2.5, Mar 2019
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -89,64 +88,6 @@ fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
   }
   ## merged data.frame
   return(df.merg)
-}
-
-fFindPnt <- function(vecd, ops, xval, xst) {  ## ==> OBSOLETE !!!
-  ## find the first point greater/equal or less/equal than a reference
-  ## value in a data vector starting from a given point in the data
-  ## vector
-  ##
-  ## !!! THIS FUNCTION IS INEFFICIENT AND SLOW. IT IS KEPT ONLY FOR
-  ## BACKWARDS COMPATIBILITY. USE fFindIdx() INSTEAD !!!
-  ##
-  ## input:
-  ##     vecd = data vector
-  ##     ops = greater/equal ("GE") or less/equal ("LE")
-  ##     xval = reference value
-  ##     xst = starting point in data vector
-  ## output:
-  ##     xv = point in data vector greater/less than reference value
-  ## ------------------------------------------------------------
-  nv <- length(vecd)
-  ## starting point is greater than data vector length
-  if (xst >= nv) {
-    xv <- nv
-    ## starting point is zero/negative
-  } else if (xst <= 0) {
-    xv <- -1
-  } else {
-    switch(ops,
-           "GE" = {  # GREATER/EQUAL
-             if (vecd[xst] >= xval) {
-               xv <- xst
-             } else {
-               while ((vecd[xst] < xval) & (xst < nv)) {
-                 xst <- xst + 1
-               }
-               if ((vecd[xst] >= xval) & (vecd[xst-1] < xval)) {
-                 xv <- xst
-               } else {
-                 xv <- nv
-               }
-             }
-           },
-           "LE" = {  # LESS/EQUAL
-             if (vecd[xst] >= xval) {
-               xv <- xst
-             } else {
-               while ((vecd[xst] <= xval) & (xst < nv)) {
-                 xst <- xst + 1
-               }
-               if ((vecd[xst-1] <= xval) & (vecd[xst] > xval)) {
-                 xv <- xst - 1
-               } else {
-                 xv <- nv
-               }
-             }
-           }
-           )
-  }
-  return(xv)
 }
 
 fFindIdx <- function(vecd, ops, xval) {
