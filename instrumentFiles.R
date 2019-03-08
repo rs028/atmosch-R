@@ -6,51 +6,56 @@
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
-fRead_Thermo <- function(data.dir, data.fn, data.log, data.var=NULL) {
+fRead_Thermo <- function(data.dir, data.fn, model.n, data.log, data.var=NULL) {
   ## Thermo Scientific monitors.
   ##
-  ## The TS monitor can log data in two ways:
+  ## The monitors can log data in two ways:
   ## 1. using the default iPort program which exports to a csv file
   ##    with header.
   ## 2. streaming to a terminal (e.g., TeraTerm) which saves to a
-  ##    delimited text file without header. The streaming variables
-  ##    can be changed from the instrument control panel.
+  ##    delimited text file without header. The default streaming
+  ##    variables can be changed from the instrument control panel.
   ##
   ## input:
   ##     data.dir = data file directory
   ##     data.fn = name of data file
-  ##     model = 
-  ##     data.log = "iport" (iPort program) OR
-  ##                "term" (terminal)
+  ##     model.n = instrument model number
+  ##     data.log = "iport" OR "stream"
   ##     data.var = user-set streaming variables     [ OPTIONAL ]
   ## output:
   ##     data.out = data.frame ( date/time chron variables,
   ##                             data variables )
   ## ------------------------------------------------------------
-  ## load data file
-
   data.file <- paste(data.dir, data.fn, sep="")
-  if (data.log == "iport") {       # log with iPort
+  ## data logged with iPort
+  if (data.log == "iport") {
     data.df <- read.table(data.file, header=TRUE, sep="", skip=5)
     data.df$Time <- paste(data.df$Time, "00", sep=":")
-  } else if (data.log == "term"){  # log with terminal
+  ## data streaming to terminal
+  } else if (data.log == "term"){
     data.df <- read.table(data.file, header=F, sep="")
-    if (!is.null(data.var)) {  # user-set streaming variables
+    ## user-set streaming variables
+    if (!is.null(data.var)) {
       print(ncol(data.df))
       colnames(data.df) <- data.var
-    } else {                   # default streaming variables
-      switch(model,
-             "421" = {
+    ## default streaming variables
+    } else {
+      switch(model.n,
+             "42iTL" = { # NOx monitor
+               colnames(data.df) <- c("Time", "Date", "no",
+                                      "no2", "nox", "pre", "intt",
+                                      "pres","smplf")
+             },
+             "49i" = {  # O3 monitor
                colnames(data.df) <- c("Time", "Date", "Flags", "o3",
                                       "cellai", "cellbi", "noisa", "noisb",
                                       "flowa", "flowb", "pres")
              },
-             "49i" = {
-             },
-         stop("INPUT ERROR: unit not found")
-         )
+             stop("INPUT ERROR: model number not found")
+             )
     }
-  } else {                     # log unknown
+  ## log unknown
+  } else {
     stop("INPUT ERROR: logger not found")
   }
   ## convert date/time variables to chron
