@@ -6,23 +6,23 @@ require(testit)
 ## -----------------------------------------------
 ## input and output format
 
-assert("fConstant() input",
+assert("=> fConstant() input",
        fConstant("Wb")$Value == fConstant("Wb")["Value"]
 )
 
-assert("fPeriodic() input",
+assert("=> fPeriodic() input",
        fPeriodic("Ti")$Atomic.W == fPeriodic("Ti")["Atomic.W"]
 )
 
 x0 <- fConstant("Wb")
-assert("fConstant() output",
+assert("=> fConstant() output",
        is.data.frame(x0),
        nrow(x0) == 1,
        ncol(x0) == 4
 )
 
 x0 <- fPeriodic("Ti")
-assert("fPeriodic() output",
+assert("=> fPeriodic() output",
        is.data.frame(x0),
        nrow(x0) == 1,
        ncol(x0) == 4
@@ -31,7 +31,7 @@ assert("fPeriodic() output",
 ## -----------------------------------------------
 ## return values
 
-assert("fConstant() values",
+assert("=> fConstant() values",
        fConstant("Na")$Name == "Avogadro number",
        fConstant("Na")$Value == 6.02214179e+23,
        fConstant("Na")$Unit == "mol-1",
@@ -40,7 +40,7 @@ assert("fConstant() values",
        fConstant("R")$Unit == "J mol-1 K-1"
        )
 
-assert("fPeriodic() values",
+assert("=> fPeriodic() values",
        fPeriodic("Cl")$Name == "Chlorine",
        fPeriodic("Cl")$Atomic.N == 17,
        fPeriodic("Cl")$Atomic.W == 35.453,
