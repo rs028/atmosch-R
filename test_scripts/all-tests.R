@@ -7,13 +7,13 @@ setwd(paste(f.repo, "tests/", sep=""))
 
 cat("\nTest of atmosch-R functions\n\n")
 
-cat("* testing: atmosChem.R\n")
-source("sc-atmosChem.R")
-cat("  ..... OK\n")
+## cat("* testing: atmosChem.R\n")
+## source("sc-atmosChem.R")
+## cat("  ..... OK\n")
 
-cat("* testing: atmosPhys.R\n")
-source("sc-atmosPhys.R")
-cat("  ..... OK\n")
+## cat("* testing: atmosPhys.R\n")
+## source("sc-atmosPhys.R")
+## cat("  ..... OK\n")
 
 cat("* testing: convertUnits.R\n")
 source("sc-convertUnits.R")

@@ -1,10 +1,11 @@
 ### --------------------------------------------------------- ###
 ### script to test the functions in referenceData.R
+### author: RS
 ### --------------------------------------------------------- ###
 require(testit)
 
 ## -----------------------------------------------
-## input and output format
+## check input and output format
 
 assert("=> fConstant() input",
        fConstant("Wb")$Value == fConstant("Wb")["Value"]
@@ -29,7 +30,7 @@ assert("=> fPeriodic() output",
        )
 
 ## -----------------------------------------------
-## return values
+## check return values
 
 assert("=> fConstant() values",
        fConstant("Na")$Name == "Avogadro number",

@@ -5,7 +5,7 @@
 require(testit)
 
 ## -----------------------------------------------
-## conversion of physical units
+## check conversion of physical units
 
 x0 <- runif(10, -100, 100)
 x1 <- fConvTemp(x0, "C", "K")
@@ -75,4 +75,6 @@ assert("=> fConvSI() calculation",
        )
 
 ## -----------------------------------------------
-## conversion of concentration units
+## check conversion of concentration units
+
+## TODO: fConcGas(), fConcAq(), fHumid()
