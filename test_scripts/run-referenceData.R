@@ -7,23 +7,26 @@ require(testit)
 ## -----------------------------------------------
 ## check input and output format
 
-assert("=> fConstant() input",
+assert("=> fConstant() input/output",
        fConstant("Wb")$Value == fConstant("Wb")["Value"]
 )
 
-assert("=> fPeriodic() input",
+assert("=> fPeriodic() input/output",
        fPeriodic("Ti")$Atomic.W == fPeriodic("Ti")["Atomic.W"]
 )
 
+## -----------------------------------------------
+## check output data.frame
+
 x0 <- fConstant("Wb")
-assert("=> fConstant() output",
+assert("=> fConstant() output data.frame",
        is.data.frame(x0),
        nrow(x0) == 1,
        ncol(x0) == 4
 )
 
 x0 <- fPeriodic("Ti")
-assert("=> fPeriodic() output",
+assert("=> fPeriodic() output data.frame",
        is.data.frame(x0),
        nrow(x0) == 1,
        ncol(x0) == 4
