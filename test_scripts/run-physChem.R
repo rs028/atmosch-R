@@ -1,5 +1,5 @@
 ### --------------------------------------------------------- ###
-### script to test the functions in atmosPhys.R
+### script to test the functions in physChem.R
 ### author: RS
 ### --------------------------------------------------------- ###
 require(testit)
