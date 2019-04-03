@@ -1,7 +1,7 @@
 ### ---------------------------------------------------------------- ###
 ### obsolete functions - keep for backward compatibility:
-### - fFindPnt()    : use fFindIdx()
-### - fRead_TS42i() : use fRead_Thermo()
+### - fFindPnt()    => use fFindIdx()
+### - fRead_TS42i() => use fRead_Thermo()
 ###
 ### version 0.1, Mar 2019
 ### author: RS
