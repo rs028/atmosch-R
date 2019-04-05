@@ -13,14 +13,15 @@ fRead_Thermo <- function(data.dir, data.fn, model.n, data.log, data.var=NULL) {
   ## 1. using the default iPort program which exports to a csv file
   ##    with header.
   ## 2. streaming to a terminal (e.g., TeraTerm) which saves to a
-  ##    delimited text file without header. The default streaming
-  ##    variables can be changed from the instrument control panel.
+  ##    delimited text file without header. Note that the default
+  ##    streaming variables can be changed from the monitor control
+  ##    panel.
   ##
   ## input:
   ##     data.dir = data file directory
   ##     data.fn = name of data file
-  ##     model.n = instrument model number
-  ##     data.log = "iport" OR "stream"
+  ##     model = monitor model ("42i" OR "49i")
+  ##     data.log = monitor logger ("iport" OR "stream")
   ##     data.var = user-set streaming variables     [ OPTIONAL ]
   ## output:
   ##     data.out = data.frame ( date/time chron variables,
@@ -41,8 +42,8 @@ fRead_Thermo <- function(data.dir, data.fn, model.n, data.log, data.var=NULL) {
     ## default streaming variables
     } else {
       switch(model.n,
-             "42iTL" = { # NOx monitor
-               colnames(data.df) <- c("Time", "Date", "no",
+             "42i" = { # NOx monitor
+               colnames(data.df) <- c("Time", "Date", "Flags", "no",
                                       "no2", "nox", "pre", "intt",
                                       "pres","smplf")
              },
@@ -51,7 +52,7 @@ fRead_Thermo <- function(data.dir, data.fn, model.n, data.log, data.var=NULL) {
                                       "cellai", "cellbi", "noisa", "noisb",
                                       "flowa", "flowb", "pres")
              },
-             stop("INPUT ERROR: model number not found")
+             stop("INPUT ERROR: monitor model not found")
              )
     }
   ## log unknown
