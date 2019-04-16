@@ -10,7 +10,7 @@
 ### - fNormCIMS()    : normalize CIMS data
 ### - fBkgdCIMS()    : 
 ###
-### version 4.0, Jan 2019
+### version 4.1, Apr 2019
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -75,8 +75,8 @@ fNormTOF <- function(spect.df, ref.mz, scan.ini, scan.fin) {
   ref.r <- which(spect.df["mz"] == as.numeric(ref.mz))
   ref.ic <- as.numeric(spect.df[ref.r,])
   ## normalize spectra
-  spect.norm <- t(apply(spect.df, 1, function(x)
-                        x * 1e6 / ref.ic))
+  spect.norm <- t(apply(spect.df, 1, function(x) x * 1e6 / ref.ic)
+                  )
   spect.norm[,1] <- spect.df[,1]
   nsp <- ncol(spect.norm)
   ## calculate average spectrum and standard deviation
@@ -292,6 +292,13 @@ fDiagnCIMS <- function(cims.df, fn.str) {
   hv.b05 <- cims.df$A30        # CDC pressure
   hv.b06 <- cims.df$A31        # Main pressure
   hv.b07 <- cims.df$A32        # Quad pressure
+  # !!! TODO
+  ## cims.data <- cbind(cims.df[,grep("^Hz", var.str)],
+  ##                    cims.df[,grep("^mamu", var.str)],
+  ##                    cims.df[,grep("^ms", var.str)])
+  ## ## monitored masses and dwell times
+  ## print(colMeans(cims.amu, na.rm=TRUE))
+  ## print(colMeans(cims.sec, na.rm=TRUE))
   ## check consistency of parameters and flags
   if (length(unique(n.cyc)) != 1) {
     cat("CONFLICT! n. cycles:", unique(n.cyc), "\n")
@@ -372,19 +379,17 @@ fDiagnCIMS <- function(cims.df, fn.str) {
 }
 
 fProcessCIMS <- function(cims.df, bkgd.set) {
-  ## Process the Leicester CIMS data. Based on the current (2014-2018)
-  ## configuration of the instrument:
+  ## Process the Leicester CIMS raw data:
   ## * convert and rename data and diagnostic variables
-  ## * check monitored masses and dwell times
   ## * calculate temperature and humidity of the calibration flow
-  ## * add instrument background flag
+  ## * create instrument background flag
   ##
   ## NB: use fLoadCIMS() to import the CIMS data files and generate
   ## the data.frame of CIMS data.
   ##
   ## input:
   ##     cims.df = data.frame of CIMS data
-  ##     bkgd.set = background cycle switch ("on" OR "off")
+  ##     bkgd.set = instrument background setting ("on" OR "off")
   ## output:
   ##     cims.out = data.frame ( time variables, processed data,
   ##                             diagnostic variables, relative humidity,
@@ -394,7 +399,7 @@ fProcessCIMS <- function(cims.df, bkgd.set) {
     df.name <- deparse(substitute(cims.df))
     stop(paste(df.name, "must be a data.frame", sep=" "))
   }
-  ## data and diagnostic variables
+  ## separate time, data and diagnostic variables
   var.str <- colnames(cims.df)
   cims.time <- cims.df[,c("Datetime", "Date", "Time")]
   cims.data <- cbind(cims.df[,grep("^Hz", var.str)],
@@ -414,19 +419,18 @@ fProcessCIMS <- function(cims.df, bkgd.set) {
   colnames(cims.ic) <- gsub("Hz", "m", colnames(cims.ic))
   colnames(cims.amu) <- gsub("mamu", "amu", colnames(cims.amu))
   colnames(cims.sec) <- gsub("ms", "sec", colnames(cims.sec))
-  ## monitored masses and dwell times
-  print(colMeans(cims.amu, na.rm=TRUE))
-  print(colMeans(cims.sec, na.rm=TRUE))
-  ## temperature and relative humidity of the calibration flow (if
-  ## connected) - the conversion factors are for the Vaisala HMP110
-  ## RH/T probe
+  ## calculate temperature (C) and relative humidity (%) of the
+  ## calibration flow:
+  ## * A05 = humidity analog signal
+  ## * A06 = temperature analog signal
+  ## NB: the conversion factors are for the Vaisala HMP110 probe
   probe.rh <- (cims.diagn$A05 / 1000) * 20
   probe.temp <- (cims.diagn$A06 / 1000) * 30 - 70
-  cims.probe <- data.frame(probe.RH = probe.rh, probe.T = probe.temp)
-  ## instrument background flag:
-  ##   0 = signal
-  ##  -1 = before/after valve switch
-  ##   1 = background signal
+  cims.probe <- data.frame(probe_RH = probe.rh, probe_T = probe.temp)
+  ## create instrument background flag:
+  ##  0 = signal
+  ## -1 = before/after valve switch
+  ##  1 = background signal
   cims.flag <- rep(0, nrow(cims.time))
   if (bkgd.set == "on") {
     ## drop 10 data points before/after valve switch
@@ -441,19 +445,20 @@ fProcessCIMS <- function(cims.df, bkgd.set) {
 }
 
 fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
-  ## Normalize processed CIMS data to a reference ion (typically, one
-  ## million counts of the reagent ion). Optionally, the reference ion
-  ## can be scaled to a given parameter (e.g., absolute humidity).
+  ## Normalize the Leicester CIMS processed data to a reference ion.
+  ## Standard practice is to normalize the CIMS data to 1 million
+  ## counts of the reagent ion (e.g., iodide). Optionally, the
+  ## reference ion can be scaled to the absolute humidity of the
+  ## calibration flow ("AH").
   ##
-  ## NB: before normalization, the CIMS data need to be processed with
-  ## fProcessCIMS()
+  ## NB: use fProcessCIMS() to process the raw CIMS data before
+  ## normalizing with fNormCIMS().
   ##
   ## input:
   ##     cims.df = data.frame of processed CIMS data
-  ##     ref.mz = mass of reference ion (e.g., 127 for iodine)
-  ##     norm.fac = normalization factor (e.g., 1 OR 1e6)
-  ##     scale.str = scaling parameter ("none" OR "ah" OR
-  ##                 name of variable)
+  ##     ref.mz = mass of reference ion
+  ##     norm.fac = normalization factor (1 OR 1e6)
+  ##     scale.str = scaling parameter ("none" OR "AH")
   ## output:
   ##     cims.out = data.frame ( time variables, normalized data,
   ##                             diagnostic variables, t/rh variables,
@@ -463,45 +468,38 @@ fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
     df.name <- deparse(substitute(cims.df))
     stop(paste(df.name, "must be a data.frame", sep=" "))
   }
-  ## separate CIMS variables
+  ## separate time, ion counts and other variables
   var.str <- colnames(cims.df)
   cims.time <- cims.df[,c("Datetime", "Date", "Time")]
-  cims.amu <- cims.df[,grep("^amu", var.str)]
   cims.ic <- cims.df[,grep("^m", var.str)]
-  cims.diagn <- cbind(cims.df[,grep("^sec", var.str)],
-                      cims.df[,grep("^n", var.str)],
-                      cims.df[,grep("^c", var.str)],
-                      cims.df[,grep("^A", var.str)])
-  cims.probe <- cims.df[,c("probe.RH", "probe.T")]
-  cims.flag <- cims.df[,"Flag_Bgd", drop=F]
-  ## set scaling parameter
-  switch(scale.str,
-         "none" = {     # no scaling (set to 1)
-           scale.df <- data.frame(Flag_1 = rep(1, nrow(cims.time)))
-         },
-         "ah" = {  # absolute humidity (g/m3)
-           probe.ah <- fHumid(cims.probe$probe.RH, "RH", "AH",
-                              cims.probe$probe.T, 1.01325e+05)
-           scale.df <- data.frame(probe.AH = probe.ah)
-         },
-         {              # other parameter
-           scale.df <- data.frame(get(scale.str))
-           colnames(scale.df) <- scale.str
-         }
-         )
-  ## scale reference ion to scaling parameter
+  cims.var1 <- cbind(cims.df[,grep("^amu", var.str)],
+                     cims.df[,grep("^sec", var.str)],
+                     cims.df[,grep("^n", var.str)],
+                     cims.df[,grep("^c", var.str)],
+                     cims.df[,grep("^A", var.str)])
+  cims.var2 <- cims.df[,c("probe_RH", "probe_T", "Flag_Bgd")]
+  ## convert relative humidity (%) to absolute humidity (g/m3)
+  ## NB: assume standard pressure (1 atm = 1013.25 mbar)
+  probe.ah <- fHumid(cims.var2$probe_RH, "RH", "AH", cims.var2$probe_T, 1.01325e+05)
+  ## get reference ion counts
   ref.str <- paste("m", as.character(ref.mz), sep="")
   ref.ic <- cims.ic[,ref.str]
-  ref.scal <- ref.ic / scale.df
-  ref.scal[ref.scal == 0] <- NaN
+  ## scaling parameter for the reference ion
+  switch(scale.str,
+         "none" = {  # no scaling
+           ref.ion <- ref.ic
+         },
+         "AH" = {    # scale to absolute humidity
+           ref.ion <- ref.ic / probe.ah
+         },
+         stop("INPUT ERROR: invalid parameter")
+         )
   ## normalize data to reference ion
-  cims.norm <- apply(cims.ic, 2, function(x)
-                     x * norm.fac / ref.scal)
-  cims.norm <- as.data.frame(cims.norm) #!
+  ref.ion[ref.ion == 0] <- NaN
+  cims.norm <- apply(cims.ic, 2, function(x) x * norm.fac / ref.ion)
   ## rename normalized data variables
-  colnames(cims.norm) <- paste(colnames(cims.ic), "norm", sep="_")
+  colnames(cims.norm) <- paste(colnames(cims.ic), "ncps", sep="_")
   ## output data.frame
-  cims.out <- data.frame(cims.time, cims.amu, cims.norm, cims.diagn,
-                         cims.probe, cims.flag, scale.df)
+  cims.out <- data.frame(cims.time, cims.norm, cims.var1, cims.var2)
   return(cims.out)
 }

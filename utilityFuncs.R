@@ -214,7 +214,7 @@ fVarName <- function(var.dat) {
       var.str <- strsplit(var.char, "$", fixed=TRUE)
       var.name <- unlist(var.str)[2]
     } else {                                 # df[,1]
-      var.name <- "" #! FIX THIS !#
+      var.name <- "" # !!! TODO
     }
   }
   return(var.name)
