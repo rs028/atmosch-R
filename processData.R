@@ -273,3 +273,35 @@ fSwitchFlag <- function(data.df, flag.var, flag.ref, skip.fore, skip.aft) {
   ## output data.frame
   return(data.out)
 }
+
+fBkgdCIMS <- function(cims.df) {
+  ##
+  ##
+  ## ------------------------------------------------------------
+  if (!is.data.frame(cims.df)) {
+    df.name <- deparse(substitute(cims.df))
+    stop(paste(df.name, "must be a data.frame", sep=" "))
+  } else {
+    cims.len <- nrow(cims.df)
+    cims.dt <- cims.df[,1]
+  }
+  ## initialize counters and output data.frame
+  i <- 1; j <- 1
+  cims.bgd <- rep(NA, ncol(cims.df))
+  ##
+  for (k in 2:cims.len) {
+    if ((cims.dt[k] - cims.dt[k-1]) > times("00:01:00")) {
+      cims.bgd <- rbind(cims.bgd, colMeans(cims.df[i:k-1,], na.rm=T))
+      j <- j + 1
+      i <- k + 1
+    } else if (k == cims.len) {
+      i <- i -1
+      cims.bgd <- rbind(cims.bgd, colMeans(cims.df[i:k,], na.rm=T))
+    }
+  }
+  ## output data.frame
+  cims.out <- data.frame(cims.bgd[-1,])
+  cims.out[,1] <- as.chron(cims.out[,1])
+  colnames(cims.out) <-  paste(colnames(cims.df), "bgd", sep="_")
+  return(cims.out)
+}
