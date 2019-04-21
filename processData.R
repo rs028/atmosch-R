@@ -4,9 +4,10 @@
 ### - fMakeStartStop()  : make start/mid/stop chron variables
 ### - fAvgStartStop()   : average one variable using start/stop
 ### - fAvgStartStopDF() : average data.frame using start/stop
-### - fSwitchFlag     : remove points before/after switch
+### - fSwitchFlag()     : flag points before/after switch
+### - fBkgdSignal()     : average background signals
 ###
-### version 2.4, Mar 2019
+### version 2.5, Apr 2019
 ### author: RS
 ###
 ### additional credits: the functions fMakeStartStop() and
@@ -18,7 +19,7 @@ fOpenair <- function(data.df, time.str, ws.str, wd.str) {
   ## Convert a data.frame for use with the openair package
   ## (http://www.openair-project.org/):
   ## * use openair naming convention for date, time, wind speed and
-  ##   direction
+  ##   direction variables
   ## * convert datetime from chron to POSIX format
   ##
   ## input:
@@ -110,7 +111,7 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
   ##     tst.orig = original chron variable ("d-m-y h:m:s")
   ##     dat.orig = original data variable
   ##     tst.df = start/mid/stop chron variable ("d-m-y h:m:s")
-  ##     pl = show plot of averaged data ("yes" or "no")
+  ##     pl = show plot of averaged data ("yes" OR "no")
   ## output:
   ##     df.out = data.frame ( start chron, mid chron, stop chron,
   ##                           mean, median, standard deviation,
@@ -274,34 +275,51 @@ fSwitchFlag <- function(data.df, flag.var, flag.ref, skip.fore, skip.aft) {
   return(data.out)
 }
 
-fBkgdCIMS <- function(cims.df) {
+fBkgdSignal <- function(data.df) {
+  ## Average background signals of an instrument over each background
+  ## period. The data.frame of background signals must have a
+  ## date/time chron variable as first column and must contain only
+  ## background data.
   ##
+  ## The background is typically determined at regular intervals so
+  ## the timestamp should be discontinuous:
+  ##     start       m/z 1        m/z 2
+  ##   11:00:00       100          200
+  ##   11:50:00       100          200
+  ##   11:51:00       100          200
+  ##   ...            ...          ...
+  ##   11:59:00       100          200
+  ##   12:00:00       100          200
+  ##   12:50:00       100          200
   ##
+  ## input:
+  ##     data.df = data.frame of background signals
+  ## output:
+  ##     df.out = data.frame (
   ## ------------------------------------------------------------
-  if (!is.data.frame(cims.df)) {
-    df.name <- deparse(substitute(cims.df))
+  if (!is.data.frame(data.df)) {
+    df.name <- deparse(substitute(data.df))
     stop(paste(df.name, "must be a data.frame", sep=" "))
-  } else {
-    cims.len <- nrow(cims.df)
-    cims.dt <- cims.df[,1]
   }
-  ## initialize counters and output data.frame
+  ## datetime
+  data.dt <- data.df[,1]
+  ## initialize counters and data.frame
   i <- 1; j <- 1
-  cims.bgd <- rep(NA, ncol(cims.df))
-  ##
-  for (k in 2:cims.len) {
-    if ((cims.dt[k] - cims.dt[k-1]) > times("00:01:00")) {
-      cims.bgd <- rbind(cims.bgd, colMeans(cims.df[i:k-1,], na.rm=T))
-      j <- j + 1
+  data.bgd <- rep(NA, ncol(data.df))
+  ## average signals over each background interval
+  for (k in 2:nrow(data.df)) {
+    if ((data.dt[k] - data.dt[k-1]) > times("00:01:00")) {
+      data.bgd <- rbind(data.bgd, colMeans(data.df[i:k-1,], na.rm=T))
       i <- k + 1
-    } else if (k == cims.len) {
+      j <- j + 1
+    } else if (k == nrow(data.df)) {
       i <- i -1
-      cims.bgd <- rbind(cims.bgd, colMeans(cims.df[i:k,], na.rm=T))
+      data.bgd <- rbind(data.bgd, colMeans(data.df[i:k,], na.rm=T))
     }
   }
   ## output data.frame
-  cims.out <- data.frame(cims.bgd[-1,])
-  cims.out[,1] <- as.chron(cims.out[,1])
-  colnames(cims.out) <-  paste(colnames(cims.df), "bgd", sep="_")
-  return(cims.out)
+  data.out <- data.frame(data.bgd[-1,])
+  data.out[,1] <- as.chron(data.out[,1])
+  colnames(data.out) <-  paste(colnames(data.df), "bgd", sep="_")
+  return(data.out)
 }

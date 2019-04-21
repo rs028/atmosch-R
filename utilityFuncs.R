@@ -14,9 +14,9 @@
 fListWS <- function(arg="") {
   ## Show variables in R workspace:
   ## * if no argument is given, atmosch-R functions/variables are
-  ##   excluded
-  ## * if argument is "atmosch", only the atmosch-R
-  ## * functions/variables are shown
+  ##   not shown
+  ## * if argument is "atmosch", only the atmosch-R functions/variables
+  ##   are shown
   ##
   ## NB: the names of all atmosch-R functions/variables begin with
   ## lowercase `f` followed by a capital letter (functions) or by a
@@ -150,7 +150,7 @@ fChronStr <- function(dt.str, dt.fmt) {
   ## input:
   ##     dt.str = date/time string vector
   ##     dt.fmt = format of date/time string ("d/m/y h:m:s" OR
-  ##                                          "d/m/y" OR "h:m:s")
+  ##              "d/m/y" OR "h:m:s")
   ## output:
   ##     dt.chron = chron ( d-m-y h:m:s )
   ## ------------------------------------------------------------

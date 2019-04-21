@@ -8,7 +8,6 @@
 ### - fProcessCIMS() : process CIMS data
 ### - fNormCIMS()    : normalize CIMS data
 ### - fDiagnCIMS()   : run CIMS diagnostics
-### - fBkgdCIMS()    : 
 ###
 ### version 4.1, Apr 2019
 ### author: RS
