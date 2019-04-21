@@ -12,7 +12,7 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ## missing data points with NA.
   ##
   ## The data files must have no header, except one row with the names
-  ## of the variables, and must have one or more date/time variables:
+  ## of the variables, and one or more date/time variables:
   ##
   ##  date variable    time variable    variable 1    variable 2
   ##    12/01/2009       12:00:00           10            25
@@ -25,8 +25,8 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ##     data.fn = name of data file
   ##     data.sep = delimiter of data file (e.g., "\t" OR ",")
   ##     data.miss = missing value flag (e.g., -9999 OR "" OR NaN)
-  ##     ... = format of date/time variables (e.g., "d/m/y h:m:s"
-  ##           OR "FD" if fractional days are used)
+  ##     ... = format of date/time variables (e.g., "d/m/y h:m:s" OR
+  ##           "FD" if fractional days are used)
   ## output:
   ##     data.out = data.frame ( date/time chron variables,
   ##                             data variables )

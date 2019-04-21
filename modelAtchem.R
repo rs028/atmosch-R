@@ -21,8 +21,8 @@ fAtchemIn <- function(constr.dir, constr.df, start.str) {
   ## * photolysis rates (s-1)
   ## * JFAC (scaling factor for photolysis rates)
   ##
-  ## NB: the data.frame with the constraint data must have one
-  ## datetime chron variable (TIME) and one or more data variables:
+  ## The data.frame with the constraint data must have one datetime
+  ## chron variable (`TIME`), and one or more data variables:
   ##
   ##        TIME           variable 1    variable 2    variable 3
   ##  21-01-15 12:00:00        10            25            30
