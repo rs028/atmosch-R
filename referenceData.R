@@ -7,7 +7,7 @@
 ###   https://www.nist.gov/pml/fundamental-physical-constants
 ###   https://www.nist.gov/pml/elemental-data-index
 ###
-### version 3.3, May 2018
+### version 3.4, April 2019
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -15,12 +15,13 @@ fConstant <- function(symb.in) {
   ## Return name, symbol, value, unit of physical/chemical constants:
   ## * Avogadro number            = "Na"
   ## * Boltzmann constant         = "kB"
-  ## * gas constant               = "R"
+  ## * molar gas constant         = "R"
   ## * Planck constant            = "h"
   ## * Stefan-Boltzmann constant  = "kSB"
   ## * Wien displacement constant = "Wb"
   ## * standard gravity           = "g0"
   ## * speed of light             = "c0"
+  ## * atomic mass constant       = "mu"
   ##
   ## input:
   ##     symb.in = symbol of constant
@@ -30,15 +31,16 @@ fConstant <- function(symb.in) {
   ##                             Value = value of constant,
   ##                             Unit = unit of constant )
   ## ------------------------------------------------------------
-  n01 <- c("Avogadro number", "Na", 6.02214179e+23, "mol-1")
-  n02 <- c("Boltzmann constant", "kB", 1.3806504e-23, "J K-1")
-  n03 <- c("gas constant", "R", 8.314472, "J mol-1 K-1")
-  n04 <- c("Planck constant", "h", 6.6260693e-34, "J s")
-  n05 <- c("Stefan-Boltzmann constant", "kSB", 5.6704e-08, "W m-2 K-4")
-  n06 <- c("Wien constant", "Wb", 2.8978e-03, "m K")
+  n01 <- c("Avogadro number", "Na", 6.022140857e+23, "mol-1")
+  n02 <- c("Boltzmann constant", "kB", 1.38064852e-23, "J K-1")
+  n03 <- c("molar gas constant", "R", 8.3144598, "J mol-1 K-1")
+  n04 <- c("Planck constant", "h", 6.62607004 e-34, "J s")
+  n05 <- c("Stefan-Boltzmann constant", "kSB", 5.670367e-08, "W m-2 K-4")
+  n06 <- c("Wien displacement constant", "Wb", 2.8977729e-03, "m K")
   n07 <- c("standard gravity", "g0", 9.80665, "m s-2")
   n08 <- c("speed of light", "c0", 299792458, "m s-1")
-  data.df <- rbind(n01, n02, n03, n04, n05, n06, n07, n08)
+  n09 <- c("atomic mass constant", "mu", 1.660539040e-24, "g")
+  data.df <- rbind(n01, n02, n03, n04, n05, n06, n07, n08, n09)
   ## select and output constant
   for (i in 1:nrow(data.df)) {
     if (symb.in == data.df[i,2]) {
@@ -54,7 +56,7 @@ fConstant <- function(symb.in) {
 
 fPeriodic <- function(symb.in) {
   ## Return name, symbol, atomic number, atomic weight of naturally
-  ## occuring elements (up to Uranium)
+  ## occuring elements (up to Uranium).
   ##
   ## input:
   ##     symb.in = symbol of element
