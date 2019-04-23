@@ -24,11 +24,11 @@ fAtchemIn <- function(constr.dir, constr.df, start.str) {
   ## The data.frame with the constraint data must have one datetime
   ## chron variable (`TIME`), and one or more data variables:
   ##
-  ##        TIME           variable 1    variable 2    variable 3
-  ##  21-01-15 12:00:00        10            25            30
-  ##  21-01-15 12:30:00        25            30            45
-  ##  21-01-15 13:00:00        40            55            60
-  ##  ...                      ...           ...           ...
+  ##         TIME           variable 1    variable 2    variable 3
+  ##   21-01-15 12:00:00        10            25            30
+  ##   21-01-15 12:30:00        25            30            45
+  ##   21-01-15 13:00:00        40            55            60
+  ##   ...                      ...           ...           ...
   ##
   ## input:
   ##     constr.dir = constraint files directory

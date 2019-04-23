@@ -14,11 +14,11 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ## The data files must have no header, except one row with the names
   ## of the variables, and one or more date/time variables:
   ##
-  ##  date variable    time variable    variable 1    variable 2
-  ##    12/01/2009       12:00:00           10            25
-  ##    12/01/2009       12:30:00           25            30
-  ##    12/01/2009       13:00:00           40            55
-  ##    ...              ...                ...           ...
+  ##   date variable    time variable    variable 1    variable 2
+  ##     12/01/2009       12:00:00           10            25
+  ##     12/01/2009       12:30:00           25            30
+  ##     12/01/2009       13:00:00           40            55
+  ##     ...              ...                ...           ...
   ##
   ## input:
   ##     data.dir = data file directory

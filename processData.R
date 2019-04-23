@@ -17,7 +17,7 @@
 
 fOpenair <- function(data.df, time.str, ws.str, wd.str) {
   ## Convert a data.frame for use with the openair package
-  ## (http://www.openair-project.org/):
+  ## (https://davidcarslaw.github.io/openair/):
   ## * use openair naming convention for date, time, wind speed and
   ##   direction variables
   ## * convert datetime from chron to POSIX format
@@ -60,6 +60,7 @@ fMakeStartStop <- function(start.str, stop.str, step.str, interv.str) {
   ## step and interval (in minutes).
   ##
   ## For example, 30 minutes step with 5 minutes interval:
+  ##
   ##     start       mid         stop
   ##   12:00:00    12:02:30    12:04:59
   ##   12:30:00    12:32:30    12:34:59
@@ -174,7 +175,7 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
     ## output data.frame
     vect.df <- cbind(vect.avg, vect.med, vect.std,
                      vect.npt, vect.nan)
-    vect.str <- c("Mean", "Median", "StdDev", "Pnts", "NAs")
+    vect.str <- c("Mean", "Median", "StdDev", "Pnts", "NaNs")
     colnames(vect.df) <- vect.str
     df.out <- data.frame(tst.df, vect.df)
     return(df.out)
@@ -234,30 +235,38 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   return(lst.out)
 }
 
-fSwitchFlag <- function(data.df, flag.var, flag.ref, skip.fore, skip.aft) {
-  ## Find a switch (e.g., of a valve) and flag the points before/after
-  ## the switch for later removal.
+fSwitchFlag <- function(data.df, sw.var, sw.ref, skip.fore, skip.aft) {
+  ## Find and flag the data points before/after an instrument switch
+  ## for later removal. The switch flag that is added to the
+  ## data.frame has the values:
+  ##
+  ##    0 = switch is OFF
+  ##   -1 = before/after switch
+  ##    1 = switch is ON
+  ##
+  ## The data.frame of instrument data must contain a numeric switch variable
+  ## indicating the status of the switch (ON/OFF, 1/0, etc...).
   ##
   ## input:
   ##     data.df = data.frame of instrument data
-  ##     flag.var = flag used by the switch
-  ##     flag.ref = flag used as reference
-  ##     skip.fore = points to skip before
-  ##     skip.aft = points to skip after
+  ##     sw.var = name of switch variable
+  ##     sw.ref = value of switch variable (e.g., 1 OR "ON")
+  ##     skip.fore = points to skip before the switch
+  ##     skip.aft = points to skip after the switch
   ## output:
-  ##     data.out = data.frame of instrument data with flag added
+  ##     data.out = data.frame of instrument data with switch flag
   ## ------------------------------------------------------------
   if (!is.data.frame(data.df)) {
     df.name <- deparse(substitute(data.df))
     stop(paste(df.name, "must be a data.frame", sep=" "))
   }
-  ## find switch
-  nf <- which(colnames(data.df) == flag.var)
+  ## find data points before/after switch
+  nf <- which(colnames(data.df) == sw.var)
   fl1 <- data.df[,nf]
   fl2 <- data.df[,nf]
-  fl1[which(data.df[,nf] == flag.ref) - skip.aft] <- 9999
-  fl2[which(data.df[,nf] == flag.ref) + skip.fore] <- 9999
-  ## remove extra points
+  fl1[which(data.df[,nf] == sw.ref) - skip.aft] <- 9999
+  fl2[which(data.df[,nf] == sw.ref) + skip.fore] <- 9999
+  ## remove extra data points
   n.data <- nrow(data.df)
   if ((length(fl1) - n.data) != 0) {
     fl1 <- fl1[-1:-(length(fl1)-n.data)]
@@ -265,48 +274,53 @@ fSwitchFlag <- function(data.df, flag.var, flag.ref, skip.fore, skip.aft) {
   if ((length(fl2) - n.data) != 0) {
     fl2 <- fl2[-(n.data+1):-length(fl2)]
   }
-  ## create flag
+  ## create switch flag
   data.out <- data.df
-  data.out$fl1 <- fl1
-  data.out$fl2 <- fl2
   data.out$Flag <- ifelse((fl1 == fl2 & fl1 == 9999), 1,
                    ifelse((fl1 == fl2 & fl1 != 9999), 0, -1))
+  ## output variables for debugging
+    ## data.out$fl1 <- fl1
+    ## data.out$fl2 <- fl2
   ## output data.frame
   return(data.out)
 }
 
 fBkgdSignal <- function(data.df) {
-  ## Average background signals of an instrument over each background
-  ## period. The data.frame of background signals must have a
-  ## date/time chron variable as first column and must contain only
-  ## background data.
+  ## Average the background signals of an instrument over each
+  ## background period.
   ##
-  ## The background is typically determined at regular intervals so
-  ## the timestamp should be discontinuous:
-  ##     start       m/z 1        m/z 2
-  ##   11:00:00       100          200
-  ##   11:50:00       100          200
-  ##   11:51:00       100          200
-  ##   ...            ...          ...
-  ##   11:59:00       100          200
-  ##   12:00:00       100          200
-  ##   12:50:00       100          200
+  ## The data.frame of background signals must have one datetime chron
+  ## variable (as first column), and must contain only the background
+  ## periods. The instrument background is usually determined at
+  ## regular intervals, so the datetime variable is expected to be
+  ## discontinuous.
+  ##
+  ## For example, 10 minutes background period at the end of each
+  ## hour:
+  ##
+  ##         datetime         variable 1    variable 2
+  ##   12/01/2009 11:00:00       100           250
+  ##   12/01/2009 11:50:00       125           200
+  ##   12/01/2009 11:51:00       140           220
+  ##   ...                       ...           ...
+  ##   12/01/2009 11:59:00       130           210
+  ##   12/01/2009 12:00:00       115           205
+  ##   12/01/2009 12:50:00       120           225
   ##
   ## input:
   ##     data.df = data.frame of background signals
   ## output:
-  ##     df.out = data.frame (
+  ##     data.out = data.frame of averaged background signals
   ## ------------------------------------------------------------
   if (!is.data.frame(data.df)) {
     df.name <- deparse(substitute(data.df))
     stop(paste(df.name, "must be a data.frame", sep=" "))
   }
-  ## datetime
+  ## datetime chron variable (column 1)
   data.dt <- data.df[,1]
-  ## initialize counters and data.frame
+  ## average signals over each background period
   i <- 1; j <- 1
   data.bgd <- rep(NA, ncol(data.df))
-  ## average signals over each background interval
   for (k in 2:nrow(data.df)) {
     if ((data.dt[k] - data.dt[k-1]) > times("00:01:00")) {
       data.bgd <- rbind(data.bgd, colMeans(data.df[i:k-1,], na.rm=T))
