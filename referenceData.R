@@ -34,7 +34,7 @@ fConstant <- function(symb.in) {
   n01 <- c("Avogadro number", "Na", 6.022140857e+23, "mol-1")
   n02 <- c("Boltzmann constant", "kB", 1.38064852e-23, "J K-1")
   n03 <- c("molar gas constant", "R", 8.3144598, "J mol-1 K-1")
-  n04 <- c("Planck constant", "h", 6.62607004 e-34, "J s")
+  n04 <- c("Planck constant", "h", 6.62607004e-34, "J s")
   n05 <- c("Stefan-Boltzmann constant", "kSB", 5.670367e-08, "W m-2 K-4")
   n06 <- c("Wien displacement constant", "Wb", 2.8977729e-03, "m K")
   n07 <- c("standard gravity", "g0", 9.80665, "m s-2")
