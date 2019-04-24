@@ -42,7 +42,7 @@ fLoadTOF <- function(tof.dir, tof.fn) {
   n.ion <- ncol(tof.df) - 1
   tof.matx <- t(tof.df[,2:n.ion])
   ## output data.frame
-  cat("loaded:", tof.fn, "\n")
+  cat("> data file loaded:", tof.fn, "\n")
   tof.out <- data.frame(tof.matx) #!
   rownames(tof.out) <- NULL
   colnames(tof.out) <- tof.head
@@ -186,8 +186,8 @@ fLoadCIMS <- function(cims.dir, cims.fn) {
   rownames(cims.time) <- NULL
   colnames(cims.time) <- c("Datetime", "Date", "Time")
   ## output data.frame
-  cat("loaded:", cims.fn)
-  cat(" [", as.character(cims2$nh[1]), "mass channels ]\n")
+  cat("> data file loaded:", cims.fn)
+  cat("\t[", as.character(cims2$nh[1]), "mass channels ]\n")
   cims.out <- data.frame(cims.time, cims4, cims2, cims3, cims5)
   return(cims.out)
 }
@@ -295,8 +295,7 @@ fProcessCIMS <- function(cims.df, bkgd.set) {
   cims.probe <- data.frame(probe_RH = probe.rh, probe_T = probe.temp)
   ## create instrument background flag:
   ##  0 = signal
-  ## -1 = before/after valve switch
-  ##  1 = background signal
+  ##  1 = background
   cims.flag <- rep(0, nrow(cims.time))
   if (bkgd.set == "on") {
     ## drop 10 data points before/after valve switch
@@ -344,7 +343,7 @@ fNormCIMS <- function(cims.df, ref.mz, norm.fac, scale.str) {
                      cims.df[,grep("^A", var.str)])
   cims.var2 <- cims.df[,c("probe_RH", "probe_T", "Flag_Bgd")]
   ## convert relative humidity (%) to absolute humidity (g/m3)
-  ## NB: assume standard pressure (1 atm = 1013.25 mbar)
+  ## NB: assume standard atmospheric pressure (1 atm = 1013.25 mbar)
   probe.ah <- fHumid(cims.var2$probe_RH, "RH", "AH", cims.var2$probe_T, 1.01325e+05)
   ## get reference ion counts
   ref.str <- paste("m", as.character(ref.mz), sep="")
@@ -494,6 +493,7 @@ fDiagnCIMS <- function(cims.df, start.str, stop.str, fn.str) {
   ## close pdf file
   if (fn.str != "") {
     dev.off()
+    cat("> diagnostic plots saved to:", paste(fn.str, ".pdf", sep=""), "\n")
   }
   ## check consistency of monitored masses and dwell times
   var.str <- colnames(cims.df)

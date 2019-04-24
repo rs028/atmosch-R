@@ -37,11 +37,11 @@ fOpenair <- function(data.df, time.str, ws.str, wd.str) {
     df.vars[which(df.vars == time.str)] <- "date"
     if (ws.str != "") {
       df.vars[which(df.vars == ws.str)] <- "ws"
-      cat("-> wind speed data [", ws.str,"]: m/s\n")
+      cat("> wind speed data [", ws.str,"]: m/s\n")
     }
     if (wd.str != "") {
       df.vars[which(df.vars == wd.str)] <- "wd"
-      cat("-> wind direction data [", wd.str,"]: deg N\n")
+      cat("> wind direction data [", wd.str,"]: deg N\n")
     }
     colnames(df.out) <- df.vars
     ## convert datetime to POSIX format
