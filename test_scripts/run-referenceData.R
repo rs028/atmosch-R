@@ -37,10 +37,10 @@ assert("=> fPeriodic() output data.frame",
 
 assert("=> fConstant() values",
        fConstant("Na")$Name == "Avogadro number",
-       fConstant("Na")$Value == 6.02214179e+23,
+       fConstant("Na")$Value == 6.022140857e+23,
        fConstant("Na")$Unit == "mol-1",
-       fConstant("R")$Name == "gas constant",
-       fConstant("R")$Value == 8.314472,
+       fConstant("R")$Name == "molar gas constant",
+       fConstant("R")$Value == 8.3144598,
        fConstant("R")$Unit == "J mol-1 K-1"
        )
 
