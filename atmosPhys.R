@@ -2,7 +2,7 @@
 ### functions for atmospheric physics:
 ### - fSolar() : Earth-Sun angles
 ###
-### version 1.7, Mar 2018
+### version 1.8, Apr 2019
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -33,12 +33,17 @@ fSolar <- function(lat, long, dt.chron) {
   ##                           SZA = solar zenith angle,
   ##                           SEA = solar elevation angle )
   ## ---------------------------------------------------------------------
+  if (is.data.frame(dt.chron)) {
+    datet <- dt.chron[[1]]
+  } else {
+    datet <- dt.chron
+  }
   ## latitude and longitude in radians
   lat.r <- fConvAngle(lat, "deg", "rad")
   long.r <- fConvAngle(long, "deg", "rad")
   ## day of year (1 Jan = 1) and fractional time
-  jan1 <- chron(paste("01/01/", years(dt.chron), sep=""))
-  fracd <- as.numeric(dt.chron - jan1 + 1)
+  jan1 <- chron(paste("01/01/", years(datet), sep=""))
+  fracd <- as.numeric(datet - jan1 + 1)
   doy <- floor(fracd)
   gmt <- (fracd - doy) * 24
   ## day angle
@@ -67,7 +72,7 @@ fSolar <- function(lat, long, dt.chron) {
   sza <- acos(sin(dec) * sin(lat.r) + cos(dec) * cos(lat.r) * cos(lha))
   sea <- pi/2 - sza
   ## output data.frame
-  df.out <- data.frame(dt.chron, theta, dec, eqt, lha, sza, sea)
+  df.out <- data.frame(datet, theta, dec, eqt, lha, sza, sea)
   colnames(df.out) <- c("GMT", "THETA", "DEC", "EQT", "LHA", "SZA", "SEA")
   return(df.out)
 }
