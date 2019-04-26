@@ -12,7 +12,7 @@ df1 <- data.frame(Temp = c(298,300,302),
                   H2O = c(1e19,2e19,3e19))
 
 ## -----------------------------------------------
-## ## check input and output
+## check input and output
 
 assert("=> fVarName() input/output",
        fVarName(df1$Temp) == fVarName(df1["Temp"]),

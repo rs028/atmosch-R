@@ -224,7 +224,7 @@ fConvTime <- function(data.in, unit.in, unit.out) {
 }
 
 fConvSI <- function(data.in, unit.in, unit.out) {
-  ## Convert between multiples of SI units:
+  ## Convert between multiples and fractions of SI units:
   ## * peta      = "P"
   ## * tera      = "T"
   ## * giga      = "G"
