@@ -9,7 +9,7 @@
 ### - fNormCIMS()    : normalize CIMS data
 ### - fDiagnCIMS()   : run CIMS diagnostics
 ###
-### version 4.1, Apr 2019
+### version 4.2, Aug 2019
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -438,6 +438,9 @@ fDiagnCIMS <- function(cims.df, start.str, stop.str, fn.str) {
   hv.a08 <- cims.df$A24     # CDC RF
   hv.a09 <- cims.df$A25     # octopole RF
   hv.a10 <- cims.df$A26     # octopole DC
+  hv.b01 <- cims.df$A27     # detector rear (PS1)
+  hv.b02 <- cims.df$A28     # detector front (PS2)
+  hv.b03 <- cims.df$A29     # detector front (PS3)
   hv.b05 <- cims.df$A30     # CDC pressure
   hv.b06 <- cims.df$A31     # Main pressure
   hv.b07 <- cims.df$A32     # Quad pressure
@@ -483,13 +486,22 @@ fDiagnCIMS <- function(cims.df, start.str, stop.str, fn.str) {
   abline(h=1000, col="red", lwd=2, lty=2)
   plot(tst.dt[x1:x2], hv.b05[x1:x2], type="l", ylim=c(5500,5900),
        xlab="time", ylab="mV", main="CDC pressure")
-  abline(h=5700, col="red", lwd=2, lty=2)
+  abline(h=5650, col="red", lwd=2, lty=2)
   plot(tst.dt[x1:x2], hv.b06[x1:x2], type="l", ylim=c(3500,3900),
        xlab="time", ylab="mV", main="Main pressure")
-  abline(h=3700, col="red", lwd=2, lty=2)
+  abline(h=36500, col="red", lwd=2, lty=2)
   plot(tst.dt[x1:x2], hv.b07[x1:x2], type="l", ylim=c(1800,2100),
        xlab="time", ylab="mV", main="Quad pressure")
-    abline(h=1900, col="red", lwd=2, lty=2)
+  abline(h=1900, col="red", lwd=2, lty=2)
+  plot(tst.dt[x1:x2], hv.b01[x1:x2], type="l", ylim=c(3200,3800),
+       xlab="time", ylab="mV", main="detector rear")
+  abline(h=3519, col="red", lwd=2, lty=2)
+  plot(tst.dt[x1:x2], hv.b02[x1:x2], type="l", ylim=c(1400,1800),
+       xlab="time", ylab="mV", main="detector front")
+  abline(h=1502, col="red", lwd=2, lty=2)
+  plot(tst.dt[x1:x2], hv.b03[x1:x2], type="l", ylim=c(0,1000),
+       xlab="time", ylab="mV", main="PS3")
+  abline(h=0, col="red", lwd=2, lty=2)
   ## close pdf file
   if (fn.str != "") {
     dev.off()
