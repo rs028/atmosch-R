@@ -8,8 +8,10 @@
 
 fSolar <- function(lat, long, dt.chron) {
   ## Calculate Earth-Sun angles (in radians):
+  ## * day angle = "THETA"
   ## * sun declination = "DEC"
   ##   angle between center of the Sun and Earth's equatorial plane
+  ## * equation of time = "EQT"
   ## * local hour angle = "LHA"
   ##   angle between observer's meridian and Sun's meridian
   ## * solar zenith angle = "SZA"

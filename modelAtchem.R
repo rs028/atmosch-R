@@ -83,18 +83,17 @@ fAtchemOut <- function(output.dir, output.lst, start.str) {
     stop(paste(lst.name, "must be a list", sep=" "))
   }
   ## load output files
-  df.res <- read.table(paste(output.dir, output.lst[1], sep=""),
-                       header=TRUE, sep="")
+  df.res <- read.table(paste(output.dir, output.lst[1], sep=""), header=TRUE, sep="")
   if (length(output.lst) > 1) {
     for (i in 2:length(output.lst)) {
-      res.i <- read.table(paste(output.dir, output.lst[i], sep=""),
-                          header=TRUE, sep="")
+      res.i <- read.table(paste(output.dir, output.lst[i], sep=""), header=TRUE, sep="")
       df.res <- merge(df.res, res.i, by="t")
     }
   }
-  ## model time (seconds since start) and datetime (chron)
+  ## model time (seconds since start)
+  model.start <- fChronStr(start.str, "d-m-y h:m:s")
   df.out <- data.frame(SEC=df.res$t)
-  df.out$datetime <- df.out$SEC/86400 + fChronStr(start.str, "d-m-y h:m:s")
+  df.out$datetime <- df.out$SEC / 86400 + model.start
   ## output data.frame
   df.out <- cbind(df.out, df.res[-1])
   colnames(df.out) <- toupper(colnames(df.out))
