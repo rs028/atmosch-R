@@ -15,7 +15,7 @@
 ### DS (NOAA Aeronomy Lab).
 ### ---------------------------------------------------------------- ###
 
-fOpenair <- function(data.df, time.str, ws.str, wd.str) {
+fOpenair <- function(data.df, time.str, ws.str, wd.str, tz.str="GMT") {
   ## Convert a data.frame for use with the openair package
   ## (https://davidcarslaw.github.io/openair/):
   ## * use openair naming convention for date, time, wind speed and
@@ -27,6 +27,7 @@ fOpenair <- function(data.df, time.str, ws.str, wd.str) {
   ##     time.str = name of datetime variable
   ##     ws.str = name of wind speed variable (m/s)
   ##     wd.str = name of wind direction variable (deg N)
+  ##     tz.str = 
   ## output:
   ##     df.out = data.frame ( datetime, variables )
   ## ------------------------------------------------------------
@@ -45,7 +46,7 @@ fOpenair <- function(data.df, time.str, ws.str, wd.str) {
     }
     colnames(df.out) <- df.vars
     ## convert datetime to POSIX format
-    time.x <- as.POSIXlt(df.out$date, tz="GMT")
+    time.x <- as.POSIXlt(df.out$date, tz=tz.str)
     time.x <- round.POSIXt(time.x)
     df.out$date <- as.POSIXct(time.x)
     ## output data.frame
@@ -231,7 +232,7 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   if (fn.str != "") {
     dev.off()
   }
-  ## output list
+  ## output list: 
   return(lst.out)
 }
 
