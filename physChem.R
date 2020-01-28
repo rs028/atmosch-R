@@ -6,12 +6,12 @@
 ### - fKTer()   : rate coefficient of termolecular reaction
 ### - fLifeT()  : chemical lifetime and half-life
 ###
-### version 2.2, Dec 2017
+### version 2.3, Aug 2019
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fGasLaw <- function(press, vol, mol, temp) {
-  ## solve the equation of state of a gas using the ideal gas law:
+  ## Solve the equation of state of a gas using the ideal gas law:
   ##    PV = nRT
   ##
   ## input:     [ "?" for unknown variable ]
@@ -20,27 +20,26 @@ fGasLaw <- function(press, vol, mol, temp) {
   ##     mol = number of moles
   ##     temp = temperature (K)
   ## output:
-  ##     df.out = data.frame( unknown variable )
+  ##     df.out = data.frame( Press = pressure,
+  ##                          Vol = volume,
+  ##                          Mol = number of moles,
+  ##                          Temp = temperature )
   ## ------------------------------------------------------------
   ## gas constant
   r.gas <- fConstant("R")$Value
   ## calculate unknown variable
   if (all(press == "?")) {        # pressure
-    var.x <- (mol * r.gas * temp) / vol
-    str.x <- "Press"
+    press <- (mol * r.gas * temp) / vol
   } else if (all(vol == "?")) {   # volume
-    var.x <- (mol * r.gas * temp) / press
-    str.x <- "Vol"
+    vol <- (mol * r.gas * temp) / press
   } else if (all(mol == "?")) {   # moles
-    var.x <- (press * vol) / (r.gas * temp)
-    str.x <- "Mol"
+    mol <- (press * vol) / (r.gas * temp)
   } else if (all(temp == "?")) {  # temperature
-    var.x <- (press * vol) / (mol * r.gas)
-    str.x <- "Temp"
+    temp <- (press * vol) / (mol * r.gas)
   }
   ## output data.frame
-  df.out <- data.frame(var.x)
-  colnames(df.out) <- str.x
+  df.out <- data.frame(press, vol, mol, temp)
+  colnames(df.out) <- c("Press", "Vol", "Mol", "Temp")
   return(df.out)
 }
 
