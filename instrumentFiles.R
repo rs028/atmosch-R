@@ -2,11 +2,11 @@
 ### functions to read data files from commercial instruments:
 ### - fRead_Thermo() : Thermo Scientific monitors
 ###
-### version 1.3, May 2019
+### version 1.4, June 2020
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
-fRead_Thermo <- function(data.dir, data.fn, monitor.n, data.var=NULL) {
+fRead_Thermo <- function(data.dir, data.fn, type.str, data.var=NULL) {
   ## Thermo Scientific monitors.
   ##
   ## The Thermo Scientific monitors can log data in two ways:
@@ -20,7 +20,7 @@ fRead_Thermo <- function(data.dir, data.fn, monitor.n, data.var=NULL) {
   ## input:
   ##     data.dir = data file directory
   ##     data.fn = name of data file
-  ##     monitor.n = "iport" OR "42c" OR "42i" OR "42iTL" OR
+  ##     type.str = "iport" OR "42c" OR "42i" OR "42iTL" OR
   ##                 "49i" OR "user"
   ##     data.var = user-set streaming variables     [ OPTIONAL ]
   ## output:
@@ -29,37 +29,37 @@ fRead_Thermo <- function(data.dir, data.fn, monitor.n, data.var=NULL) {
   ## ------------------------------------------------------------
   data.file <- paste(data.dir, data.fn, sep="")
   ## import data file
-  switch(monitor.n,
+  switch(type.str,
          "iport" = {  # any monitor - iPort mode
-           data.df <- read.table(data.file, header=TRUE, sep="", skip=5)
+           data.df <- read.table(data.file, header=TRUE, fill=TRUE, sep="", skip=5)
          },
          "42c" = {    # NOx monitor 42c - iPort mode
-           data.df <- read.table(data.file, header=FALSE, sep="", skip=6)
+           data.df <- read.table(data.file, header=FALSE, fill=TRUE, sep="", skip=6)
            colnames(data.df) <- c("Time", "Date", "Flags", "no", "nox", "pmt_volt",
                                   "pmt_temp", "int_temp", "chamb_temp", "conv_temp",
                                   "pres", "samp_flow", "o3_flow")
-           ## get year from file information header
+           ## get year from file header
            info.str <- readLines(data.file, n=2)[2]
            yr.str <- substr(info.str, nchar(info.str)-1, nchar(info.str))
            data.df$Date <- paste(data.df$Date, yr.str, sep="-")
          },
          "42i" = {    # NOx monitor 42i - streaming mode
-           data.df <- read.table(data.file, header=FALSE, sep="")
+           data.df <- read.table(data.file, header=FALSE, fill=TRUE, sep="")
            colnames(data.df) <- c("Time", "Date", "Flags", "no", "no2", "nox", "intt",
                                   "pres", "smplf")
          },
          "42iTL" = {  # NOx monitor 42iTL - streaming mode
-           data.df <- read.table(data.file, header=FALSE, sep="")
+           data.df <- read.table(data.file, header=FALSE, fill=TRUE, sep="")
            colnames(data.df) <- c("Time", "Date", "no", "no2", "nox", "pre", "intt",
                                   "pres", "smplf")
          },
          "49i" = {    # O3 monitor 49i - streaming mode
-           data.df <- read.table(data.file, header=FALSE, sep="")
+           data.df <- read.table(data.file, header=FALSE, fill=TRUE, sep="")
            colnames(data.df) <- c("Time", "Date", "Flags", "o3", "cellai", "cellbi",
                                   "noisa", "noisb", "flowa", "flowb", "pres")
          },
          "user" = {   # any monitor - streaming mode (user-set variables)
-           data.df <- read.table(data.file, header=FALSE, sep="")
+           data.df <- read.table(data.file, header=FALSE, fill=TRUE, sep="")
            if (!is.null(data.var) & (ncol(data.df) == length(data.var))) {
              colnames(data.df) <- data.var
            } else {
