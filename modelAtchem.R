@@ -1,15 +1,16 @@
 ### ---------------------------------------------------------------- ###
-### functions for the AtChem/MCM model (https://github.com/AtChem/AtChem2):
-### - fAtchemIn()  : AtChem constraint files
-### - fAtchemOut() : AtChem output files
-### - fConstrGap() : find gaps in constrained data
+### functions for the AtChem2 model (https://github.com/AtChem/AtChem2):
+### - fAtchemIn()    : constraint files
+### - fAtchemOut()   : output files
+### - fAtchemRates() : output files ( 
+### - fConstrGap()   : find gaps in constrained data
 ###
-### version 1.5, Feb 2019
+### version 1.6, June 2020
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fAtchemIn <- function(constr.dir, constr.df, start.str) {
-  ## Generate constraint files for the AtChem/MCM model:
+  ## Generate constraint files for the AtChem2 model:
   ## * concentrations (molecule cm-3)
   ## * temperature (K)
   ## * pressure (mbar)
@@ -65,8 +66,8 @@ fAtchemIn <- function(constr.dir, constr.df, start.str) {
 }
 
 fAtchemOut <- function(output.dir, output.lst, start.str) {
-  ## Import output files from the AtChem/MCM model:
-  ## * concentration of chemical species
+  ## Import output files from the AtChem2 model:
+  ## * concentrations of chemical species
   ## * environment variables
   ## * photolysis rates
   ## * diagnostic variables
@@ -83,10 +84,10 @@ fAtchemOut <- function(output.dir, output.lst, start.str) {
     stop(paste(lst.name, "must be a list", sep=" "))
   }
   ## load output files
-  df.res <- read.table(paste(output.dir, output.lst[1], sep=""), header=TRUE, sep="")
+  df.res <- read.table(paste(output.dir, output.lst[1], sep=""), header=TRUE, fill=TRUE, sep="")
   if (length(output.lst) > 1) {
     for (i in 2:length(output.lst)) {
-      res.i <- read.table(paste(output.dir, output.lst[i], sep=""), header=TRUE, sep="")
+      res.i <- read.table(paste(output.dir, output.lst[i], sep=""), header=TRUE, fill=TRUE, sep="")
       df.res <- merge(df.res, res.i, by="t")
     }
   }
@@ -101,7 +102,7 @@ fAtchemOut <- function(output.dir, output.lst, start.str) {
 }
 
 fConstrGap <- function(constr.dir, constr.lst, max.gap, fn.str) {
-  ## Parse the AtChem constraint files and find gaps in the constraint
+  ## Parse the AtChem2 constraint files and find gaps in the constraint
   ## data that are larger than the data gap threshold.
   ##
   ## Optional: save plots of model constraints to pdf file.
