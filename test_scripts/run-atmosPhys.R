@@ -18,18 +18,18 @@ df1 <- data.frame(GMT = c(chron("03/15/10", "22:00:00"),
 
 x0 <- fSolar(df1$Lat, df1$Long, df1$GMT)
 
-assert("=> fSolar() input/output format",
+assert("=> fSolar() input",
        x0 == fSolar(df1["Lat"], df1["Long"], df1["GMT"]),
        x0 == fSolar(df1$Lat, df1["Long"], df1$GMT),
-       x0 == fSolar(df1["Lat"], df1$Long, df1["GMT"]),
-       x0$DEC == fSolar(df1$Lat, df1$Long, df1["GMT"])["DEC"])
+       x0 == fSolar(df1["Lat"], df1$Long, df1["GMT"])
+       )
 
-assert("=> fSolar() output data.frame",
+assert("=> fSolar() output",
        is.data.frame(x0),
        nrow(x0) == 3,
        ncol(x0) == 7
        )
 
-assert("=> fSolar() calculated values",
+assert("=> fSolar() values",
        fSolar(45.9, -15.4, chron("03/16/10","08:00:00")) == fSolar(df1$Lat, df1$Long, df1$GMT)[2,]
        )
