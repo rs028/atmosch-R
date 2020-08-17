@@ -57,13 +57,13 @@ fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
   ## the other variables.
   ##
   ## NB: the base function merge() only works on two data.frames at a
-  ## time -- see documentation of merge()
+  ## time -- see documentation of merge().
   ##
   ## input:
   ##     df.lst = list of data.frames to merge
   ##     var.str = name of common variable
   ##     all.str = type of merge operation ("TRUE" OR "FALSE")
-  ##     suff.lst = list of suffixes to rename variables
+  ##     suff.lst = list of suffixes to rename variables -> make optional
   ## output:
   ##     df.merg = data.frame ( merged data )
   ## ------------------------------------------------------------

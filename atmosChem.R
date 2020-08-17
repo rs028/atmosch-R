@@ -16,8 +16,8 @@ fAirND <- function(temp, press) {
   ##     press = pressure (Pa)
   ## output:
   ##     df.out = data.frame ( M = number density of air,
-  ##                           O2 = number density of O2,
-  ##                           N2 = number density of N2
+  ##                           O2 = number density of oxygen,
+  ##                           N2 = number density of nitrogen,
   ##                           Temp = temperature,
   ##                           Press = pressure )
   ## ------------------------------------------------------------
@@ -51,7 +51,7 @@ fFractO1D <- function(h2o, temp, press) {
   ##                           Temp = temperature,
   ##                           Press = pressure )
   ## ------------------------------------------------------------
-  ## oxygen, nitrogen number density
+  ## number density of oxygen and nitrogen
   o2.air <- fAirND(temp, press)$O2
   n2.air <- fAirND(temp, press)$N2
   ## rate coefficients
