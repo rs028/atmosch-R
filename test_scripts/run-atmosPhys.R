@@ -24,7 +24,7 @@ assert("=> fSolar() input",
 assert("=> fSolar() output",
        is.data.frame(x0),
        nrow(x0) == 3,
-       ncol(x0) == 7
+       ncol(x0) == 9
        )
 
 assert("=> fSolar() values",

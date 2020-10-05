@@ -21,15 +21,15 @@ fAirND <- function(temp, press) {
   ##                           Temp = temperature,
   ##                           Press = pressure )
   ## ------------------------------------------------------------
-  ## Avogadro number, gas constant
+  ## Avogadro number and molar gas constant
   n.avog <- fConstant("Na")$Value
   r.gas <- fConstant("R")$Value
   ## number density of air, oxygen, nitrogen
-  m.air <- 1.0e-06 * (n.avog * press) / (r.gas * temp)
-  o2.air <- 0.21 * m.air
-  n2.air <- 0.78 * m.air
+  m.nd <- 1.0e-06 * (n.avog * press) / (r.gas * temp)
+  o2.nd <- 0.21 * m.nd
+  n2.nd <- 0.78 * m.nd
   ## output data.frame
-  df.out <- data.frame(m.air, o2.air, n2.air, temp, press)
+  df.out <- data.frame(m.nd, o2.nd, n2.nd, temp, press)
   colnames(df.out) <- c("M", "O2", "N2", "Temp", "Press")
   return(df.out)
 }
@@ -52,15 +52,15 @@ fFractO1D <- function(h2o, temp, press) {
   ##                           Press = pressure )
   ## ------------------------------------------------------------
   ## number density of oxygen and nitrogen
-  o2.air <- fAirND(temp, press)$O2
-  n2.air <- fAirND(temp, press)$N2
+  o2.nd <- fAirND(temp, press)$O2
+  n2.nd <- fAirND(temp, press)$N2
   ## rate coefficients
   k.o1d_h2o <- 2.20e-10                      # O1D + H2O = OH + OH
   k.o1d_o2 <- fKBi(3.2e-11, 67.0, temp)$k1   # O1D + O2 = O3P + O2
   k.o1d_n2 <- fKBi(2.1e-11, 115.0, temp)$k1  # O1D + N2 = O3P + N2
   ## fraction of O1D reacting with H2O
   rate.water <- k.o1d_h2o * h2o
-  rate.air <- (k.o1d_o2 * o2.air) + (k.o1d_n2 * n2.air)
+  rate.air <- (k.o1d_o2 * o2.nd) + (k.o1d_n2 * n2.nd)
   f.o1d <- rate.water / (rate.water + rate.air)
   ## output data.frame
   df.out <- data.frame(f.o1d, h2o, temp, press)

@@ -37,9 +37,9 @@ cat("  ....... OK\n")
 ## source("run-modelAtchem.R")
 ## cat("  ....... OK\n")
 
-## cat("* testing: physChem.R\n")
-## source("run-physChem.R")
-## cat("  ....... OK\n")
+cat("* testing: physChem.R\n")
+source("run-physChem.R")
+cat("  ....... OK\n")
 
 ## cat("* testing: processData.R\n")
 ## source("run-processData.R")
