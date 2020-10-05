@@ -24,7 +24,7 @@ fAirND <- function(temp, press) {
   ## Avogadro number, gas constant
   n.avog <- fConstant("Na")$Value
   r.gas <- fConstant("R")$Value
-  ## calculate number density
+  ## number density of air, oxygen, nitrogen
   m.air <- 1.0e-06 * (n.avog * press) / (r.gas * temp)
   o2.air <- 0.21 * m.air
   n2.air <- 0.78 * m.air
@@ -36,8 +36,8 @@ fAirND <- function(temp, press) {
 
 fFractO1D <- function(h2o, temp, press) {
   ## Calculate the fraction of singlet oxygen atoms (O1D) which reacts
-  ## with water vapour to form OH radicals (instead of being quenched
-  ## by collision with atmospheric oxygen and nitrogen).
+  ## with water vapour to form OH radicals -- instead of being
+  ## quenched by collision with atmospheric oxygen and nitrogen.
   ##
   ## [ from Ravishankara et al., Geophys. Res. Lett., 2002 ]
   ##

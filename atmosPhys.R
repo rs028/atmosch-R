@@ -33,7 +33,9 @@ fSolar <- function(lat, long, dt.chron) {
   ##                           EQT = equation of time,
   ##                           LHA = local hour angle,
   ##                           SZA = solar zenith angle,
-  ##                           SEA = solar elevation angle )
+  ##                           SEA = solar elevation angle,
+  ##                           LAT = latitude,
+  ##                           LONG = longitude )
   ## ---------------------------------------------------------------------
   if (is.data.frame(dt.chron)) {
     datet <- dt.chron[[1]]
@@ -74,7 +76,7 @@ fSolar <- function(lat, long, dt.chron) {
   sza <- acos(sin(dec) * sin(lat.r) + cos(dec) * cos(lat.r) * cos(lha))
   sea <- pi/2 - sza
   ## output data.frame
-  df.out <- data.frame(datet, theta, dec, eqt, lha, sza, sea)
-  colnames(df.out) <- c("GMT", "THETA", "DEC", "EQT", "LHA", "SZA", "SEA")
+  df.out <- data.frame(datet, theta, dec, eqt, lha, sza, sea, lat.r, long.r)
+  colnames(df.out) <- c("GMT", "THETA", "DEC", "EQT", "LHA", "SZA", "SEA", "LAT", "LONG")
   return(df.out)
 }
