@@ -53,7 +53,9 @@ assert("=> fKBi() output",
        )
 
 assert("=> fKBi() values",
-       fKBi(3.6e-12, 270, 300) == fKBi(df2$AA, df2$EA, df1$Temp)[2,2:3]
+       fKBi(3.6e-12, 270, 300) == fKBi(df2$AA, df2$EA, df1$Temp)[2,2:3],
+       fKBi(3.6e-12, 270, 300) == fKBi(3.6e-12, 270, df1$Temp)[2,],
+       fKBi(3.6e-12, 270, 300) == fKBi(df2$AA, df2$EA, 300)[,2:3]
        )
 
 ## -----------------------------------------------
@@ -83,7 +85,9 @@ assert("=> fKBix() output",
        )
 
 assert("=> fKBix() values",
-       fKBix(2.03e-16, 300, 4.57, 693, 300) == fKBix(df2$AA, df2$T0, df2$NN, df2$EA, df1$Temp)[2,2:3]
+       fKBix(2.03e-16, 300, 4.57, 693, 300) == fKBix(df2$AA, df2$T0, df2$NN, df2$EA, df1$Temp)[2,2:3],
+       fKBix(2.03e-16, 300, 4.57, 693, 300) == fKBix(2.03e-16, 300, 4.57, 693, df1$Temp)[2,],
+       fKBix(2.03e-16, 300, 4.57, 693, 300) == fKBix(df2$AA, df2$T0, df2$NN, df2$EA, 300)[,2:3]
        )
 
 ## -----------------------------------------------
@@ -120,8 +124,12 @@ assert("=> fKTer() output",
        )
 
 assert("=> fKTer() values",
-       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101400, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, df1$Temp, df1$Press, "iupac")[2,]
-       )
+       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101400, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, df1$Temp, df1$Press, "iupac")[2,],
+       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101400, "iupac") == fKTer(8.6e-29, 9.0e-12, 0.48, df1$Temp, df1$Press, "iupac")[2,],
+       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101400, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, 300, df1$Press, "iupac")[2,],
+       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101400, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, df1$Temp, 101400, "iupac")[2,],
+       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101400, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, 300, 101400, "iupac")[2,]
+)
 
 ## -----------------------------------------------
 ## fLifeT()
@@ -147,5 +155,7 @@ assert("=> fLifeT() output",
        )
 
 assert("=> fLifeT() values",
-       fLifeT(1.78e-14, 2.3e10) == fLifeT(df2$k.O3, df2$NO)[2,]
+       fLifeT(1.78e-14, 2.3e10) == fLifeT(df2$k.O3, df2$NO)[2,],
+       fLifeT(1.78e-14, 2.3e10) == fLifeT(1.78e-14, df2$NO)[2,],
+       fLifeT(1.78e-14, 2.3e10) == fLifeT(df2$k.O3, 2.3e10)[2,]
        )

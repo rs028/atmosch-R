@@ -17,9 +17,9 @@ cat("* testing: atmosPhys.R\n")
 source("run-atmosPhys.R")
 cat("  ....... OK\n")
 
-## cat("* testing: convertUnits.R\n")
-## source("run-convertUnits.R")
-## cat("  ....... OK\n")
+cat("* testing: convertUnits.R\n")
+source("run-convertUnits.R")
+cat("  ....... OK\n")
 
 ## cat("* testing: fileUtils.R\n")
 ## source("run-fileUtils.R")
