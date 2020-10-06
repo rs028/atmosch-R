@@ -2,7 +2,7 @@
 ### functions for atmospheric physics:
 ### - fSolar() : Earth-Sun angles
 ###
-### version 1.8, Apr 2019
+### version 1.9, Oct 2020
 ### author: RS
 ### ---------------------------------------------------------------- ###
 

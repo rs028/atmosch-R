@@ -7,7 +7,7 @@
 ###   https://www.nist.gov/pml/fundamental-physical-constants
 ###   https://www.nist.gov/pml/elemental-data-index
 ###
-### version 3.4, April 2019
+### version 3.5, Oct 2020
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -40,14 +40,14 @@ fConstant <- function(symb.in) {
   n07 <- c("standard gravity", "g0", 9.80665, "m s-2")
   n08 <- c("speed of light", "c0", 299792458, "m s-1")
   n09 <- c("atomic mass constant", "mu", 1.660539040e-24, "g")
-  data.df <- rbind(n01, n02, n03, n04, n05, n06, n07, n08, n09)
+  data.db <- rbind(n01, n02, n03, n04, n05, n06, n07, n08, n09)
   ## select and output constant
-  for (i in 1:nrow(data.df)) {
-    if (symb.in == data.df[i,2]) {
-      nn <- as.character(data.df[i,1])  # name
-      ss <- as.character(data.df[i,2])  # symbol
-      vv <- as.numeric(data.df[i,3])    # value
-      uu <- as.character(data.df[i,4])  # unit
+  for (i in 1:nrow(data.db)) {
+    if (symb.in == data.db[i,2]) {
+      nn <- as.character(data.db[i,1])  # name
+      ss <- as.character(data.db[i,2])  # symbol
+      vv <- as.numeric(data.db[i,3])    # value
+      uu <- as.character(data.db[i,4])  # unit
     }
   }
   data.out <- data.frame(Name=nn, Symbol=ss, Value=vv, Unit=uu)
@@ -158,7 +158,7 @@ fPeriodic <- function(symb.in) {
   n90 <- c("Thorium", "Th", 90, 232.03806)
   n91 <- c("Protactinium", "Pa", 91, 231.0359)
   n92 <- c("Uranium", "U", 92, 238.02891)
-  data.df <- rbind(n01, n02, n03, n04, n05, n06, n07, n08, n09,
+  data.db <- rbind(n01, n02, n03, n04, n05, n06, n07, n08, n09,
                    n10, n11, n12, n13, n14, n15, n16, n17, n18,
                    n19, n20, n21, n22, n23, n24, n25, n26, n27,
                    n28, n29, n30, n31, n32, n33, n34, n35, n36,
@@ -170,12 +170,12 @@ fPeriodic <- function(symb.in) {
                    n82, n83, n84, n85, n86, n87, n88, n89, n90,
                    n91, n92)
   ## select and output element
-  for (i in 1:nrow(data.df)) {
-    if (symb.in == data.df[i,2]) {
-      nn <- as.character(data.df[i,1])  # name
-      ss <- as.character(data.df[i,2])  # symbol
-      an <- as.numeric(data.df[i,3])    # atomic number
-      aw <- as.numeric(data.df[i,4])    # atomic weight
+  for (i in 1:nrow(data.db)) {
+    if (symb.in == data.db[i,2]) {
+      nn <- as.character(data.db[i,1])  # name
+      ss <- as.character(data.db[i,2])  # symbol
+      an <- as.numeric(data.db[i,3])    # atomic number
+      aw <- as.numeric(data.db[i,4])    # atomic weight
     }
   }
   data.out <- data.frame(Name=nn, Symbol=ss, Atomic.N=an,  Atomic.W=aw)

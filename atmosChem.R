@@ -3,7 +3,7 @@
 ### - fAirND()    : number density of air, oxygen, nitrogen
 ### - fFractO1D() : fraction of O1D reacting with water
 ###
-### version 2.1, Dec 2017
+### version 2.2, Oct 2020
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -39,7 +39,7 @@ fFractO1D <- function(h2o, temp, press) {
   ## with water vapour to form OH radicals -- instead of being
   ## quenched by collision with atmospheric oxygen and nitrogen.
   ##
-  ## [ from Ravishankara et al., Geophys. Res. Lett., 2002 ]
+  ## [ Ravishankara et al., Geophys. Res. Lett., 2002 ]
   ##
   ## input:
   ##     h2o = water concentration (molecule cm-3)
