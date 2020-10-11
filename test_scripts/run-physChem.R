@@ -151,7 +151,7 @@ assert("=> fLifeT() input",
 assert("=> fLifeT() output",
        is.data.frame(x0),
        nrow(x0) == 3,
-       ncol(x0) == 4
+       ncol(x0) == 3
        )
 
 assert("=> fLifeT() values",

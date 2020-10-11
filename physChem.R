@@ -14,9 +14,11 @@ fGasLaw <- function(press, vol, mol, temp) {
   ## Solve the equation of state of a gas using the ideal gas law:
   ##    PV = nRT
   ##
-  ## input:     [ "?" for unknown variable ]
+  ## NB: use "?" to indicate the unknown variable.
+  ##
+  ## input:
   ##     press = pressure (Pa)
-  ##     vol = volume (m3 = 1000 L)
+  ##     vol = volume (m3; 1 m3 = 1000 L)
   ##     mol = number of moles
   ##     temp = temperature (K)
   ## output:
@@ -159,20 +161,19 @@ fLifeT <- function(k.gas, c.gas) {
   ## input:
   ##     k.gas = rate coefficient (cm3 molecule-1 s-1 OR s-1)
   ##     c.gas = concentration of reactant gas (molecule cm-3) OR
-  ##             1 (for a first-order process, with `k.gas` in s-1)
+  ##             1 (for a first order process, with `k.gas` in s-1)
   ## output:
-  ##     df.out = data.frame( LifeT = lifetime,
-  ##                          HalfL = half-life,
-  ##                          kt = rate coefficient,
-  ##                          conc = reactant concentration )
+  ##     df.out = data.frame( kp = pseudo-1st order rate coefficient,
+  #                           tau = lifetime,
+  ##                          t1_2 = half-life )
   ## ------------------------------------------------------------
-  ## pseudo first-order rate coefficient
+  ## pseudo-1st order rate coefficient
   kp <- k.gas * c.gas
   ## lifetime and half-life
-  tau.g <- 1 / kp
-  half.g <- tau.g * log(2)
+  tau <- 1 / kp
+  t1_2 <- tau * log(2)
   ## output data.frame
-  df.out <- data.frame(tau.g, half.g, k.gas, c.gas)
-  colnames(df.out) <- c("LifeT", "HalfL", "kt", "conc")
+  df.out <- data.frame(kp, tau, t1_2)
+  colnames(df.out) <- c("kp", "tau", "t1_2")
   return(df.out)
 }
