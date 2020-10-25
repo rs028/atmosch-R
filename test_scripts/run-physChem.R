@@ -7,26 +7,30 @@ require(testit)
 ## -----------------------------------------------
 ## fGasLaw()
 
-## df1 <- data.frame(Temp = c(298, 300, 302),
-##                   Press = c(101300, 101400, 101500),
-##                   Mol = c(20, 30, 40)
-##                   )
+df1 <- data.frame(Temp = runif(10, 173, 373),
+                  Press = runif(10, 0, 150000),
+                  Vol = runif(10, 0, 100))
 
-## x1 <- fGasLaw(p0, "?", m0, t0)
-## x2 <- fGasLaw(p0, x1, "?", t0)
-## x3 <- fGasLaw(p0, x1, x2, "?")
-## x4 <- fGasLaw("?", x1, x2, x3)
+x1 <- fGasLaw(df1$Press, df1$Vol, "?", df1$Temp)
+x2 <- fGasLaw("?", x1$Vol, x1$Mol, x1$Temp)
+x3 <- fGasLaw(x2$Press, "?", x2$Mol, x2$Temp)
+x4 <- fGasLaw(x3$Press, x3$Vol, x3$Mol, "?")
+x5 <- fGasLaw(x4$Press, x4$Vol, "?", x4$Temp)
+assert("=> fGasLaw() calculations",
+       all.equal(x5, x1)
+       )
 
-## assert("=> fGasLaw",
-##        all.equal(x4, p0)
-##        )
+assert("=> fGasLaw() input",
+       x1 == fGasLaw(df1["Press"], df1["Vol"], "?", df1["Temp"]),
+       x1 == fGasLaw(df1$Press, df1["Vol"], "?", df1$Temp),
+       x1 == fGasLaw(df1["Press"], df1$Vol, "?", df1["Temp"])
+       )
 
-## x0 <- fGasLaw(df1$Press, "?", df1$Mol, df1$Temp)
-## assert("=> fGasLaw() output data.frame",
-##        is.data.frame(x0),
-##        nrow(x0) == 3,
-##        ncol(x0) == 4
-##        )
+assert("=> fGasLaw() output",
+       is.data.frame(x1),
+       nrow(x1) == 10,
+       ncol(x1) == 4
+       )
 
 ## -----------------------------------------------
 ## fKBi()
