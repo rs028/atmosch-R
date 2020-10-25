@@ -102,11 +102,9 @@ df2 <- data.frame(REAC = c("OH+C2H4 (zero)", "OH+C2H4 (inf)"),
                   NN = c(-3.1, -0.85),
                   EA = c(0, 0))
 
-x1 <- fKBix(df2$AA, df2$T0, df2$NN, df2$EA, df1$Temp)
-
 df3 <- data.frame(REAC = "OH+C2H4",
-                  K0 = x1$k1,
-                  KI = x1$k2,
+                  K0 = fKBix(df2$AA, df2$T0, df2$NN, df2$EA, df1$Temp)$k1,
+                  KI = fKBix(df2$AA, df2$T0, df2$NN, df2$EA, df1$Temp)$k2,
                   FC = 0.48)
 
 x0 <- fKTer(df3$K0, df3$KI, df3$FC, df1$Temp, df1$Press, "iupac")
@@ -138,14 +136,14 @@ df1 <- data.frame(Temp = c(298, 300, 302),
                   Press = c(101300, 101400, 101500))
 
 df2 <- data.frame(NO = c(2.5e10, 2.3e10, 2.7e10),
-                  k.O3 = c(1.73e-14, 1.78e-14, 1.83e-14))
+                  kO3 = c(1.73e-14, 1.78e-14, 1.83e-14))
 
-x0 <- fLifeT(df2$k.O3, df2$NO)
+x0 <- fLifeT(df2$kO3, df2$NO)
 
 assert("=> fLifeT() input",
-       x0 == fLifeT(df2["k.O3"], df2["NO"]),
-       x0 == fLifeT(df2["k.O3"], df2$NO),
-       x0 == fLifeT(df2$k.O3, df2["NO"])
+       x0 == fLifeT(df2["kO3"], df2["NO"]),
+       x0 == fLifeT(df2["kO3"], df2$NO),
+       x0 == fLifeT(df2$kO3, df2["NO"])
        )
 
 assert("=> fLifeT() output",
@@ -155,7 +153,7 @@ assert("=> fLifeT() output",
        )
 
 assert("=> fLifeT() values",
-       fLifeT(1.78e-14, 2.3e10) == fLifeT(df2$k.O3, df2$NO)[2,],
+       fLifeT(1.78e-14, 2.3e10) == fLifeT(df2$kO3, df2$NO)[2,],
        fLifeT(1.78e-14, 2.3e10) == fLifeT(1.78e-14, df2$NO)[2,],
-       fLifeT(1.78e-14, 2.3e10) == fLifeT(df2$k.O3, 2.3e10)[2,]
+       fLifeT(1.78e-14, 2.3e10) == fLifeT(df2$kO3, 2.3e10)[2,]
        )

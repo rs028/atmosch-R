@@ -57,3 +57,25 @@ assert("=> fFractO1D() values",
        fFractO1D(2e19, 300, 101350) == fFractO1D(df1$H2O, 300, df1$Press)[2,],
        fFractO1D(2e19, 300, 101350) == fFractO1D(2e19, df1$Temp, df1$Press)[2,]
        )
+
+## -----------------------------------------------
+## fParamOH()
+
+df1 <- data.frame(TIME = c(8, 9, 10, 11, 12, 13, 14, 15, 16),
+                  JO1D = c(1.2e-06, 2.7e-06, 4.5e-06, 7.9e-06, 9.4e-06, 9.2e-06, 7.9e-06, 4.9e-06, 2.0e-06))
+
+x0 <- fParamOH(df1$JO1D)
+
+assert("=> fParamOH() input",
+       x0 == fParamOH(df1["JO1D"])
+       )
+
+assert("=> fParamOH() output",
+       is.data.frame(x0),
+       nrow(x0) == 9,
+       ncol(x0) == 12
+       )
+
+assert("=> fParamOH() values",
+       fParamOH(4.5E-06) == fParamOH(df1$JO1D)[3,]
+       )

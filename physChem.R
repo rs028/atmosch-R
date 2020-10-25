@@ -34,7 +34,7 @@ fGasLaw <- function(press, vol, mol, temp) {
     press <- (mol * r.gas * temp) / vol
   } else if (all(vol == "?")) {   # volume
     vol <- (mol * r.gas * temp) / press
-  } else if (all(mol == "?")) {   # moles
+  } else if (all(mol == "?")) {   # n. of moles
     mol <- (press * vol) / (r.gas * temp)
   } else if (all(temp == "?")) {  # temperature
     temp <- (press * vol) / (mol * r.gas)
@@ -163,13 +163,13 @@ fLifeT <- function(k.gas, c.gas) {
   ##     c.gas = concentration of reactant gas (molecule cm-3) OR
   ##             1 (for a first order process, with `k.gas` in s-1)
   ## output:
-  ##     df.out = data.frame( kp = pseudo-1st order rate coefficient,
-  #                           tau = lifetime,
-  ##                          t1_2 = half-life )
+  ##     df.out = data.frame( kp = pseudo-1st order rate coeff,
+  #                           tau = chemical lifetime,
+  ##                          t1_2 = chemical half-life )
   ## ------------------------------------------------------------
   ## pseudo-1st order rate coefficient
   kp <- k.gas * c.gas
-  ## lifetime and half-life
+  ## chemical lifetime and half-life
   tau <- 1 / kp
   t1_2 <- tau * log(2)
   ## output data.frame
