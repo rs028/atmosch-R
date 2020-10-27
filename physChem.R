@@ -27,7 +27,7 @@ fGasLaw <- function(press, vol, mol, temp) {
   ##                          Mol = number of moles,
   ##                          Temp = temperature )
   ## ------------------------------------------------------------
-  ## gas constant
+  ## molar gas constant
   r.gas <- fConstant("R")$Value
   ## calculate unknown variable
   if (all(press == "?")) {        # pressure

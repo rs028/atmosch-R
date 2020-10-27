@@ -98,7 +98,7 @@ assert("=> fKBix() values",
 ## fKTer()
 
 df1 <- data.frame(Temp = c(298, 300, 302),
-                  Press = c(101300, 101400, 101500))
+                  Press = c(101300, 101350, 101400))
 
 df2 <- data.frame(REAC = c("OH+C2H4 (zero)", "OH+C2H4 (inf)"),
                   AA = c(8.6e-29, 9.0e-12),
@@ -126,18 +126,18 @@ assert("=> fKTer() output",
        )
 
 assert("=> fKTer() values",
-       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101400, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, df1$Temp, df1$Press, "iupac")[2,],
-       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101400, "iupac") == fKTer(8.6e-29, 9.0e-12, 0.48, df1$Temp, df1$Press, "iupac")[2,],
-       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101400, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, 300, df1$Press, "iupac")[2,],
-       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101400, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, df1$Temp, 101400, "iupac")[2,],
-       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101400, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, 300, 101400, "iupac")[2,]
+       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101350, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, df1$Temp, df1$Press, "iupac")[2,],
+       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101350, "iupac") == fKTer(8.6e-29, 9.0e-12, 0.48, df1$Temp, df1$Press, "iupac")[2,],
+       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101350, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, 300, df1$Press, "iupac")[2,],
+       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101350, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, df1$Temp, 101350, "iupac")[2,],
+       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101350, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, 300, 101350, "iupac")[2,]
 )
 
 ## -----------------------------------------------
 ## fLifeT()
 
 df1 <- data.frame(Temp = c(298, 300, 302),
-                  Press = c(101300, 101400, 101500))
+                  Press = c(101300, 101350, 101400))
 
 df2 <- data.frame(NO = c(2.5e10, 2.3e10, 2.7e10),
                   kO3 = c(1.73e-14, 1.78e-14, 1.83e-14))

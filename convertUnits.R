@@ -12,7 +12,7 @@
 ### conversion factors from WolframAlpha:
 ###   https://www.wolframalpha.com/
 ###
-### version 2.1, Mar 2019
+### version 2.2, Oct 2020
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -113,7 +113,7 @@ fConvPress <- function(data.in, unit.in, unit.out) {
            data.out <- data.ref / 1.01325e+05
          },
          "torr" = {
-           data.out <- data.ref / (20265 / 152)
+           data.out <- data.ref * (152 / 20265)
          },
          "bar" = {
            data.out <- data.ref / 1.0e+05
@@ -122,7 +122,7 @@ fConvPress <- function(data.in, unit.in, unit.out) {
            data.out <- data.ref / 1.0e+02
          },
          "psi" = {
-           data.out <- data.ref / (8896443230521 / 1290320000)
+           data.out <- data.ref * (1290320000 / 8896443230521)
          },
          stop("INPUT ERROR: unit not found")
          )
@@ -372,43 +372,42 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   ## output:
   ##     data.out = data in final unit
   ## ------------------------------------------------------------
-  if (!is.list(data.in)) {  #! may not be necessary !#
-    data.df <- data.in #data.frame(data.in)
-  } else {
-    data.df <- data.in
-  }
   ## check molar mass input
   if (unit.in == "UG" | unit.out == "UG") {
     if (is.null(m.mass)) {
       stop("INPUT ERROR: molar mass needed")
     }
   }
-  ## Avogadro number, air number density
+  ## Avogadro number, number density of air
   n.avog <- fConstant("Na")$Value
   m.air <- fAirND(temp, press)$M
   ## data in original unit to reference unit (ND)
   switch(unit.in,
          "ND" = {
-           data.ref <- data.df
+           data.ref <- data.in
          },
          "ppth" = {
-           data.ref <- data.df * (m.air * 1.0e-03)
+           data.ref <- data.in * (m.air * 1.0e-03)
          },
          "ppm" = {
-           data.ref <- data.df * (m.air * 1.0e-06)
+           data.ref <- data.in * (m.air * 1.0e-06)
          },
          "ppb" = {
-           data.ref <- data.df * (m.air * 1.0e-09)
+           data.ref <- data.in * (m.air * 1.0e-09)
          },
          "ppt" = {
-           data.ref <- data.df * (m.air * 1.0e-12)
+           data.ref <- data.in * (m.air * 1.0e-12)
          },
          "MD" = {
-           data.ref <- data.df * (n.avog * 1.0e-06)
+           data.ref <- data.in * (n.avog * 1.0e-06)
          },
          "UG" = {
-           data.ref <- t(apply(data.df, 1, function(x)
-                               (x / (m.mass * 1.0e+06)) * (n.avog * 1.0e-06)))
+           data.conv <- (data.in / 1.0e+06) * (n.avog * 1.0e-06)
+           if (length(m.mass) == 1) {
+             data.ref <- data.conv / m.mass
+           } else {
+             data.ref <- t(apply(data.conv, 1, function(x) x / m.mass))
+           }
          },
          stop("INPUT ERROR: unit not found")
          )
@@ -433,8 +432,12 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
            data.out <- data.ref / (n.avog * 1.0e-06)
          },
          "UG" = {
-           data.out <- t(apply(data.ref ,1, function(x)
-                               (x / (n.avog * 1.0e-06)) * (m.mass * 1.0e+06)))
+           data.conv <- (data.ref * 1.0e+06) / (n.avog * 1.0e-06)
+           if (length(m.mass) == 1) {
+             data.out <- data.conv * m.mass
+           } else {
+             data.out <- t(apply(data.conv, 1, function(x) x * m.mass))
+           }
          },
          stop("INPUT ERROR: unit not found")
          )
@@ -444,9 +447,11 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
 
 fConcAq <- function(data.in, unit.in, unit.out, m.mass=NULL) {
   ## Convert between units of concentration (aqueous-phase):
-  ## * molarity (mole/L, mole/dm3) = "M"
-  ## * mole m-3                    = "MD"
-  ## * ug m-3                      = "UG"
+  ## * mole/L (molarity) = "M"
+  ## * mole m-3          = "MD"
+  ## * ug m-3            = "UG"
+  ##
+  ## NB: molar mass is required only for conversions to/from "UG".
   ##
   ## input:
   ##     data.in = data in original unit
@@ -456,11 +461,6 @@ fConcAq <- function(data.in, unit.in, unit.out, m.mass=NULL) {
   ## output:
   ##     data.out = data in final unit
   ## -------------------------------------------------------------
-  if (!is.list(data.in)) {  #! may not be necessary !#
-    data.df <- data.in #data.frame(data.in)
-  } else {
-    data.df <- data.in
-  }
   ## check molar mass input
   if (unit.in == "UG" | unit.out == "UG") {
     if (is.null(m.mass)) {
@@ -470,14 +470,18 @@ fConcAq <- function(data.in, unit.in, unit.out, m.mass=NULL) {
   ## data in original unit to reference unit (M)
   switch(unit.in,
          "M" = {
-           data.ref <- data.df
+           data.ref <- data.in
          },
          "MD" = {
-           data.ref <- data.df * 1.0e-03
+           data.ref <- data.in * 1.0e-03
          },
          "UG" = {
-           data.ref <- t(apply(data.df, 1, function(x)
-                               (x / m.mass * 1.0e-03) * 1.0e-06))
+           data.conv <- (data.in * 1.0e-03) * 1.0e-06
+           if (length(m.mass) == 1) {
+             data.ref <- data.conv / m.mass
+           } else {
+             data.ref <- t(apply(data.conv, 1, function(x) x / m.mass))
+           }
          },
          stop("INPUT ERROR: unit not found")
          )
@@ -490,8 +494,12 @@ fConcAq <- function(data.in, unit.in, unit.out, m.mass=NULL) {
            data.out <- data.ref / 1.0e-03
          },
          "UG" = {
-           data.out <- t(apply(data.ref, 1, function(x)
-                               (x * m.mass / 1.0e-03) / 1.0e-06))
+           data.conv <- (data.ref / 1.0e-03) / 1.0e-06
+           if (length(m.mass) == 1) {
+             data.out <- data.conv * m.mass
+           } else {
+             data.out <- t(apply(data.conv, 1, function(x) x * m.mass))
+           }
          },
          stop("INPUT ERROR: unit not found")
          )

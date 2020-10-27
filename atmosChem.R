@@ -22,7 +22,7 @@ fAirND <- function(temp, press) {
   ##                           Temp = temperature,
   ##                           Press = pressure )
   ## ------------------------------------------------------------
-  ## Avogadro number and molar gas constant
+  ## Avogadro number, molar gas constant
   n.avog <- fConstant("Na")$Value
   r.gas <- fConstant("R")$Value
   ## number density of air, oxygen, nitrogen
