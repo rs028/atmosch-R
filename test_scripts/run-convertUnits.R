@@ -103,10 +103,11 @@ x1 <- fConcGas(x0, "ND", "ppth", df1$Temp, df1$Press)
 x2 <- fConcGas(x1, "ppth", "MD", df1$Temp, df1$Press)
 x3 <- fConcGas(x2, "MD", "ppm", df1$Temp, df1$Press)
 x4 <- fConcGas(x3, "ppm", "UG", df1$Temp, df1$Press, 48)
-x5 <- fConcGas(x4, "UG", "ppt", df1$Temp, df1$Press, 48)
-x6 <- fConcGas(x5, "ppt", "ppb", df1$Temp, df1$Press)
+x5 <- fConcGas(x4, "UG", "UG", df1$Temp, df1$Press, 48)
+x6 <- fConcGas(x5, "UG", "ppt", df1$Temp, df1$Press, 48)
+x7 <- fConcGas(x6, "ppt", "ppb", df1$Temp, df1$Press)
 assert("=> fConcGas() calculations",
-      all.equal(x6, df1$O3, tolerance=1e-7)
+      all.equal(x7, df1$O3, tolerance=1e-7)
       )
 
 ## -----------------------------------------------
@@ -126,10 +127,40 @@ assert("=> fConcAq() values",
        )
 
 x1 <- fConcAq(x0, "UG", "MD", 96)
-x2 <- fConcAq(x1, "MD", "M", 96)
+x2 <- fConcAq(x1, "MD", "MD")
+x3 <- fConcAq(x2, "MD", "M")
 assert("=> fConcAq() calculations",
-      all.equal(x2, df1$SO4, tolerance=1e-7)
+      all.equal(x3, df1$SO4, tolerance=1e-7)
       )
 
 ## -----------------------------------------------
 ## fHumid()
+
+df1 <- data.frame(Temp = c(298, 300, 302),
+                  Press = c(101300, 101350, 101400),
+                  RH = c(20, 40, 60))
+
+x0 <- fHumid(df1$RH, "RH", "PPM", df1$Temp, df1$Press)
+
+assert("=> fHumid() input",
+       x0 == fHumid(df1["RH"], "RH", "PPM", df1["Temp"], df1["Press"]),
+       x0 == fHumid(df1$RH, "RH", "PPM", df1["Temp"], df1$Press),
+       x0 == fHumid(df1["RH"], "RH", "PPM", df1$Temp, df1["Press"])
+       )
+
+assert("=> fHumid() values",
+       fHumid(40, "RH", "PPM", 300, 101350) == fHumid(df1$RH, "RH", "PPM", df1$Temp, df1$Press)[2],
+       fHumid(40, "RH", "PPM", 300, 101350) == fHumid(df1$RH, "RH", "PPM", 300, df1$Press)[2],
+       fHumid(40, "RH", "PPM", 300, 101350) == fHumid(df1$RH, "RH", "PPM", df1$Temp, 101350)[2],
+       fHumid(40, "RH", "PPM", 300, 101350) == fHumid(40, "RH", "PPM", df1$Temp, df1$Press)[2],
+       fHumid(55, "RH", "PPM", 296) == fHumid(55, "RH", "PPM", 296, 101325)
+       )
+
+x1 <- fHumid(x0, "PPM", "AH", df1$Temp, df1$Press)
+x2 <- fHumid(x1, "AH", "MR", df1$Temp)
+x3 <- fHumid(x2, "MR", "MR", df1$Temp)
+x4 <- fHumid(x3, "MR", "SH", df1$Temp)
+x5 <- fHumid(x4, "SH", "RH", df1$Temp)
+assert("=> fHumid() calculations",
+      all.equal(x5, df1$RH, tolerance=1e-7)
+      )
