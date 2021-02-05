@@ -40,7 +40,7 @@ fFractO1D <- function(h2o, temp, press) {
   ## with water vapour to form OH radicals -- instead of being
   ## quenched by collision with atmospheric oxygen and nitrogen.
   ##
-  ## [ Ravishankara et al., Geophys. Res. Lett., 2002 ]
+  ## [ kinetic data from Ravishankara et al., Geophys. Res. Lett., 2002 ]
   ##
   ## input:
   ##     h2o = water concentration (molecule cm-3)
@@ -73,7 +73,7 @@ fParamOH <- function(jo1d) {
   ## Estimate the concentration of OH radicals using the empirical
   ## relationship between OH and solar UV radiation developed by
   ## Ehhalt & Rohrer (J. Geophys. Res., 2000), Rohrer & Berresheim
-  ## (Nature, 2006). Empirical parameters have been derived from
+  ## (Nature, 2006). The empirical parameters have been derived from
   ## ambient datasets in different regions and conditions:
   ##
   ##   POPCORN    =  Rural Germany
@@ -88,14 +88,18 @@ fParamOH <- function(jo1d) {
   ##   OP3        =  Tropical forest Borneo
   ##   SOS        =  Coastal Cape Verde
   ##
-  ## [ from Stone et al., Chem Soc. Rev., 2012 ]
+  ## [ empirical parameters from Stone et al., Chem Soc. Rev., 2012 ]
   ##
   ## input:
   ##     jo1d = photolysis rate of O3 to O1D (s-1)
   ## output:
-  ##     df.out = data.frame ( JO1D, OH_popcorn, OH_albatross, ... )
+  ##     df.out = data.frame ( JO1D = O3 photolysis rate,
+  ##                           OH_popcorn = OH estimate for POPCORN,
+  ##                           OH_albatross = OH estimate for ALBATROSS,
+  ##                           OH_berlioz = OH estimate for BERLIOZ,
+  ##                           ... )
   ## ------------------------------------------------------------
-  ## empirical parameters from ambient datasets
+  ## empirical parameters derived from ambient datasets
   p01 <- c("popcorn", 3.90, 0.95, 0.04)
   p02 <- c("albatross", 1.40, 1.30, 0.20)
   p03 <- c("berlioz", 2.00, 0.95, 0.43)
@@ -108,7 +112,7 @@ fParamOH <- function(jo1d) {
   p10 <- c("op3", 0.94, 0.61, 0.20)
   p11 <- c("sos", 1.19, 0.98, 0.50)
   data.db <- rbind(p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11)
-  ## OH estimates
+  ## OH estimates for each ambient dataset
   df.out <- data.frame(JO1D = jo1d)
   for (i in 1:nrow(data.db)) {
     aa <- as.numeric(data.db[i,2])

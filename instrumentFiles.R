@@ -2,7 +2,7 @@
 ### functions to read data files from commercial instruments:
 ### - fRead_Thermo() : Thermo Scientific monitors
 ###
-### version 1.4, June 2020
+### version 1.4, Jun 2020
 ### author: RS
 ### ---------------------------------------------------------------- ###
 

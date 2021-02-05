@@ -12,7 +12,7 @@
 ### conversion factors from WolframAlpha:
 ###   https://www.wolframalpha.com/
 ###
-### version 2.2, Oct 2020
+### version 2.3, Feb 2021
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -363,14 +363,14 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   ## NB: molar mass is required only for conversions to/from "UG".
   ##
   ## input:
-  ##     data.in = data in original unit
-  ##     unit.in = original measurement unit
-  ##     unit.out = final measurement unit
+  ##     data.in = data in original concentration unit
+  ##     unit.in = original concentration unit
+  ##     unit.out = final concentration unit
   ##     temp = temperature (K)
   ##     press = pressure (Pa)
   ##     m.mass = molar mass (g/mole)     [ OPTIONAL ]
   ## output:
-  ##     data.out = data in final unit
+  ##     data.out = data in final concentration unit
   ## ------------------------------------------------------------
   ## check molar mass input
   if (unit.in == "UG" | unit.out == "UG") {
@@ -381,7 +381,7 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   ## Avogadro number, number density of air
   n.avog <- fConstant("Na")$Value
   m.air <- fAirND(temp, press)$M
-  ## data in original unit to reference unit (ND)
+  ## original unit to reference unit (ND)
   switch(unit.in,
          "ND" = {
            data.ref <- data.in
@@ -411,7 +411,7 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
          },
          stop("INPUT ERROR: unit not found")
          )
-  ## data in reference unit (ND) to final unit
+  ## reference unit (ND) to final unit
   switch(unit.out,
          "ND" = {
            data.out <- data.ref
@@ -441,7 +441,7 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
          },
          stop("INPUT ERROR: unit not found")
          )
-  ## data in final unit
+  ## data in final concentration unit
   return(data.out)
 }
 
@@ -454,12 +454,12 @@ fConcAq <- function(data.in, unit.in, unit.out, m.mass=NULL) {
   ## NB: molar mass is required only for conversions to/from "UG".
   ##
   ## input:
-  ##     data.in = data in original unit
-  ##     unit.in = original measurement unit
-  ##     unit.out = final measurement unit
+  ##     data.in = data in original concentration unit
+  ##     unit.in = original concentration unit
+  ##     unit.out = final concentration unit
   ##     m.mass = molar mass (g/mole)     [ OPTIONAL ]
   ## output:
-  ##     data.out = data in final unit
+  ##     data.out = data in final concentration unit
   ## -------------------------------------------------------------
   ## check molar mass input
   if (unit.in == "UG" | unit.out == "UG") {
@@ -467,7 +467,7 @@ fConcAq <- function(data.in, unit.in, unit.out, m.mass=NULL) {
       stop("INPUT ERROR: molar mass needed")
     }
   }
-  ## data in original unit to reference unit (M)
+  ## original unit to reference unit (M)
   switch(unit.in,
          "M" = {
            data.ref <- data.in
@@ -485,7 +485,7 @@ fConcAq <- function(data.in, unit.in, unit.out, m.mass=NULL) {
          },
          stop("INPUT ERROR: unit not found")
          )
-  ## data in reference unit (M) to final unit
+  ## reference unit (M) to final unit
   switch(unit.out,
          "M" = {
            data.out <- data.ref
@@ -503,12 +503,12 @@ fConcAq <- function(data.in, unit.in, unit.out, m.mass=NULL) {
          },
          stop("INPUT ERROR: unit not found")
          )
-  ## data in final unit
+  ## data in final concentration unit
   return(data.out)
 }
 
-fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
-  ## Convert between measurements of humidity at given temperature and
+fHumid <- function(data.in, unit.in, unit.out, temp, press=101325) {
+  ## Convert between units of humidity at given temperature and
   ## pressure:
   ## * absolute humidity = "AH"
   ##   mass of water vapour per volume air (g/m3)
@@ -527,21 +527,21 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
   ## NB: pressure is required only for conversions to/from "PPM".
   ##
   ## input:
-  ##     data.in = original humidity data
-  ##     meas.in = original measurement
-  ##     meas.out = final measurement
+  ##     data.in = data in original humidity unit
+  ##     unit.in = original humidity unit
+  ##     unit.out = final humidity unit
   ##     temp = temperature (K)
   ##     press = pressure (Pa)     [ OPTIONAL, DEFAULT = 1 atm ]
   ## output:
-  ##     data.out = final humidity data
+  ##     data.out = data in final humidity unit
   ## ------------------------------------------------------------
-  ## convert temperature and pressure units
+  ## convert temperature and pressure
   temp.c <- fConvTemp(temp, "K", "C")
   press.h <- fConvPress(press, "Pa", "hPa")
   ## water vapour saturation pressure (hPa)
   pws <- 6.116441 * 10^( (7.591386 * temp.c) / (temp.c + 240.7263) )
-  ## water vapour pressure (hPa) from original humidity data
-  switch(meas.in,
+  ## water vapour pressure (hPa) from original humidity unit
+  switch(unit.in,
          "AH" = {
            pw <- 1.0e-02 * (data.in * temp) / 2.16679
          },
@@ -559,8 +559,8 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
          },
          stop("INPUT ERROR: unit not found")
          )
-  ## final humidity data from water vapour pressure (hPa)
-  switch(meas.out,
+  ## final humidity unit from water vapour pressure (hPa)
+  switch(unit.out,
          "AH" = {
            data.out <- 1.0e+02 * (pw * 2.16679) / temp
          },
@@ -578,6 +578,6 @@ fHumid <- function(data.in, meas.in, meas.out, temp, press=101325) {
          },
          stop("INPUT ERROR: unit not found")
   )
-  ## final humidity data
+  ## data in final humidity unit
   return(data.out)
 }
