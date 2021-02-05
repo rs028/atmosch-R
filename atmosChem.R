@@ -3,10 +3,15 @@
 ### - fAirND()    : number density of air, oxygen, nitrogen
 ### - fFractO1D() : fraction of O1D reacting with water
 ### - fParamOH()  : estimate OH concentration
+### - fPSS()      : photostationary state for O3-NOx
 ###
-### version 2.3, Oct 2020
+### version 2.4, Feb 2021
 ### author: RS
-### ---------------------------------------------------------------- ###
+###
+### additional credits: function fPSS() is based on code written by LK
+### (Uni Birmingham).
+### ----------------------------------------------------------------
+### ###
 
 fAirND <- function(temp, press) {
   ## Calculate the number density (molecule cm-3) of air, oxygen and
@@ -123,5 +128,51 @@ fParamOH <- function(jo1d) {
   }
   ## output data.frame
   colnames(df.out)[-1] <- paste("OH_", data.db[,1], sep="")
+  return(df.out)
+}
+
+fPSS <- function(sec, o3, no, no2, jno2, temp) {
+  ## Calculate the concentrations of ozone (O3) and nitrogen oxides
+  ## (NO, NO2) assuming photostationary state for O3-NOx chemistry:
+  ##    [O3] = (j(NO2) * [NO2]) / (k(O3+NO) * [NO])
+  ##
+  ## [ kinetic data from Atkinson et al., Atmos. Chem. Phys., 2004 ]
+  ##
+  ## input:
+  ##     sec = number of seconds
+  ##     o3 = initial O3 concentration (molecule cm-3)
+  ##     no = initial NO concentration (molecule cm-3)
+  ##     no2 = initial NO2 concentration (molecule cm-3)
+  ##     jno2 = photolysis rate of NO2 (s-1)
+  ##     temp = temperature (K)
+  ## output:
+  ##     df.out = data.frame ( SEC = seconds,
+  ##                           O3 = O3 concentration,
+  ##                           NO = NO concentration,
+  ##                           NO2 = NO2 concentration,
+  ##                           JNO2 = NO2 photolysis rate,
+  ##                           Temp = temperature)
+  ## ------------------------------------------------------------
+  ## rate coefficient of O3+NO
+  k.o3_no  <- fKBi(1.4e-12, -1310, temp)$k1
+  ## initialize data.frame
+  pss.df <- data.frame(matrix(ncol=4, nrow=sec+1))
+  colnames(pss.df) <- c("SEC", "O3", "NO", "NO2")
+  ## set runtime  (timestep = 1 second)
+  run.time <- seq(0, sec, 1)
+  pss.df$SEC <- run.time
+  ## initial concentrations of O3, NO, NO2
+  pss.df$O3[1] <- o3
+  pss.df$NO[1] <- no
+  pss.df$NO2[1] <- no2
+  ## calculate O3, NO, NO2 concentrations
+  for (i in 1:sec) {
+   pss.df$O3[i+1] <- pss.df$O3[i] + (jno2 * pss.df$NO2[i]) - (k.o3_no * pss.df$NO[i] * pss.df$O3[i])
+   pss.df$NO[i+1] <- pss.df$NO[i] + (jno2 * pss.df$NO2[i]) - (k.o3_no * pss.df$NO[i] * pss.df$O3[i])
+   pss.df$NO2[i+1] <- pss.df$NO2[i] - (jno2 * pss.df$NO2[i]) + (k.o3_no * pss.df$NO[i] * pss.df$O3[i])
+  }
+  ## output data.frame
+  df.out <- data.frame(pss.df, jno2, temp)
+  colnames(df.out) <- c("SEC", "O3", "NO", "NO2", "JNO2", "Temp")
   return(df.out)
 }

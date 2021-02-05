@@ -79,3 +79,14 @@ assert("=> fParamOH() output",
 assert("=> fParamOH() values",
        fParamOH(4.5E-06) == fParamOH(df1$JO1D)[3,]
        )
+
+## -----------------------------------------------
+## fPSS()
+
+x0 <- fPSS(100, 7.5e11, 2.5e12, 5.0e11, 1e-2, 298.15)
+
+assert("=> fPSS() output",
+       is.data.frame(x0),
+       nrow(x0) == 101,
+       ncol(x0) == 6
+       )
