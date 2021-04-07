@@ -2,31 +2,34 @@
 ### functions to import/export data files:
 ### - fImportTXT() : delimited text files
 ###
-### version 1.3, Apr 2019
+### version 1.4, Apr 2021
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ## Import data from a delimited text file (tab, space, comma,
-  ## semicolon). Convert the date/time variables to chron and replace
+  ## etc...), convert the date/time variables to chron, and replace
   ## missing data points with NA.
   ##
   ## The data files must have no header, except one row with the names
-  ## of the variables, and one or more date/time variables:
+  ## of the variables, and must have one or more date/time variables:
   ##
   ##   date variable    time variable    variable 1    variable 2
-  ##     12/01/2009       12:00:00           10            25
-  ##     12/01/2009       12:30:00           25            30
-  ##     12/01/2009       13:00:00           40            55
+  ##     12-01-2009       12:00:00           10            25
+  ##     12-01-2009       12:30:00           25            30
+  ##     12-01-2009       13:00:00           40            55
   ##     ...              ...                ...           ...
+  ##
+  ## NB: date/time can be in fractional days ("FD") in which case it
+  ## is not converted to chron.
   ##
   ## input:
   ##     data.dir = data file directory
   ##     data.fn = name of data file
   ##     data.sep = delimiter of data file (e.g., "\t" OR ",")
-  ##     data.miss = missing value flag (e.g., -9999 OR "" OR NaN)
-  ##     ... = format of date/time variables (e.g., "d/m/y h:m:s" OR
-  ##           "FD" if fractional days are used)
+  ##     data.miss = missing value flag (e.g., -9999 OR "" OR NA)
+  ##     ... = format of date/time variables (e.g., "d/m/y h:m" OR "y/m/d h:m" OR
+  ##                                          ""d-m-y" OR "h:m:s" OR "FD")
   ## output:
   ##     data.out = data.frame ( date/time chron variables,
   ##                             data variables )
@@ -34,9 +37,9 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ## load data file
   data.file <- paste(data.dir, data.fn, sep="")
   if (data.sep == " ") {
-    data.df <- read.delim(data.file, header=TRUE, sep="")
+    data.df <- read.delim(data.file, header=TRUE, fill=TRUE, sep="")
   } else {
-    data.df <- read.delim(data.file, header=TRUE, sep=data.sep)
+    data.df <- read.delim(data.file, header=TRUE, fill=TRUE, sep=data.sep)
   }
   ## format of date/time variables
   time.fmt <- list(...)

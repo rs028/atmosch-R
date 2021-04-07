@@ -10,9 +10,9 @@ fRead_Thermo <- function(data.dir, data.fn, type.str, data.var=NULL) {
   ## Thermo Scientific monitors.
   ##
   ## The Thermo Scientific monitors can log data in two ways:
-  ## 1. using the default iPort program which exports to a delimited
+  ## 1. using the default iPort program, which exports to a delimited
   ##    file with header.
-  ## 2. streaming to a terminal (e.g., TeraTerm) which saves to a
+  ## 2. streaming to a terminal (e.g., TeraTerm), which saves to a
   ##    delimited file without header. The default streaming variables
   ##    are different for each monitor, but can be changed from the
   ##    instrument control panel.
@@ -20,8 +20,8 @@ fRead_Thermo <- function(data.dir, data.fn, type.str, data.var=NULL) {
   ## input:
   ##     data.dir = data file directory
   ##     data.fn = name of data file
-  ##     type.str = "iport" OR "42c" OR "42i" OR "42iTL" OR
-  ##                 "49i" OR "user"
+  ##     type.str = monitor mode ("iport" OR "42c" OR "42i" OR
+  ##                              "42iTL" OR "49i" OR "user")
   ##     data.var = user-set streaming variables     [ OPTIONAL ]
   ## output:
   ##     data.out = data.frame ( date/time chron variables,
