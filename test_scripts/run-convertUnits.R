@@ -1,5 +1,7 @@
 ### --------------------------------------------------------- ###
-### script to test the functions in convertUnits.R
+### atmosch-R  //  TESTING                                    ###
+### --------------------------------------------------------- ###
+### Script to test the functions in convertUnits.R
 ### author: RS
 ### --------------------------------------------------------- ###
 require(testit)

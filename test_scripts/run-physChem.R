@@ -1,5 +1,7 @@
 ### --------------------------------------------------------- ###
-### script to test the functions in physChem.R
+### atmosch-R  //  TESTING                                    ###
+### --------------------------------------------------------- ###
+### Script to test the functions in physChem.R
 ### author: RS
 ### --------------------------------------------------------- ###
 require(testit)

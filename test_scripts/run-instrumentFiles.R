@@ -1,5 +1,7 @@
 ### --------------------------------------------------------- ###
-### script to test the functions in instrumentFiles.R
+### atmosch-R  //  TESTING                                    ###
+### --------------------------------------------------------- ###
+### Script to test the functions in instrumentFiles.R
 ### author: RS
 ### --------------------------------------------------------- ###
 require(testit)
@@ -15,7 +17,9 @@ assert("=> fRead_Thermo() output - monitor 42c (iPort)",
        )
 
 df2 <- fRead_Thermo("../test_files/", "iport_42iTL.dat", "iport")
-assert("=> fRead_Thermo() output - monitor 42iTL (iPort)",
+assert("=> fR### ---------------------------------------------------------------- ###
+### atmosch-R                                                        ###
+ead_Thermo() output - monitor 42iTL (iPort)",
        is.data.frame(df2),
        nrow(df2) == 9,
        ncol(df2) == 17

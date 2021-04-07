@@ -1,5 +1,7 @@
 ### --------------------------------------------------------- ###
-### script to test the functions in fileUtils.R
+### atmosch-R  //  TESTING                                    ###
+### --------------------------------------------------------- ###
+### Script to test the functions in fileUtils.R
 ### author: RS
 ### --------------------------------------------------------- ###
 require(testit)
