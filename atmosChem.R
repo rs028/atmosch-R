@@ -8,8 +8,8 @@
 ### version 2.4, Feb 2021
 ### author: RS
 ###
-### additional credits: function fPSS() is based on code written by LK
-### (Uni Birmingham).
+### additional credits: function fPSS() is based on code by LK (Uni
+### Birmingham).
 ### ----------------------------------------------------------------
 ### ###
 
@@ -81,17 +81,17 @@ fParamOH <- function(jo1d) {
   ## (Nature, 2006). The empirical parameters have been derived from
   ## ambient datasets in different regions and conditions:
   ##
-  ##   POPCORN    =  Rural Germany
-  ##   ALBATROSS  =  Remote Atlantic Ocean
-  ##   BERLIOZ    =  Rural Germany
-  ##   MOHp       =  Rural Germany
-  ##   MINOS      =  Coastal Crete
-  ##   NAMBLEX    =  Coastal Ireland
-  ##   TORCH      =  Urban UK
+  ##   POPCORN    =  rural Germany
+  ##   ALBATROSS  =  remote Atlantic Ocean
+  ##   BERLIOZ    =  rural Germany
+  ##   MOHp       =  rural Germany
+  ##   MINOS      =  coastal Crete
+  ##   NAMBLEX    =  coastal Ireland
+  ##   TORCH      =  urban UK
   ##   CHABLIS    =  Antarctica
-  ##   RHaMBLe    =  Coastal Cape Verde
-  ##   OP3        =  Tropical forest Borneo
-  ##   SOS        =  Coastal Cape Verde
+  ##   RHaMBLe    =  coastal Cape Verde
+  ##   OP3        =  tropical forest Borneo
+  ##   SOS        =  coastal Cape Verde
   ##
   ## [ empirical parameters from Stone et al., Chem Soc. Rev., 2012 ]
   ##

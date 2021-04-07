@@ -10,10 +10,10 @@
 ### version 2.5, Apr 2019
 ### author: RS
 ###
-### additional credits: the functions fMakeStartStop() and
-### fAvgStartStop() are based on code written in Wavemetrics Igor by
-### DS (NOAA Aeronomy Lab).
-### ---------------------------------------------------------------- ###
+### additional credits: functions fMakeStartStop() and fAvgStartStop()
+### are based on code written by DS (NOAA Aeronomy Lab).
+### ----------------------------------------------------------------
+### ###
 
 fOpenair <- function(data.df, time.str, ws.str, wd.str, tz.str="GMT") {
   ## Convert a data.frame for use with the openair package

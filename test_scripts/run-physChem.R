@@ -17,7 +17,7 @@ x3 <- fGasLaw(x2$Press, "?", x2$Mol, x2$Temp)
 x4 <- fGasLaw(x3$Press, x3$Vol, x3$Mol, "?")
 x5 <- fGasLaw(x4$Press, x4$Vol, "?", x4$Temp)
 assert("=> fGasLaw() calculations",
-       all.equal(x5, x1)
+       all.equal(x5, x1, tolerance=1e-7)
        )
 
 assert("=> fGasLaw() input",
