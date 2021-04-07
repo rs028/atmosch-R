@@ -1,5 +1,7 @@
 ### ---------------------------------------------------------------- ###
-### functions for atmospheric chemistry:
+### atmosch-R                                                        ###
+### ---------------------------------------------------------------- ###
+### Functions for atmospheric chemistry:
 ### - fAirND()    : number density of air, oxygen, nitrogen
 ### - fFractO1D() : fraction of O1D reacting with water
 ### - fParamOH()  : estimate OH concentration
@@ -7,9 +9,7 @@
 ###
 ### version 2.4, Feb 2021
 ### author: RS
-###
-### additional credits: function fPSS() is based on code by LK (Uni
-### Birmingham).
+### credits: function fPSS() is based on code by LK (Uni Birmingham).
 ### ----------------------------------------------------------------
 ### ###
 

@@ -1,5 +1,7 @@
 ### ---------------------------------------------------------------- ###
-### functions for mass spectrometry:
+### atmosch-R                                                        ###
+### ---------------------------------------------------------------- ###
+### Functions for mass spectrometry:
 ### - fLoadTOF()     : load PTR-TOF-MS spectra
 ### - fNormTOF()     : normalize and average PTR-TOF-MS spectra
 ### - fPlotSpect()   : rotate spectra and make timeseries plots

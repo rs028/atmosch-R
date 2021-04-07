@@ -1,5 +1,7 @@
 ### ---------------------------------------------------------------- ###
-### functions for data processing and analysis:
+### atmosch-R                                                        ###
+### ---------------------------------------------------------------- ###
+### Functions for data processing and analysis:
 ### - fOpenair()        : convert data.frame to openair format
 ### - fMakeStartStop()  : make start/mid/stop chron variables
 ### - fAvgStartStop()   : average one variable using start/stop

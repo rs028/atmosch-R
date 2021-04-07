@@ -1,5 +1,7 @@
 ### ---------------------------------------------------------------- ###
-### functions to read data files from commercial instruments:
+### atmosch-R                                                        ###
+### ---------------------------------------------------------------- ###
+### Functions to read data files from commercial instruments:
 ### - fRead_Thermo() : Thermo Scientific monitors
 ###
 ### version 1.5, Apr 2021

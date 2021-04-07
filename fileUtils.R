@@ -1,5 +1,7 @@
 ### ---------------------------------------------------------------- ###
-### functions to import/export data files:
+### atmosch-R                                                        ###
+### ---------------------------------------------------------------- ###
+### Functions to import/export data files:
 ### - fImportTXT() : delimited text files
 ###
 ### version 1.4, Apr 2021

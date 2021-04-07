@@ -1,5 +1,7 @@
 ### ---------------------------------------------------------------- ###
-### utilities and tools for atmosch-R functions:
+### atmosch-R                                                        ###
+### ---------------------------------------------------------------- ###
+### Utilities and tools for atmosch-R functions:
 ### - fListWS()   : show variables in workspace
 ### - fClearWS()  : clear workspace
 ### - fMergeDF()  : merge list of data.frame

@@ -1,5 +1,7 @@
 ### ---------------------------------------------------------------- ###
-### functions for physical chemistry:
+### atmosch-R                                                        ###
+### ---------------------------------------------------------------- ###
+### Functions for physical chemistry:
 ### - fGasLaw() : ideal gas law
 ### - fKBi()    : rate coefficient of bimolecular reactions (standard)
 ### - fKBix()   : rate coefficient of bimolecular reactions (expanded)

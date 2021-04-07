@@ -1,9 +1,11 @@
 ### ---------------------------------------------------------------- ###
-### reference data for physics and chemistry :
+### atmosch-R                                                        ###
+### ---------------------------------------------------------------- ###
+### Reference data for physics and chemistry :
 ### - fConstant() : physical/chemical constants
 ### - fPeriodic() : periodic table
 ###
-### data from NIST Standard Reference Database:
+### Data from NIST Standard Reference Database:
 ###   https://www.nist.gov/pml/fundamental-physical-constants
 ###   https://www.nist.gov/pml/elemental-data-index
 ###

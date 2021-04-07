@@ -1,5 +1,7 @@
 ### ---------------------------------------------------------------- ###
-### functions for atmospheric physics:
+### atmosch-R                                                        ###
+### ---------------------------------------------------------------- ###
+### Functions for atmospheric physics:
 ### - fSolar() : Earth-Sun angles
 ###
 ### version 1.9, Oct 2020

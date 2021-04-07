@@ -1,5 +1,7 @@
 ### ---------------------------------------------------------------- ###
-### functions to convert between measurement units:
+### atmosch-R                                                        ###
+### ---------------------------------------------------------------- ###
+### Functions to convert between measurement units:
 ### - fConvTemp()  : temperature
 ### - fConvPress() : pressure
 ### - fConvAngle() : angle
@@ -9,7 +11,7 @@
 ### - fConcAq()    : concentration (aqueous-phase)
 ### - fHumid()     : humidity/water
 ###
-### conversion factors from WolframAlpha:
+### Conversion factors from WolframAlpha:
 ###   https://www.wolframalpha.com/
 ###
 ### version 2.3, Feb 2021
