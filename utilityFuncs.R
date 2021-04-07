@@ -4,10 +4,9 @@
 ### - fClearWS()  : clear workspace
 ### - fMergeDF()  : merge list of data.frame
 ### - fFindIdx()  : find point in vector greater/less than value
-### - fChronStr() : convert date/time string to chron
 ### - fVarName()  : name of variable(s) in data.frame
 ###
-### version 2.5, Mar 2019
+### version 2.6, Apr 2021
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -141,57 +140,6 @@ fFindIdx <- function(vecd, ops, xval) {
          }
          )
   return(xv)
-}
-
-fChronStr <- function(dt.str, dt.fmt) {
-  ## Convert date, time, datetime string vector to chron vector with
-  ## format "d-m-y h:m:s".
-  ##
-  ## input:
-  ##     dt.str = date/time string vector
-  ##     dt.fmt = format of date/time string ("d/m/y h:m:s" OR
-  ##              "d/m/y" OR "h:m:s")
-  ## output:
-  ##     dt.chron = chron ( d-m-y h:m:s )
-  ## ------------------------------------------------------------
-  dt.str <- unlist(dt.str, use.names=FALSE)
-  ## date/time format flag
-  if (grepl("d", dt.fmt)) {
-    dt.flag <- "date"
-  }
-  if (grepl("h", dt.fmt)) {
-    dt.flag <- "time"
-  }
-  if (grepl("d", dt.fmt) & grepl("h", dt.fmt)) {
-    dt.flag <- "datetime"
-  }
-  ## add seconds if missing
-  if (dt.flag != "date" & grepl("s", dt.fmt) == FALSE) {
-    dt.str <- paste(dt.str, "00", sep=":")
-    dt.fmt <- paste(dt.fmt, "s", sep=":")
-  }
-  ## convert date/time string to chron
-  switch(dt.flag,
-         "date" = {      # date only
-           dt.chron <- chron(dates=as.character(dt.str),
-                             format=dt.fmt, out.format="d-m-y")
-         },
-         "time" = {      # time only
-           dt.chron <- chron(times=as.character(dt.str),
-                             format=dt.fmt, out.format="h:m:s")
-         },
-         "datetime" = {  # date and time
-           dt.lst <- sapply(as.character(dt.str),
-                            function(x) unlist(strsplit(x, " ")))
-           colnames(dt.lst) <- NULL
-           dt.chron <- chron(dates=dt.lst[1,], times=dt.lst[2,],
-                             format=unlist(strsplit(dt.fmt, " ")),
-                             out.format=c("d-m-y","h:m:s"))
-         },              # invalid date/time format
-         stop("date/time format not valid")
-         )
-  ## output chron vector
-  return(dt.chron)
 }
 
 fVarName <- function(var.dat) {
