@@ -2,7 +2,7 @@
 ### functions to read data files from commercial instruments:
 ### - fRead_Thermo() : Thermo Scientific monitors
 ###
-### version 1.4, Jun 2020
+### version 1.5, Apr 2021
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -35,9 +35,8 @@ fRead_Thermo <- function(data.dir, data.fn, type.str, data.var=NULL) {
          },
          "42c" = {    # NOx monitor 42c - iPort mode
            data.df <- read.table(data.file, header=FALSE, fill=TRUE, sep="", skip=6)
-           colnames(data.df) <- c("Time", "Date", "Flags", "no", "nox", "pmt_volt",
-                                  "pmt_temp", "int_temp", "chamb_temp", "conv_temp",
-                                  "pres", "samp_flow", "o3_flow")
+           colnames(data.df) <- c("Time", "Date", "Flags", "no", "nox", "pmtv", "pmtt",
+                                  "intt", "rctt", "convt", "pres", "smplf", "ozonf")
            ## get year from file header
            info.str <- readLines(data.file, n=2)[2]
            yr.str <- substr(info.str, nchar(info.str)-1, nchar(info.str))
