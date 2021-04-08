@@ -13,7 +13,7 @@
 ### ---------------------------------------------------------------- ###
 
 fListWS <- function(arg="") {
-  ## Show functions/variables in R workspace:
+  ## Show functions/variables in the R workspace:
   ## * if no argument is given, atmosch-R functions/variables are
   ##   not shown
   ## * if argument is "atmosch", only the atmosch-R functions/variables
@@ -38,7 +38,7 @@ fListWS <- function(arg="") {
 }
 
 fClearWS <- function() {
-  ## Clear R workspace:
+  ## Clear the R workspace:
   ## * delete all variables
   ## * keep atmosch-R functions/variables
   ## * close plot windows
