@@ -8,12 +8,12 @@
 ### - fFindIdx() : find point in vector greater/less than value
 ### - fVarName() : name of variable(s) in data.frame
 ###
-### version 2.6, Apr 2021
+### version 2.7, Apr 2021
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fListWS <- function(arg="") {
-  ## Show variables in R workspace:
+  ## Show functions/variables in R workspace:
   ## * if no argument is given, atmosch-R functions/variables are
   ##   not shown
   ## * if argument is "atmosch", only the atmosch-R functions/variables
@@ -21,7 +21,7 @@ fListWS <- function(arg="") {
   ##
   ## NB: the names of all atmosch-R functions/variables begin with
   ## lowercase `f` followed by a capital letter (functions) or by a
-  ## dot (variables) -- see documentation of fClearWS() and ls().
+  ## dot (variables).
   ## ------------------------------------------------------------
   vv1 <- ls(pos=.GlobalEnv)
   vv2 <- ls(pos=.GlobalEnv, pattern="^f[.A-Z]")
@@ -45,7 +45,7 @@ fClearWS <- function() {
   ##
   ## NB: the names of all atmosch-R functions/variables begin with
   ## lowercase `f` followed by a capital letter (functions) or by a
-  ## dot (variables) -- see documentation of fListWS().
+  ## dot (variables).
   ## ------------------------------------------------------------
   vv1 <- ls(pos=.GlobalEnv)
   vv2 <- ls(pos=.GlobalEnv, pattern="^f[.A-Z]")
@@ -53,18 +53,19 @@ fClearWS <- function() {
   graphics.off()
 }
 
-fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
+fMergeDF <- function(df.lst, var.str, type.str, suff.lst) {
   ## Merge two or more data.frames using a common variable and rename
   ## the other variables.
   ##
   ## NB: the base function merge() only works on two data.frames at a
-  ## time -- see documentation of merge().
+  ## time -- see the documentation of merge().
   ##
   ## input:
   ##     df.lst = list of data.frames to merge
   ##     var.str = name of common variable
-  ##     all.str = type of merge operation ("TRUE" OR "FALSE")
-  ##     suff.lst = list of suffixes to rename variables -> make optional
+  ##     type.str = type of merge operation ("ALL" to keep all rows OR
+  ##                "NOTALL" to keep only the common rows)
+  ##     suff.lst = list of suffixes to rename variables
   ## output:
   ##     df.merg = data.frame ( merged data )
   ## ------------------------------------------------------------
@@ -72,10 +73,16 @@ fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
     lst.name <- deparse(substitute(df.lst))
     stop(paste(lst.name, "must be a list", sep=" "))
   }
-  if (length(df.lst) == 2 ) {  # two data.frames
-    df.merg <- merge(df.lst[1], df.lst[2], by=var.str, all=as.logical(all.str),
+  ##
+  if (type.str == "ALL") {
+    type.all <- TRUE
+  } else {
+    type.all <- FALSE
+  }
+  if (length(df.lst) == 2) {  # two data.frames
+    df.merg <- merge(df.lst[1], df.lst[2], by=var.str, all=type.all,
                      suffixes=unlist(suff.lst))
-  } else {                     # multiple data.frames
+  } else {                    # multiple data.frames
     df.merg <- as.data.frame(df.lst[1])
     var.n <- which(colnames(df.merg) == var.str)
     colnames(df.merg)[-var.n] <- paste(colnames(df.merg)[-var.n],
@@ -84,7 +91,7 @@ fMergeDF <- function(df.lst, var.str, all.str, suff.lst) {
       df.i <- as.data.frame(df.lst[i])
       colnames(df.i)[-var.n] <- paste(colnames(df.i)[-var.n],
                                       suff.lst[[i]], sep="")
-      df.merg <- merge(df.merg, df.i, by=var.str, all=as.logical(all.str))
+      df.merg <- merge(df.merg, df.i, by=var.str, all=type.all)
     }
   }
   ## merged data.frame
@@ -147,8 +154,8 @@ fFindIdx <- function(vecd, ops, xval) {
 fVarName <- function(var.dat) {
   ## Extract the name of one or more variables in a data.frame.
   ##
-  ## NB: a variable can be addressed by column number (df[1] or
-  ## df[,1]), by name df["A"]), or using the `$` operator (df$A).
+  ## NB: a variable can be addressed using the column number (df[1] or
+  ## df[,1]), the name (df["A"]), or the `$` operator (df$A).
   ##
   ## input:
   ##    var.dat = variable(s) in data.frame
