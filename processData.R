@@ -6,17 +6,15 @@
 ### - fMakeStartStop()  : make start/mid/stop chron variables
 ### - fAvgStartStop()   : average one variable using start/stop
 ### - fAvgStartStopDF() : average data.frame using start/stop
-### - fChronStr() : convert date/time string to chron
+### - fChronStr()       : convert date/time string to chron
 ### - fSwitchFlag()     : flag points before/after switch
 ### - fBkgdSignal()     : average background signals
 ###
 ### version 2.6, Apr 2021
 ### author: RS
-###
-### additional credits: functions fMakeStartStop() and fAvgStartStop()
-### are based on code written by DS (NOAA Aeronomy Lab).
-### ----------------------------------------------------------------
-### ###
+### credits: functions fMakeStartStop() and fAvgStartStop() are based
+###          on code written by DS (NOAA Aeronomy Lab).
+### ---------------------------------------------------------------- ###
 
 fOpenair <- function(data.df, time.str, ws.str, wd.str, tz.str="GMT") {
   ## Convert a data.frame for use with the openair package

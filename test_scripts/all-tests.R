@@ -1,5 +1,7 @@
 ### --------------------------------------------------------- ###
-### run all test scripts
+### atmosch-R  //  TESTING                                    ###
+### --------------------------------------------------------- ###
+### Run all test scripts
 ### author: RS
 ### --------------------------------------------------------- ###
 library(testit)
@@ -49,9 +51,9 @@ cat("* testing: referenceData.R\n")
 source("run-referenceData.R")
 cat("  ....... OK\n")
 
-## cat("* testing: utilityFuncs.R\n")
-## source("run-utilityFuncs.R")
-## cat("  ....... OK\n")
+cat("* testing: utilityFuncs.R\n")
+source("run-utilityFuncs.R")
+cat("  ....... OK\n")
 
 cat("\n========================\n\n")
 

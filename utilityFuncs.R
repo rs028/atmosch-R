@@ -2,11 +2,11 @@
 ### atmosch-R                                                        ###
 ### ---------------------------------------------------------------- ###
 ### Utilities and tools for atmosch-R functions:
-### - fListWS()   : show variables in workspace
-### - fClearWS()  : clear workspace
-### - fMergeDF()  : merge list of data.frame
-### - fFindIdx()  : find point in vector greater/less than value
-### - fVarName()  : name of variable(s) in data.frame
+### - fListWS()  : show variables in workspace
+### - fClearWS() : clear workspace
+### - fMergeDF() : merge list of data.frame
+### - fFindIdx() : find point in vector greater/less than value
+### - fVarName() : name of variable(s) in data.frame
 ###
 ### version 2.6, Apr 2021
 ### author: RS
@@ -145,11 +145,10 @@ fFindIdx <- function(vecd, ops, xval) {
 }
 
 fVarName <- function(var.dat) {
-  ## Return a string with the name of one or more variables in a
-  ## data.frame.
+  ## Extract the name of one or more variables in a data.frame.
   ##
-  ## NB: a variable can be addressed by column number (df[1], df[,1])
-  ## or by name df["A"]) or with the $ operator (df$A).
+  ## NB: a variable can be addressed by column number (df[1] or
+  ## df[,1]), by name df["A"]), or using the `$` operator (df$A).
   ##
   ## input:
   ##    var.dat = variable(s) in data.frame
