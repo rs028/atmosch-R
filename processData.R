@@ -28,7 +28,7 @@ fOpenair <- function(data.df, time.str, ws.str, wd.str, tz.str="GMT") {
   ##     time.str = name of datetime variable
   ##     ws.str = name of wind speed variable (m/s)
   ##     wd.str = name of wind direction variable (deg N)
-  ##     tz.str = 
+  ##     tz.str = default timezone: "GMT"
   ## output:
   ##     df.out = data.frame ( datetime, variables )
   ## ------------------------------------------------------------
@@ -207,7 +207,7 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   ##                                   n. averaged points, n. NA points ),
   ##                      data.frame ( mean, median, standard deviation,
   ##                                   n. averaged points, n. NA points ),
-  ##                     ... )
+  ##                      ... )
   ##     --> pdf file : `fn.str`.pdf
   ## ------------------------------------------------------------
   if (!is.data.frame(df.orig) | !is.data.frame(tst.df)) {

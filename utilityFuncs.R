@@ -94,7 +94,6 @@ fMergeDF <- function(df.lst, var.str, type.str, suff.lst) {
       df.merg <- merge(df.merg, df.i, by=var.str, all=type.all)
     }
   }
-  ## merged data.frame
   return(df.merg)
 }
 
