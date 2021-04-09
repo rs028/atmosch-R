@@ -1,7 +1,7 @@
 ### ---------------------------------------------------------------- ###
 ### atmosch-R                                                        ###
 ### ---------------------------------------------------------------- ###
-### Functions for data processing and analysis:
+### Functions for data processing:
 ### - fOpenair()        : convert data.frame to openair format
 ### - fMakeStartStop()  : make start/mid/stop chron variables
 ### - fAvgStartStop()   : average one variable using start/stop
@@ -39,11 +39,11 @@ fOpenair <- function(data.df, time.str, ws.str, wd.str, tz.str="GMT") {
     df.vars[which(df.vars == time.str)] <- "date"
     if (ws.str != "") {
       df.vars[which(df.vars == ws.str)] <- "ws"
-      cat("> wind speed data [", ws.str,"]: m/s\n")
+      cat("\t> wind speed [", ws.str,"]: m/s\n")
     }
     if (wd.str != "") {
       df.vars[which(df.vars == wd.str)] <- "wd"
-      cat("> wind direction data [", wd.str,"]: deg N\n")
+      cat("\t> wind direction [", wd.str,"]: deg N\n")
     }
     colnames(df.out) <- df.vars
     ## convert datetime to POSIX format
@@ -102,13 +102,13 @@ fMakeStartStop <- function(start.str, stop.str, step.str, interv.str) {
 
 fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
   ## Calculate statistics (mean, median, standard deviation, etc...)
-  ## of one variable between the time intervals defined by start/stop
-  ## chron variables.
+  ## of one variable between the time intervals defined by the
+  ## start/stop chron variables.
   ##
   ## Optional: show plots of averaged data on screen.
   ##
-  ## NB: use fMakeStartStop() to generate the start/mid/stop datetime
-  ## chron variable `tst.df`.
+  ## NB: use fMakeStartStop() to generate the start/mid/stop chron
+  ## variables for data.frame `tst.df`.
   ##
   ## input:
   ##     tst.orig = original chron variable ("d-m-y h:m:s")
@@ -189,15 +189,16 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
 fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   ## Calculate statistics (mean, median, standard deviation, etc...)
   ## and make plots of all variables in a data.frame between the time
-  ## intervals defined by start/stop chron variables.
+  ## intervals defined by the start/stop chron variables.
   ##
-  ## Optional: save plots of averaged data to pdf file.
+  ## The first column of the original data.frame (`df.orig`) must be a
+  ## chron variable in "d-m-y h:m:s" format.
   ##
-  ## NB: see documentation of fMakeStartStop() and fAvgStartStop().
+  ## NB: use fMakeStartStop() to generate the start/mid/stop chron
+  ## variables for data.frame `tst.df`.
   ##
   ## input:
-  ##     df.orig = original data.frame (first column must be a
-  ##               chron variable in "d-m-y h:m:s" format)
+  ##     df.orig = original data.frame
   ##     tst.df = start/mid/stop chron variable ("d-m-y h:m:s")
   ##     fn.str = name of pdf file to save plots OR ""
   ## output:
@@ -223,7 +224,7 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   for (i in 2:ncol(df.orig)) {
     dat.orig <- df.orig[i]
     dat.str <- colnames(df.orig)[i]
-    cat("averaging:", dat.str, "\n")
+    cat("\t> averaging:", dat.str, "\n")
     avg.df <- fAvgStartStop(tst.orig, dat.orig, tst.df, "yes")
     ## add data.frame of averaged data to output list
     avg.str <- paste(dat.str, "avg", sep=".")
@@ -233,7 +234,7 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   if (fn.str != "") {
     dev.off()
   }
-  ## output list: 
+  ## output list
   return(lst.out)
 }
 
