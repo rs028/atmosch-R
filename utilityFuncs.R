@@ -2,8 +2,8 @@
 ### atmosch-R                                                        ###
 ### ---------------------------------------------------------------- ###
 ### Utilities and tools for atmosch-R functions:
-### - fListWS()  : show variables in workspace
-### - fClearWS() : clear workspace
+### - fListWS()  : show variables in R workspace
+### - fClearWS() : clear R workspace
 ### - fMergeDF() : merge list of data.frame
 ### - fFindIdx() : find point in vector greater/less than value
 ### - fVarName() : name of variable(s) in data.frame

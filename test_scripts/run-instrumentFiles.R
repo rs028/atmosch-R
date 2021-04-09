@@ -17,9 +17,7 @@ assert("=> fRead_Thermo() output - monitor 42c (iPort)",
        )
 
 df2 <- fRead_Thermo("../test_files/", "iport_42iTL.dat", "iport")
-assert("=> fR### ---------------------------------------------------------------- ###
-### atmosch-R                                                        ###
-ead_Thermo() output - monitor 42iTL (iPort)",
+assert("=> fRead_Thermo() output - monitor 42iTL (iPort)",
        is.data.frame(df2),
        nrow(df2) == 9,
        ncol(df2) == 17
