@@ -10,7 +10,7 @@
 ### - fSwitchFlag()     : flag points before/after switch
 ### - fBkgdSignal()     : average background signals
 ###
-### version 2.6, Apr 2021
+### version 2.7, Apr 2021
 ### author: RS
 ### credits: functions fMakeStartStop() and fAvgStartStop() are based
 ###          on code written by DS (NOAA Aeronomy Lab).
@@ -214,7 +214,8 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
     stop("input must be a data.frame")
   }
   ## add start/mid/stop chron variables to output list
-  lst.out <- tst.df
+  lst.out <- list(tst.df[[1]], tst.df[[2]], tst.df[[3]])
+  names(lst.out) <- colnames(tst.df)
   ## open pdf file to save plots [optional]
   if (fn.str != "") {
     pdf(paste(fn.str, ".pdf", sep=""), paper="a4r", width=0, height=0)
