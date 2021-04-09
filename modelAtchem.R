@@ -1,11 +1,13 @@
 ### ---------------------------------------------------------------- ###
-### functions for the AtChem2 model (https://github.com/AtChem/AtChem2):
+### atmosch-R                                                        ###
+### ---------------------------------------------------------------- ###
+### Functions for the AtChem2 model (https://github.com/AtChem/AtChem2):
 ### - fAtchemIn()    : constraint files
 ### - fAtchemOut()   : output files
-### - fAtchemRates() : output files ( 
+### - fAtchemRates() : output files (production/loss rates)
 ### - fConstrGap()   : find gaps in constrained data
 ###
-### version 1.6, June 2020
+### version 1.6, Jun 2020
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -91,7 +93,7 @@ fAtchemOut <- function(output.dir, output.lst, start.str) {
       df.res <- merge(df.res, res.i, by="t")
     }
   }
-  ## model time (seconds since start)
+  ## model time (seconds since model start)
   model.start <- fChronStr(start.str, "d-m-y h:m:s")
   df.out <- data.frame(SEC=df.res$t)
   df.out$datetime <- df.out$SEC / 86400 + model.start
@@ -99,6 +101,38 @@ fAtchemOut <- function(output.dir, output.lst, start.str) {
   df.out <- cbind(df.out, df.res[-1])
   colnames(df.out) <- toupper(colnames(df.out))
   return(df.out)
+}
+
+fAtchemRates <- function(output.dir, output.file, species.str, start.str) {
+  ## Import output files from the AtChem2 model:
+  ## * production rates of target species
+  ## * loss rates of target species
+  ##
+  ## input:
+  ##       output.dir = model output directory
+  ##       output.file = reaction rates output file
+  ##       species.str = target species
+  ##       start.str = model start datetime string ("d-m-y h:m:s")
+  ## output:
+  ##        list( data.frame ( reactions involving target species ),
+  ##              data.frame ( time, reaction rate, reaction ) )
+  ## ------------------------------------------------------------
+  ## load reaction rates output file
+  df.rates <- read.table(paste(output.dir, output.file, sep=""), header=TRUE, fill=TRUE, sep="")
+  ## model start time
+  model.start <- fChronStr(start.str, "d-m-y h:m:s")
+  ## reaction rates of target species
+  df.spec <- df.rates[which(df.rates$speciesName==species.str),
+                      c("time", "reactionNumber", "rate", "reaction")]
+  ## model time (seconds since model start)
+  df.spec$datetime <- df.spec$time / 86400 + model.start
+  ## list of reactions that include target species
+  df1 <- df.spec$time[1]
+  df.reac <- df.spec[which(df.spec$time == df1),
+                     c("reactionNumber", "reaction")]
+  ## output list
+  lst.out <- list(df.reac, df.spec)
+  return(lst.out)
 }
 
 fConstrGap <- function(constr.dir, constr.lst, max.gap, fn.str) {
@@ -155,6 +189,10 @@ fConstrGap <- function(constr.dir, constr.lst, max.gap, fn.str) {
   }
   ## output data.frame
   data.df$DELTA <- data.df$STOP - data.df$START
-  df.out <- data.df[order(data.df$START),]
+  if (nrow(data.df) != 0) {
+    df.out <- data.df[order(data.df$START),]
+  } else {
+    df.out <- data.df
+  }
   return(df.out)
 }
