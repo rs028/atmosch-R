@@ -27,8 +27,8 @@ assert("=> fOpenair() output",
 ## fMakeStartStop(), fAvgStartStop(), fAvgStartStopDF()
 
 df1 <- data.frame(TIME = seq(chron("06/02/15","10:00:00"), chron("06/02/15","11:00:00"), 300/86400),
-                  NO2 = runif(12, 1, 100),
-                  O3 = runif(12, 50, 150))
+                  NO2 = runif(12, 6, 60),
+                  O3 = runif(12, 30, 120))
 
 x0 <- fMakeStartStop("02-06-2015 09:20:00", "02-06-2015 11:50:00", 15, 10)
 
@@ -50,12 +50,12 @@ x2 <- fAvgStartStopDF(df1, x0, "")
 
 assert("=> fAvgStartStopDF() output",
        is.list(x2),
-       nrow(x2) == 10,
-       ncol(x2) == 5
+       length(x2) == 5
        )
 
-assert("=> fAvgStartStop(), fAvgStartStopDF()",
+assert("=> fAvgStartStop(), fAvgStartStopDF() values",
        all.equal(x1, fAvgStartStop(df1[1], df1[2], x0, "no"), all.names=TRUE),
+       all.equal(x0[[2]], x2[[2]], all.names=TRUE),
        all.equal(x1[4:8], x2[[4]], all.names=TRUE)
        )
 
