@@ -68,11 +68,12 @@ fAtchemIn <- function(constr.dir, constr.df, start.str) {
 }
 
 fAtchemOut <- function(output.dir, output.lst, start.str) {
-  ## Import output files from the AtChem2 model:
-  ## * concentrations of chemical species
-  ## * environment variables
-  ## * photolysis rates
-  ## * diagnostic variables
+  ## Import output files of the AtChem2 model:
+  ## * chemical species      : `speciesConcentrations.output`
+  ## * environment variables : `environmentVariables.output`
+  ## * photolysis rates      : `photolysisRates.output`,
+  ##                           `photolysisRatesParameters.output`
+  ## * model diagnostics     : `mainSolverParameters.output`
   ##
   ## input:
   ##       output.dir = model output directory
@@ -104,9 +105,9 @@ fAtchemOut <- function(output.dir, output.lst, start.str) {
 }
 
 fAtchemRates <- function(output.dir, output.file, species.str, start.str) {
-  ## Import output files from the AtChem2 model:
-  ## * production rates of target species
-  ## * loss rates of target species
+  ## Import output files of the AtChem2 model:
+  ## * production rates of target species : `productionRates.output`
+  ## * loss rates of target species       : `lossRates.output`
   ##
   ## input:
   ##       output.dir = model output directory
@@ -126,7 +127,7 @@ fAtchemRates <- function(output.dir, output.file, species.str, start.str) {
                       c("time", "reactionNumber", "rate", "reaction")]
   ## model time (seconds since model start)
   df.spec$datetime <- df.spec$time / 86400 + model.start
-  ## list of reactions that include target species
+  ## reactions involving the target species
   df1 <- df.spec$time[1]
   df.reac <- df.spec[which(df.spec$time == df1),
                      c("reactionNumber", "reaction")]
