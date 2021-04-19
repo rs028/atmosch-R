@@ -23,14 +23,16 @@ fOpenair <- function(data.df, time.str, ws.str, wd.str, tz.str="GMT") {
   ##   direction variables
   ## * convert datetime from chron to POSIX format
   ##
-  ## input:
+  ## INPUT:
   ##     data.df = input data.frame
   ##     time.str = name of datetime variable
   ##     ws.str = name of wind speed variable (m/s)
   ##     wd.str = name of wind direction variable (deg N)
   ##     tz.str = default timezone: "GMT"
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame ( datetime, variables )
+  ## EXAMPLE:
+  ##     xx <- fOpenair(data_df, "Datetime", "WindSpeed", "WindDir")
   ## ------------------------------------------------------------
   if (is.data.frame(data.df)) {
     df.out <- data.df
@@ -69,15 +71,17 @@ fMakeStartStop <- function(start.str, stop.str, step.str, interv.str) {
   ##   01:00:00    01:02:30    01:04:59
   ##   ...         ...         ...
   ##
-  ## input:
+  ## INPUT:
   ##     start.str = start datetime string ("d-m-y h:m:s")
   ##     stop.str = stop datetime string ("d-m-y h:m:s")
   ##     step.str = step between start (minutes)
   ##     interv.str = interval between start and stop (minutes)
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame ( StartTime = start chron,
   ##                           MidTime = mid chron,
   ##                           StopTime = stop chron )
+  ## EXAMPLE:
+  ##     xx <- fMakeStartStop("20-01-15 12:00:00", "20-02-15 12:00:00", 30, 5)
   ## ------------------------------------------------------------
   ## datetime chron variable
   begin.start <- fChronStr(start.str, "d-m-y h:m:s")
@@ -110,19 +114,20 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
   ## NB: use fMakeStartStop() to generate the start/mid/stop chron
   ## variables for data.frame `tst.df`.
   ##
-  ## input:
+  ## INPUT:
   ##     tst.orig = original chron variable ("d-m-y h:m:s")
   ##     dat.orig = original data variable
   ##     tst.df = start/mid/stop chron variable ("d-m-y h:m:s")
   ##     pl = show plot of averaged data ("yes" OR "no")
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame ( start chron, mid chron, stop chron,
   ##                           mean, median, standard deviation,
   ##                           n. averaged points, n. NA points )
   ##     --> plot averaged data (if pl = "yes")
+  ## EXAMPLE:
+  ##     xx <- fAvgStartStop(data_df["Datetime"], data_df["O3"], time_df, "yes")
   ## ------------------------------------------------------------
-  if (!is.data.frame(tst.orig) | !is.data.frame(dat.orig) |
-      !is.data.frame(tst.df)) {
+  if (!is.data.frame(tst.orig) | !is.data.frame(dat.orig) | !is.data.frame(tst.df)) {
     stop("input data must be in a data.frame")
   }
   ## start/stop chron variables
@@ -143,11 +148,11 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
       start.pt <- fFindIdx(tst.orig, "GE", tst.start[i])
       stop.pt <- fFindIdx(tst.orig, "LE", tst.stop[i])
       ## printout for debugging
-        ## cat("------------------------------\n")
-        ## cat("start:"); print(tst.start[i])
-        ## cat("\t"); print(tst.orig[start.pt])
-        ## cat("\t"); print(tst.orig[stop.pt])
-        ## cat("stop:"); print(tst.stop[i])
+         ## cat("------------------------------\n")
+         ## cat("start:"); print(tst.start[i])
+         ## cat("\t"); print(tst.orig[start.pt])
+         ## cat("\t"); print(tst.orig[stop.pt])
+         ## cat("stop:"); print(tst.stop[i])
       ## average data between time intervals
       if ((tst.orig[start.pt,1] >= tst.start[i]) &
           (tst.orig[stop.pt,1] <= tst.stop[i])) {
@@ -197,11 +202,11 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   ## NB: use fMakeStartStop() to generate the start/mid/stop chron
   ## variables for data.frame `tst.df`.
   ##
-  ## input:
+  ## INPUT:
   ##     df.orig = original data.frame
   ##     tst.df = start/mid/stop chron variable ("d-m-y h:m:s")
   ##     fn.str = name of pdf file to save plots OR ""
-  ## output:
+  ## OUTPUT:
   ##     lst.out = list ( start chron, mid chron, stop chron,
   ##                      data.frame ( mean, median, standard deviation,
   ##                                   n. averaged points, n. NA points ),
@@ -209,6 +214,8 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   ##                                   n. averaged points, n. NA points ),
   ##                      ... )
   ##     --> pdf file : `fn.str`.pdf
+  ## EXAMPLE:
+  ##     xx <- fAvgStartStopDF(data_df, time_df, "filename")
   ## ------------------------------------------------------------
   if (!is.data.frame(df.orig) | !is.data.frame(tst.df)) {
     stop("input must be a data.frame")
@@ -243,12 +250,14 @@ fChronStr <- function(dt.str, dt.fmt) {
   ## Convert date, time, datetime string vector to chron vector with
   ## format "d-m-y h:m:s".
   ##
-  ## input:
+  ## INPUT:
   ##     dt.str = date/time string vector
   ##     dt.fmt = format of date/time string ("d/m/y h:m:s" OR
   ##              "d/m/y" OR "h:m:s")
-  ## output:
+  ## OUTPUT:
   ##     dt.chron = chron ( d-m-y h:m:s )
+  ## EXAMPLE:
+  ##     xx <- fChronStr(data_df$Datetime, "d-m-y h:m:s")
   ## ------------------------------------------------------------
   dt.str <- unlist(dt.str, use.names=FALSE)
   ## date/time format flag
@@ -302,14 +311,16 @@ fSwitchFlag <- function(data.df, sw.var, sw.ref, skip.fore, skip.aft) {
   ## The data.frame of instrument data must contain a numeric switch variable
   ## indicating the status of the switch (ON/OFF, 1/0, etc...).
   ##
-  ## input:
+  ## INPUT:
   ##     data.df = data.frame of instrument data
   ##     sw.var = name of switch variable
   ##     sw.ref = value of switch variable (e.g., 1 OR "ON")
   ##     skip.fore = points to skip before the switch
   ##     skip.aft = points to skip after the switch
-  ## output:
+  ## OUTPUT:
   ##     data.out = data.frame of instrument data with switch flag
+  ## EXAMPLE:
+  ##     xx <- fSwitchFlag(data_df, "Valve", 1, 10, 10)
   ## ------------------------------------------------------------
   if (!is.data.frame(data.df)) {
     df.name <- deparse(substitute(data.df))
@@ -333,9 +344,9 @@ fSwitchFlag <- function(data.df, sw.var, sw.ref, skip.fore, skip.aft) {
   data.out <- data.df
   data.out$Flag <- ifelse((fl1 == fl2 & fl1 == 9999), 1,
                    ifelse((fl1 == fl2 & fl1 != 9999), 0, -1))
-  ## output variables for debugging
-    ## data.out$fl1 <- fl1
-    ## data.out$fl2 <- fl2
+  ## variables for debugging
+     ## data.out$fl1 <- fl1
+     ## data.out$fl2 <- fl2
   ## output data.frame
   return(data.out)
 }
@@ -362,10 +373,12 @@ fBkgdSignal <- function(data.df) {
   ##   12/01/2009 12:00:00       115           205
   ##   12/01/2009 12:50:00       120           225
   ##
-  ## input:
+  ## INPUT:
   ##     data.df = data.frame of background signals
-  ## output:
+  ## OUTPUT:
   ##     data.out = data.frame of averaged background signals
+  ## EXAMPLE:
+  ##     xx <- fBkgdSignal(data_df)
   ## ------------------------------------------------------------
   if (!is.data.frame(data.df)) {
     df.name <- deparse(substitute(data.df))

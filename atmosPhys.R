@@ -24,11 +24,11 @@ fSolar <- function(lat, long, dt.chron) {
   ## [ from "The Atmosphere and UV-B Radiation at Ground Level" by
   ##   S. Madronich (Environmental UV Photobiology, 1993) ]
   ##
-  ## input:
+  ## INPUT:
   ##     lat = latitude (degrees)
   ##     long = longitude (degrees)
   ##     dt.chron = chron variable ("d-m-y h:m:s", GMT/UTC)
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame ( GMT = fractional time,
   ##                           THETA = day angle,
   ##                           DEC = sun declination,
@@ -38,6 +38,8 @@ fSolar <- function(lat, long, dt.chron) {
   ##                           SEA = solar elevation angle,
   ##                           LAT = latitude,
   ##                           LONG = longitude )
+  ## EXAMPLE:
+  ##     xx <- fSolar(data_df$Latitude, data_df$Longitude, data_df$Datetime.GMT)
   ## ---------------------------------------------------------------------
   if (is.data.frame(dt.chron)) {
     datet <- dt.chron[[1]]

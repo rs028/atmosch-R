@@ -25,13 +25,15 @@ fConstant <- function(symb.in) {
   ## * speed of light             = "c0"
   ## * atomic mass constant       = "mu"
   ##
-  ## input:
+  ## INPUT:
   ##     symb.in = symbol of constant
-  ## output:
+  ## OUTPUT:
   ##     data.out = data.frame ( Name = name of constant,
   ##                             Symbol = symbol of constant,
   ##                             Value = value of constant,
   ##                             Unit = unit of constant )
+  ## EXAMPLE:
+  ##     xx <- fConstant("Na")
   ## ------------------------------------------------------------
   n01 <- c("Avogadro number", "Na", 6.022140857e+23, "mol-1")
   n02 <- c("Boltzmann constant", "kB", 1.38064852e-23, "J K-1")
@@ -60,13 +62,15 @@ fPeriodic <- function(symb.in) {
   ## Return name, symbol, atomic number, atomic weight of naturally
   ## occuring elements (up to Uranium).
   ##
-  ## input:
+  ## INPUT:
   ##     symb.in = symbol of element
-  ## output:
+  ## OUTPUT:
   ##     data.out = data.frame ( Name = name of element,
   ##                             Symbol = symbol of element,
   ##                             Atomic.N = atomic number of element,
   ##                             Atomic.W = atomic weight of element )
+  ## EXAMPLE:
+  ##     xx <- fPeriodic("Cl")
   ## ------------------------------------------------------------
   n01 <- c("Hydrogen", "H", 1, 1.00794)
   n02 <- c("Helium", "He", 2, 4.002602)

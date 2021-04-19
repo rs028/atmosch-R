@@ -19,15 +19,18 @@ fRead_Thermo <- function(data.dir, data.fn, type.str, data.var=NULL) {
   ##    are different for each monitor, but can be changed from the
   ##    instrument control panel.
   ##
-  ## input:
+  ## INPUT:
   ##     data.dir = data file directory
   ##     data.fn = name of data file
   ##     type.str = monitor mode ("iport" OR "42c" OR "42i" OR
   ##                              "42iTL" OR "49i" OR "user")
   ##     data.var = user-set streaming variables     [ OPTIONAL ]
-  ## output:
+  ## OUTPUT:
   ##     data.out = data.frame ( date/time chron variables,
   ##                             data variables )
+  ## EXAMPLE:
+  ##     xx <- fRead_Thermo("directory/", "filename.dat", "49i")
+  ##     xx <- fRead_Thermo("directory/", "filename.dat", "user", c("Time","Date","no","no2","nox"))
   ## ------------------------------------------------------------
   data.file <- paste(data.dir, data.fn, sep="")
   ## import data file

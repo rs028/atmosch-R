@@ -17,15 +17,17 @@ fAirND <- function(temp, press) {
   ## Calculate the number density (molecule cm-3) of air, oxygen and
   ## nitrogen at given temperature and pressure.
   ##
-  ## input:
+  ## INPUT:
   ##     temp = temperature (K)
   ##     press = pressure (Pa)
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame ( M = number density of air,
   ##                           O2 = number density of oxygen,
   ##                           N2 = number density of nitrogen,
   ##                           Temp = temperature,
   ##                           Press = pressure )
+  ## EXAMPLE:
+  ##     xx <- fAirND(data_df$Temperature, data_df$Pressure)
   ## ------------------------------------------------------------
   ## Avogadro number, molar gas constant
   n.avog <- fConstant("Na")$Value
@@ -47,15 +49,17 @@ fFractO1D <- function(h2o, temp, press) {
   ##
   ## [ kinetic data from Ravishankara et al., Geophys. Res. Lett., 2002 ]
   ##
-  ## input:
+  ## INPUT:
   ##     h2o = water concentration (molecule cm-3)
   ##     temp = temperature (K)
   ##     press = pressure (Pa)
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame ( fO1D = fraction of O1D reacting with H2O,
   ##                           H2O = water concentration,
   ##                           Temp = temperature,
   ##                           Press = pressure )
+  ## EXAMPLE:
+  ##     xx <- fFractO1D(data_df$Water, data_df$Temperature, data_df$Pressure)
   ## ------------------------------------------------------------
   ## number density of oxygen and nitrogen
   o2.nd <- fAirND(temp, press)$O2
@@ -78,31 +82,34 @@ fParamOH <- function(jo1d) {
   ## Estimate the concentration of OH radicals using the empirical
   ## relationship between OH and solar UV radiation developed by
   ## Ehhalt & Rohrer (J. Geophys. Res., 2000), Rohrer & Berresheim
-  ## (Nature, 2006). The empirical parameters have been derived from
-  ## ambient datasets in different regions and conditions:
+  ## (Nature, 2006).
   ##
-  ##   POPCORN    =  rural Germany
-  ##   ALBATROSS  =  remote Atlantic Ocean
-  ##   BERLIOZ    =  rural Germany
-  ##   MOHp       =  rural Germany
-  ##   MINOS      =  coastal Crete
-  ##   NAMBLEX    =  coastal Ireland
-  ##   TORCH      =  urban UK
-  ##   CHABLIS    =  Antarctica
-  ##   RHaMBLe    =  coastal Cape Verde
-  ##   OP3        =  tropical forest Borneo
-  ##   SOS        =  coastal Cape Verde
+  ## The empirical parameters have been derived from ambient datasets
+  ## in different regions and conditions:
+  ## * POPCORN    =  rural Germany
+  ## * ALBATROSS  =  remote Atlantic Ocean
+  ## * BERLIOZ    =  rural Germany
+  ## * MOHp       =  rural Germany
+  ## * MINOS      =  coastal Crete
+  ## * NAMBLEX    =  coastal Ireland
+  ## * TORCH      =  urban UK
+  ## * CHABLIS    =  Antarctica
+  ## * RHaMBLe    =  coastal Cape Verde
+  ## * OP3        =  tropical forest Borneo
+  ## * SOS        =  coastal Cape Verde
   ##
   ## [ empirical parameters from Stone et al., Chem Soc. Rev., 2012 ]
   ##
-  ## input:
+  ## INPUT:
   ##     jo1d = photolysis rate of O3 to O1D (s-1)
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame ( JO1D = O3 photolysis rate,
   ##                           OH_popcorn = OH estimate for POPCORN,
   ##                           OH_albatross = OH estimate for ALBATROSS,
   ##                           OH_berlioz = OH estimate for BERLIOZ,
   ##                           ... )
+  ## EXAMPLE:
+  ##     xx <- fParamOH(data_df$jO1D)
   ## ------------------------------------------------------------
   ## empirical parameters derived from ambient datasets
   p01 <- c("popcorn", 3.90, 0.95, 0.04)
@@ -138,20 +145,22 @@ fPSS <- function(sec, o3, no, no2, jno2, temp) {
   ##
   ## [ kinetic data from Atkinson et al., Atmos. Chem. Phys., 2004 ]
   ##
-  ## input:
+  ## INPUT:
   ##     sec = number of seconds
   ##     o3 = initial O3 concentration (molecule cm-3)
   ##     no = initial NO concentration (molecule cm-3)
   ##     no2 = initial NO2 concentration (molecule cm-3)
   ##     jno2 = photolysis rate of NO2 (s-1)
   ##     temp = temperature (K)
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame ( SEC = seconds,
   ##                           O3 = O3 concentration,
   ##                           NO = NO concentration,
   ##                           NO2 = NO2 concentration,
   ##                           JNO2 = NO2 photolysis rate,
   ##                           Temp = temperature)
+  ## EXAMPLE:
+  ##     xx <- fPSS(120, 7.5e11, 2.5e12, 5e11, 1e-2, 298)
   ## ------------------------------------------------------------
   ## rate coefficient of O3+NO
   k.o3_no  <- fKBi(1.4e-12, -1310, temp)$k1

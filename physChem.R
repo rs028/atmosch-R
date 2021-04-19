@@ -18,16 +18,18 @@ fGasLaw <- function(press, vol, mol, temp) {
   ##
   ## NB: use "?" to indicate the unknown variable.
   ##
-  ## input:
+  ## INPUT:
   ##     press = pressure (Pa)
   ##     vol = volume (m3; 1 m3 = 1000 L)
   ##     mol = number of moles
   ##     temp = temperature (K)
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame( Press = pressure,
   ##                          Vol = volume,
   ##                          Mol = number of moles,
   ##                          Temp = temperature )
+  ## EXAMPLE:
+  ##     xx <- fGasLaw(data_df$Pressure, data_df$Volume, "?", data_df$Temperature)
   ## ------------------------------------------------------------
   ## molar gas constant
   r.gas <- fConstant("R")$Value
@@ -52,13 +54,15 @@ fKBi <- function(aa, ea.r, temp) {
   ## bimolecular reactions using the Arrhenius equation:
   ##    k = A * exp(-Ea/RT)
   ##
-  ## input:
+  ## INPUT:
   ##     aa = pre-exponential factor (cm3 molecule-1 s-1)
   ##     ea.r = -Ea/R (J mol-1 / J K-1 mol-1)
   ##     temp = temperature (K)
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame ( rate coeff 1, rate coeff 2, ...,
   ##                           temperature )
+  ## EXAMPLE:
+  ##     xx <- fKBi(1.85e-12, -1690, data_df$Temperature)
   ## ------------------------------------------------------------
   aa <- as.matrix(aa)
   ea.r <- as.matrix(ea.r)
@@ -82,15 +86,17 @@ fKBix <- function(aa, t0, nn, ea.r, temp) {
   ## bimolecular reactions using the expanded Arrhenius equation:
   ##    k = A * (T/T0)^n * exp(-Ea/RT)
   ##
-  ## input:
+  ## INPUT:
   ##     aa = pre-exponential factor (cm3 molecule-1 s-1)
   ##     t0 = reference temperature (K)        [ 1 if not used ]
   ##     nn = reference temperature exponent   [ 0 if not used ]
   ##     ea.r = -Ea/R (J mol-1 / J K-1 mol-1)  [ 0 if not used ]
   ##     temp = temperature (K)
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame ( rate coeff 1, rate coeff 2, ...,
   ##                           temperature )
+  ## EXAMPLE:
+  ##     xx <- fKBix(2.8e-14, 1, 0.667, -1575, data_df$Temperature)
   ## ------------------------------------------------------------
   aa <- as.matrix(aa)
   t0 <- as.matrix(t0)
@@ -120,15 +126,19 @@ fKTer <- function(k.zero, k.inf, fc, temp, press, ref.fc) {
   ## NB: use fKBi() or fKBix() to calculate the rate coefficients
   ##     `k.zero` and `k.inf`.
   ##
-  ## input:
+  ## INPUT:
   ##     k.zero = low pressure limit rate coefficient (cm3 molecule-1 s-1)
   ##     k.inf = high pressure limit rate coefficient (cm3 molecule-1 s-1)
   ##     fc = falloff curve factor
   ##     temp = temperature (K)
   ##     press = pressure (Pa)
   ##     ref.fc = "iupac" OR "jpl" convention
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame ( rate coeff, temperature, pressure )
+  ## EXAMPLE:
+  ##     xx <- fKTer(fKBix(3.6e-30, 300, -4.1, 0, data_df$Temperature)$k1,
+  ##                 fKBix(1.9e-12, 300, 0.2, 0, data_df$Temperature)$k1,
+  ##                 0.35, data_df$Temperature, data_df$Pressure, "iupac")
   ## ------------------------------------------------------------
   ## air number density
   mm <- fAirND(temp, press)$M
@@ -160,14 +170,16 @@ fLifeT <- function(k.gas, c.gas) {
   ## NB: use fKBi(), fKBix() or fKTer() to calculate the rate
   ##     coefficient `k.gas`.
   ##
-  ## input:
+  ## INPUT:
   ##     k.gas = rate coefficient (cm3 molecule-1 s-1 OR s-1)
   ##     c.gas = concentration of reactant gas (molecule cm-3) OR
   ##             1 (for a first order process, with `k.gas` in s-1)
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame( kp = pseudo-1st order rate coeff,
   #                           tau = chemical lifetime,
   ##                          t1_2 = chemical half-life )
+  ## EXAMPLE:
+  ##     xx <- fLifeT(1e-10, data_df$OH)
   ## ------------------------------------------------------------
   ## pseudo-1st order rate coefficient
   kp <- k.gas * c.gas

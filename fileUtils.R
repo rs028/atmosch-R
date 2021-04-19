@@ -22,19 +22,21 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ##     12-01-2009       13:00:00           40            55
   ##     ...              ...                ...           ...
   ##
-  ## NB: date/time can be in fractional days ("FD") in which case it
+  ## NB: date/time can be in fractional days ("FD"), in which case it
   ## is not converted to chron.
   ##
-  ## input:
+  ## INPUT:
   ##     data.dir = data file directory
   ##     data.fn = name of data file
   ##     data.sep = delimiter of data file (e.g., "\t" OR ",")
   ##     data.miss = missing value flag (e.g., -9999 OR "" OR NA)
   ##     ... = format of date/time variables (e.g., "d/m/y h:m" OR "y/m/d h:m" OR
   ##                                          ""d-m-y" OR "h:m:s" OR "FD")
-  ## output:
+  ## OUTPUT:
   ##     data.out = data.frame ( date/time chron variables,
   ##                             data variables )
+  ## EXAMPLE:
+  ##     xx <- fImportTXT("directory/", "filename.csv", ",", "-9999", "d-m-y", "h:m:s")
   ## ------------------------------------------------------------
   ## load data file
   data.file <- paste(data.dir, data.fn, sep="")

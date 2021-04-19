@@ -22,6 +22,9 @@ fListWS <- function(arg="") {
   ## NB: the names of all atmosch-R functions/variables begin with
   ## lowercase `f` followed by a capital letter (functions) or by a
   ## dot (variables).
+  ##
+  ## EXAMPLE:
+  ##     fListWS("atmosch")
   ## ------------------------------------------------------------
   vv1 <- ls(pos=.GlobalEnv)
   vv2 <- ls(pos=.GlobalEnv, pattern="^f[.A-Z]")
@@ -46,6 +49,9 @@ fClearWS <- function() {
   ## NB: the names of all atmosch-R functions/variables begin with
   ## lowercase `f` followed by a capital letter (functions) or by a
   ## dot (variables).
+  ##
+  ## EXAMPLE:
+  ##     fClearWS()
   ## ------------------------------------------------------------
   vv1 <- ls(pos=.GlobalEnv)
   vv2 <- ls(pos=.GlobalEnv, pattern="^f[.A-Z]")
@@ -60,20 +66,22 @@ fMergeDF <- function(df.lst, var.str, type.str, suff.lst) {
   ## NB: the base function merge() only works on two data.frames at a
   ## time -- see the documentation of merge().
   ##
-  ## input:
+  ## INPUT:
   ##     df.lst = list of data.frames to merge
   ##     var.str = name of common variable
   ##     type.str = type of merge operation ("ALL" to keep all rows OR
   ##                "NOTALL" to keep only the common rows)
   ##     suff.lst = list of suffixes to rename variables
-  ## output:
+  ## OUTPUT:
   ##     df.merg = data.frame ( merged data )
+  ## EXAMPLE:
+  ##     xx <- fMergeDF(list(data_df1,data_df2,data_df3), "Time", "ALL", list("_a","_b","_c"))
   ## ------------------------------------------------------------
   if (!is.list(df.lst)) {
     lst.name <- deparse(substitute(df.lst))
     stop(paste(lst.name, "must be a list", sep=" "))
   }
-  ##
+  ## set type of merge
   if (type.str == "ALL") {
     type.all <- TRUE
   } else {
@@ -101,13 +109,15 @@ fFindIdx <- function(vecd, ops, xval) {
   ## Find the first point greater/less than a reference value in an
   ## ordered data/chron vector.
   ##
-  ## input:
+  ## INPUT:
   ##     vecd = ordered data/chron vector
   ##     ops = greater/equal ("GE") OR greater ("G") OR
   ##           less ("L") OR less/equal ("LE")
   ##     xval = reference value
-  ## output:
+  ## OUTPUT:
   ##     xv = index of point in vector greater/less than reference value
+  ## EXAMPLE:
+  ##     xx <- fFindIdx(data_df$Datetime, "GE", chron("01/21/15","10:15:30"))
   ## ------------------------------------------------------------
   vecd <- unlist(vecd, use.names=FALSE)
   ## first and last values of data vector
@@ -156,10 +166,12 @@ fVarName <- function(var.dat) {
   ## NB: a variable can be addressed using the column number (df[1] or
   ## df[,1]), the name (df["A"]), or the `$` operator (df$A).
   ##
-  ## input:
+  ## INPUT:
   ##    var.dat = variable(s) in data.frame
-  ## output:
+  ## OUTPUT:
   ##    var.name = name of variable(s)
+  ## EXAMPLE:
+  ##     xx <- fVarName(data_df$Methane.ppm)
   ## ------------------------------------------------------------
   if (is.data.frame(var.dat)) {              # df[1] OR df["A"]
     var.name <- colnames(var.dat)

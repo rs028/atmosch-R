@@ -24,12 +24,14 @@ fConvTemp <- function(data.in, unit.in, unit.out) {
   ## * celsius   = "C"
   ## * fahreneit = "F"
   ##
-  ## input:
+  ## INPUT:
   ##     data.in = data in original unit
   ##     unit.in = original measurement unit
   ##     unit.out = final measurement unit
-  ## output:
+  ## OUTPUT:
   ##     data.out = data in final unit
+  ## EXAMPLE:
+  ##     xx <- fConvTemp(298, "K", "C")
   ## ------------------------------------------------------------
   ## data in original unit to reference unit (K)
   switch(unit.in,
@@ -71,12 +73,14 @@ fConvPress <- function(data.in, unit.in, unit.out) {
   ## * millibar    = "mbar"
   ## * psi         = "psi"
   ##
-  ## input:
+  ## INPUT:
   ##     data.in = data in original unit
   ##     unit.in = original measurement unit
   ##     unit.out = final measurement unit
-  ## output:
+  ## OUTPUT:
   ##     data.out = data in final unit
+  ## EXAMPLE:
+  ##     xx <- fConvPress(1013, "mbar", "torr")
   ## ------------------------------------------------------------
   ## data in original unit to reference unit (Pa)
   switch(unit.in,
@@ -137,12 +141,14 @@ fConvAngle <- function(data.in, unit.in, unit.out) {
   ## * radian = "rad"
   ## * degree = "deg"
   ##
-  ## input:
+  ## INPUT:
   ##     data.in = data in original unit
   ##     unit.in = original measurement unit
   ##     unit.out = final measurement unit
-  ## output:
+  ## OUTPUT:
   ##     data.out = data in final unit
+  ## EXAMPLE:
+  ##     xx <- fConvAngle(33, "deg", "rad")
   ## ------------------------------------------------------------
   ## data in original unit to reference unit (rad)
   switch(unit.in,
@@ -176,12 +182,14 @@ fConvTime <- function(data.in, unit.in, unit.out) {
   ## * day    = "day"
   ## * week   = "wk"
   ##
-  ## input:
+  ## INPUT:
   ##     data.in = data in original unit
   ##     unit.in = original measurement unit
   ##     unit.out = final measurement unit
-  ## output:
+  ## OUTPUT:
   ##     data.out = data in final unit
+  ## EXAMPLE:
+  ##     xx <- fConvTime(2, "day", "sec")
   ## ------------------------------------------------------------
   ## data in original unit to reference unit (sec)
   switch(unit.in,
@@ -243,12 +251,14 @@ fConvSI <- function(data.in, unit.in, unit.out) {
   ## * pico      = "p"
   ## * femto     = "f"
   ##
-  ## input:
+  ## INPUT:
   ##     data.in = data in original unit
   ##     unit.in = original measurement unit
   ##     unit.out = final measurement unit
-  ## output:
+  ## OUTPUT:
   ##     data.out = data in final unit
+  ## EXAMPLE:
+  ##     xx <- fConvSI(4321, "u", "-")
   ## ------------------------------------------------------------
   ## data in original unit to reference unit (base unit)
   switch(unit.in,
@@ -364,15 +374,18 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   ##
   ## NB: molar mass is required only for conversions to/from "UG".
   ##
-  ## input:
+  ## INPUT:
   ##     data.in = data in original concentration unit
   ##     unit.in = original concentration unit
   ##     unit.out = final concentration unit
   ##     temp = temperature (K)
   ##     press = pressure (Pa)
   ##     m.mass = molar mass (g/mole)     [ OPTIONAL ]
-  ## output:
+  ## OUTPUT:
   ##     data.out = data in final concentration unit
+  ## EXAMPLE:
+  ##     xx <- fConcGas(data_df$O3, "ppb", "MD", data_df$Temperature, data_df$Pressure)
+  ##     xx <- fConcGas(data_df$O3, "ppb", "UG", data_df$Temperature, data_df$Pressure, 48)
   ## ------------------------------------------------------------
   ## check molar mass input
   if (unit.in == "UG" | unit.out == "UG") {
@@ -455,13 +468,16 @@ fConcAq <- function(data.in, unit.in, unit.out, m.mass=NULL) {
   ##
   ## NB: molar mass is required only for conversions to/from "UG".
   ##
-  ## input:
+  ## INPUT:
   ##     data.in = data in original concentration unit
   ##     unit.in = original concentration unit
   ##     unit.out = final concentration unit
   ##     m.mass = molar mass (g/mole)     [ OPTIONAL ]
-  ## output:
+  ## OUTPUT:
   ##     data.out = data in final concentration unit
+  ## EXAMPLE:
+  ##     xx <- fConcAq(data_df$NO3, "M", "MD")
+  ##     xx <- fConcAq(data_df$NO3, "M", "UG", 62)
   ## -------------------------------------------------------------
   ## check molar mass input
   if (unit.in == "UG" | unit.out == "UG") {
@@ -528,14 +544,17 @@ fHumid <- function(data.in, unit.in, unit.out, temp, press=101325) {
   ##
   ## NB: pressure is required only for conversions to/from "PPM".
   ##
-  ## input:
+  ## INPUT:
   ##     data.in = data in original humidity unit
   ##     unit.in = original humidity unit
   ##     unit.out = final humidity unit
   ##     temp = temperature (K)
   ##     press = pressure (Pa)     [ OPTIONAL, DEFAULT = 1 atm ]
-  ## output:
+  ## OUTPUT:
   ##     data.out = data in final humidity unit
+  ## EXAMPLE:
+  ##     xx <- fHumid(data_df, "AH", "RH", data_df$Temperature)
+  ##     xx <- fHumid(data_df, "AH", "PPM", data_df$Temperature, data_df$Pressure)
   ## ------------------------------------------------------------
   ## convert temperature and pressure
   temp.c <- fConvTemp(temp, "K", "C")

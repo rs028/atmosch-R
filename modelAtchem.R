@@ -33,13 +33,15 @@ fAtchemIn <- function(constr.dir, constr.df, start.str) {
   ##   21-01-15 13:00:00        40            55            60
   ##   ...                      ...           ...           ...
   ##
-  ## input:
+  ## INPUT:
   ##     constr.dir = constraint files directory
   ##     constr.df = data.frame with model constraints
   ##     start.str = model start datetime string ("d-m-y h:m:s")
-  ## output:
+  ## OUTPUT:
   ##     init = list of values at model start datetime
-  ##     --> constraint files in `constr.dir`
+  ##     --> constraint files saved to `constr.dir`
+  ## EXAMPLE:
+  ##     xx <- fAtchemIn("directory/", data_df, "21-01-15 00:00:00")
   ## ------------------------------------------------------------
   if (!is.data.frame(constr.df)) {
     df.name <- deparse(substitute(constr.df))
@@ -52,7 +54,7 @@ fAtchemIn <- function(constr.dir, constr.df, start.str) {
   init <- list()
   for (c in 2:(ncol(constr.df)-1)) {
     inp.str <- fVarName(constr.df[c])
-    ## set negative values to zero and remove rows with NaN
+    ## set negative values to zero and remove rows with NA
     inp.var <- ifelse(constr.df[[c]] < 0, 0, constr.df[[c]])
     df.in <- data.frame(SEC=constr.df$SEC, VAR=inp.var)
     df.in <- df.in[which(!is.na(df.in$VAR)),]
@@ -75,12 +77,14 @@ fAtchemOut <- function(output.dir, output.lst, start.str) {
   ##                           `photolysisRatesParameters.output`
   ## * model diagnostics     : `mainSolverParameters.output`
   ##
-  ## input:
+  ## INPUT:
   ##       output.dir = model output directory
   ##       output.lst = list of output files
   ##       start.str = model start datetime string ("d-m-y h:m:s")
-  ## output:
+  ## OUTPUT:
   ##        data.frame ( seconds, datetime chron, variable1, variable2, ... )
+  ## EXAMPLE:
+  ##     xx <- fAtchemOut("directory/", list("speciesConcentrations.output","environmentVariables.output"), "21-01-15 00:00:00")
   ## ------------------------------------------------------------
   if (!is.list(output.lst)) {
     lst.name <- deparse(substitute(output.lst))
@@ -109,14 +113,16 @@ fAtchemRates <- function(output.dir, output.file, species.str, start.str) {
   ## * production rates of target species : `productionRates.output`
   ## * loss rates of target species       : `lossRates.output`
   ##
-  ## input:
+  ## INPUT:
   ##       output.dir = model output directory
   ##       output.file = reaction rates output file
   ##       species.str = target species
   ##       start.str = model start datetime string ("d-m-y h:m:s")
-  ## output:
+  ## OUTPUT:
   ##        list( data.frame ( reactions involving target species ),
   ##              data.frame ( time, reaction rate, reaction ) )
+  ## EXAMPLE:
+  ##     xx <- fAtchemRates("directory/", "productionRates.output", "OH", "21-01-15 00:00:00")
   ## ------------------------------------------------------------
   ## load reaction rates output file
   df.rates <- read.table(paste(output.dir, output.file, sep=""), header=TRUE, fill=TRUE, sep="")
@@ -140,19 +146,19 @@ fConstrGap <- function(constr.dir, constr.lst, max.gap, fn.str) {
   ## Parse the AtChem2 constraint files and find gaps in the constraint
   ## data that are larger than the data gap threshold.
   ##
-  ## Optional: save plots of model constraints to pdf file.
-  ##
   ## NB: use fAtchemIn() to generate the constraint files.
   ##
-  ## input:
+  ## INPUT:
   ##     constr.dir = constraint files directory
   ##     constr.lst = list of constraint files
   ##     max.gap = data gap threshold (seconds)
   ##     fn.str = name of pdf file to save plots OR ""
-  ## output:
+  ## OUTPUT:
   ##     df.out = data.frame ( name of variable, start time of gap,
-  ##                           stop time of gap, duration of gap)
+  ##                           stop time of gap, duration of gap )
   ##     --> pdf file : `fn.str`.pdf
+  ## EXAMPLE:
+  ##     xx <- fConstrGap("directory/", list("NO","NO2","O3"), 7200, "filename")
   ## ------------------------------------------------------------
   if (!is.list(constr.lst)) {
     lst.name <- deparse(substitute(constr.lst))
