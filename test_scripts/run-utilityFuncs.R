@@ -35,20 +35,20 @@ assert("=> fMergeDF() output",
        )
 
 assert("=> fMergeDF() values",
-       x0$H2O_b == df2["H2O"],
+       x0["H2O_b"] == df2["H2O"],
        x0[5,] == x1[3,]
        )
 
 ## -----------------------------------------------
 ## fFindIdx()
 
-df1 <- data.frame(TIME = c(8, 9, 10, 11, 12, 13, 14, 15, 16),
-                  JO1D = c(1.2e-06, 2.7e-06, 4.5e-06, 7.9e-06, 9.4e-06, 9.2e-06, 7.9e-06, 4.9e-06, 2.0e-06))
+df1 <- data.frame(Time = c(8, 9, 10, 11, 12, 13, 14, 15, 16),
+                  jO1D = c(1.2e-06, 2.7e-06, 4.5e-06, 7.9e-06, 9.4e-06, 9.2e-06, 7.9e-06, 4.9e-06, 2.0e-06))
 
-x0 <- fFindIdx(df1$TIME, "G", 12)
+x0 <- fFindIdx(df1$Time, "G", 12)
 
 assert("=> fFindIdx() input",
-       x0 == fFindIdx(df1["TIME"], "G", 12)
+       x0 == fFindIdx(df1["Time"], "G", 12)
        )
 
 assert("=> fFindIdx() output",
@@ -56,10 +56,10 @@ assert("=> fFindIdx() output",
        )
 
 assert("=> fFindIdx() values",
-       fFindIdx(df1$TIME, "GE", 12) == fFindIdx(df1$TIME, "LE", 12),
-       fFindIdx(df1$TIME, "G", 10) == fFindIdx(df1$TIME, "L", 12),
-       fFindIdx(df1$TIME, "G", 18) == 9,
-       fFindIdx(df1$TIME, "L", 6) == 1
+       fFindIdx(df1$Time, "GE", 12) == fFindIdx(df1$Time, "LE", 12),
+       fFindIdx(df1$Time, "G", 10) == fFindIdx(df1$Time, "L", 12),
+       fFindIdx(df1$Time, "G", 18) == 9,
+       fFindIdx(df1$Time, "L", 6) == 1
        )
 
 ## -----------------------------------------------

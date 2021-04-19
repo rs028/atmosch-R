@@ -117,17 +117,17 @@ assert("=> fConcGas() values",
 df1 <- data.frame(SO4 = c(2, 4, 6),
                   NO3 = c(0.1, 0.3, 0.5))
 
-x0 <- fConcAq(df1$SO4, "M", "UG", 96)
-x1 <- fConcAq(x0, "UG", "MD", 96)
+x0 <- fConcAq(df1$NO3, "M", "UG", 62)
+x1 <- fConcAq(x0, "UG", "MD", 62)
 x2 <- fConcAq(x1, "MD", "MD")
 x3 <- fConcAq(x2, "MD", "M")
 
 assert("=> fConcAq() calculations",
-      all.equal(x3, df1$SO4, tolerance=1e-7)
+      all.equal(x3, df1$NO3, tolerance=1e-7)
       )
 
 assert("=> fConcAq() input",
-       x0 == fConcAq(df1["SO4"], "M", "UG", 96)
+       x0 == fConcAq(df1["NO3"], "M", "UG", 62)
        )
 
 assert("=> fConcAq() values",

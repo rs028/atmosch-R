@@ -63,13 +63,13 @@ assert("=> fFractO1D() values",
 ## -----------------------------------------------
 ## fParamOH()
 
-df1 <- data.frame(TIME = c(8, 9, 10, 11, 12, 13, 14, 15, 16),
-                  JO1D = c(1.2e-06, 2.7e-06, 4.5e-06, 7.9e-06, 9.4e-06, 9.2e-06, 7.9e-06, 4.9e-06, 2.0e-06))
+df1 <- data.frame(Time = c(8, 9, 10, 11, 12, 13, 14, 15, 16),
+                  jO1D = c(1.2e-06, 2.7e-06, 4.5e-06, 7.9e-06, 9.4e-06, 9.2e-06, 7.9e-06, 4.9e-06, 2.0e-06))
 
-x0 <- fParamOH(df1$JO1D)
+x0 <- fParamOH(df1$jO1D)
 
 assert("=> fParamOH() input",
-       x0 == fParamOH(df1["JO1D"])
+       x0 == fParamOH(df1["jO1D"])
        )
 
 assert("=> fParamOH() output",
@@ -79,13 +79,13 @@ assert("=> fParamOH() output",
        )
 
 assert("=> fParamOH() values",
-       fParamOH(4.5E-06) == fParamOH(df1$JO1D)[3,]
+       fParamOH(4.5E-06) == fParamOH(df1$jO1D)[3,]
        )
 
 ## -----------------------------------------------
 ## fPSS()
 
-x0 <- fPSS(100, 7.5e11, 2.5e12, 5.0e11, 1e-2, 298.15)
+x0 <- fPSS(100, 7.5e11, 2.5e12, 5.0e11, 1.0e-2, 298.15)
 
 assert("=> fPSS() output",
        is.data.frame(x0),
