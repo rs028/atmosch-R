@@ -40,13 +40,17 @@ assert("=> fMakeStartStop() output",
 
 x1 <- fAvgStartStop(df1["Time"], df1["NO2"], x0, "no")
 
+assert("=> fAvgStartStop() input",
+       all.equal(x1, fAvgStartStop(df1[1], df1[2], x0, "no"), all.names=TRUE)
+       )
+
 assert("=> fAvgStartStop() output",
        is.data.frame(x1),
        nrow(x1) == 10,
        ncol(x1) == 8
        )
 
-x2 <- fAvgStartStopDF(df1, x0, "")
+x2 <- fAvgStartStopDF(df1, x0, ""); dev.off()
 x2a <- x2[[1]]
 x2b <- x2[[2]]
 x2c <- x2[[3]]
@@ -71,7 +75,6 @@ assert("=> fAvgStartStopDF() output",
       )
 
 assert("=> fAvgStartStop(), fAvgStartStopDF() values",
-       all.equal(x1, fAvgStartStop(df1[1], df1[2], x0, "no"), all.names=TRUE),
        all.equal(x0[[2]], x1$MidTime, all.names=TRUE),
        all.equal(x0[[2]], x2$MidTime, all.names=TRUE),
        all.equal(x1[4:8], x2$NO2.avg, all.names=TRUE)

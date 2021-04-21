@@ -56,7 +56,7 @@ assert("=> fFindIdx() output",
        )
 
 assert("=> fFindIdx() values",
-       fFindIdx(df1$Time, "GE", 12) == fFindIdx(df1$Time, "LE", 12),
+       fFindIdx(df1$Time, "GE", 11) == fFindIdx(df1$Time, "LE", 11),
        fFindIdx(df1$Time, "G", 10) == fFindIdx(df1$Time, "L", 12),
        fFindIdx(df1$Time, "G", 18) == 9,
        fFindIdx(df1$Time, "L", 6) == 1
@@ -77,4 +77,8 @@ assert("=> fVarName() input",
 
 assert("=> fVarName() output",
        is.character(x0)
+       )
+
+assert("=> fVarName() values",
+       x0 == "Temp"
        )

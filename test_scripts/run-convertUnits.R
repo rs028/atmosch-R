@@ -9,7 +9,7 @@ require(testit)
 ## -----------------------------------------------
 ## conversion of physical units
 
-x0 <- runif(10, -100, 100)
+x0 <- runif(10, -100, 200)
 x1 <- fConvTemp(x0, "C", "K")
 x2 <- fConvTemp(x1, "K", "F")
 x3 <- fConvTemp(x2, "F", "F")
@@ -19,7 +19,7 @@ assert("=> fConvTemp() calculations",
        all.equal(fConvTemp(25, "C", "K"), 298.15, tolerance=1e-7)
        )
 
-x0 <- runif(10, 0, 1500)
+x0 <- runif(10, 0, 2000)
 x1 <- fConvPress(x0, "mbar", "hPa")
 x2 <- fConvPress(x1, "hPa", "atm")
 x3 <- fConvPress(x2, "atm", "bar")
@@ -42,7 +42,7 @@ assert("=> fConvAngle() calculations",
        all.equal(fConvAngle(30, "deg", "rad"), 0.5235988, tolerance=1e-7)
        )
 
-x0 <- runif(10, 0, 1e+03)
+x0 <- runif(10, 0, 500)
 x1 <- fConvTime(x0, "hr", "wk")
 x2 <- fConvTime(x1, "wk", "sec")
 x3 <- fConvTime(x2, "sec", "day")
@@ -54,7 +54,7 @@ assert("=> fConvTime() calculations",
        all.equal(fConvTime(8.25, "hr", "sec"), 29700, tolerance=1e-7)
        )
 
-x0 <- runif(10, 0, 1e+05)
+x0 <- runif(10, 0, 1e5)
 x1 <- fConvSI(x0, "d", "H")
 x2 <- fConvSI(x1, "H", "m")
 x3 <- fConvSI(x2, "m", "M")

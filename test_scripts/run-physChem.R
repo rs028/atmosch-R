@@ -141,7 +141,7 @@ assert("=> fKTer() values",
 df1 <- data.frame(Temp = c(298, 300, 302),
                   Press = c(101300, 101350, 101400))
 
-df2 <- data.frame(NO = c(2.5e10, 2.3e10, 2.7e10),
+df2 <- data.frame(NO = c(2.5e10, 7.4e10, 1.23e11),
                   kO3 = c(1.73e-14, 1.78e-14, 1.83e-14))
 
 x0 <- fLifeT(df2$kO3, df2$NO)
@@ -159,7 +159,7 @@ assert("=> fLifeT() output",
        )
 
 assert("=> fLifeT() values",
-       fLifeT(1.78e-14, 2.3e10) == fLifeT(df2$kO3, df2$NO)[2,],
-       fLifeT(1.78e-14, 2.3e10) == fLifeT(1.78e-14, df2$NO)[2,],
-       fLifeT(1.78e-14, 2.3e10) == fLifeT(df2$kO3, 2.3e10)[2,]
+       fLifeT(1.78e-14, 7.4e10) == fLifeT(df2$kO3, df2$NO)[2,],
+       fLifeT(1.78e-14, 7.4e10) == fLifeT(1.78e-14, df2$NO)[2,],
+       fLifeT(1.78e-14, 7.4e10) == fLifeT(df2$kO3, 7.4e10)[2,]
        )

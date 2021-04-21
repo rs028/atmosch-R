@@ -9,10 +9,10 @@ require(testit)
 ## -----------------------------------------------
 ## fConstant()
 
-x0 <- fConstant("Wb")
+x0 <- fConstant("R")
 
 assert("=> fConstant() input",
-       fConstant("Wb")$Value == fConstant("Wb")["Value"]
+       fConstant("R")$Value == fConstant("R")["Value"]
        )
 
 assert("=> fConstant() output",
@@ -22,18 +22,18 @@ assert("=> fConstant() output",
        )
 
 assert("=> fConstant() values",
-       fConstant("Na")$Name == "Avogadro number",
-       fConstant("Na")$Value == 6.022140857e+23,
-       fConstant("Na")$Unit == "mol-1"
+       fConstant("kB")$Name == "Boltzmann constant",
+       fConstant("kB")$Value == 1.38064852e-23,
+       fConstant("kB")$Unit == "J K-1"
        )
 
 ## -----------------------------------------------
 ## fPeriodic()
 
-x0 <- fPeriodic("Ti")
+x0 <- fPeriodic("Na")
 
 assert("=> fPeriodic() input",
-       fPeriodic("Ti")$Atomic.W == fPeriodic("Ti")["Atomic.W"]
+       fPeriodic("Na")$Atomic.W == fPeriodic("Na")["Atomic.W"]
        )
 
 assert("=> fPeriodic() output",

@@ -51,8 +51,8 @@ assert("=> fAtchemRates() output - loss rates file",
        is.data.frame(df2a),
        is.data.frame(df2b),
        length(df2) == 2,
-       nrow(df2a) == 5,
-       nrow(df2b) == 15,
+       nrow(df2a) == 4,
+       nrow(df2b) == 12,
        ncol(df2a) == 2,
        ncol(df2b) == 5
        )
