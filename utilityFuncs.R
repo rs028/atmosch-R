@@ -20,8 +20,8 @@ fListWS <- function(arg="") {
   ##   are shown
   ##
   ## NB: the names of all atmosch-R functions/variables begin with
-  ## lowercase `f` followed by a capital letter (functions) or by a
-  ## dot (variables).
+  ##     lowercase `f` followed by a capital letter (functions) or by
+  ##     a dot (variables).
   ##
   ## EXAMPLE:
   ##     fListWS("atmosch")
@@ -47,8 +47,8 @@ fClearWS <- function() {
   ## * close plot windows
   ##
   ## NB: the names of all atmosch-R functions/variables begin with
-  ## lowercase `f` followed by a capital letter (functions) or by a
-  ## dot (variables).
+  ##     lowercase `f` followed by a capital letter (functions) or by
+  ##     a dot (variables).
   ##
   ## EXAMPLE:
   ##     fClearWS()
@@ -64,7 +64,7 @@ fMergeDF <- function(df.lst, var.str, type.str, suff.lst) {
   ## the other variables.
   ##
   ## NB: the base function merge() only works on two data.frames at a
-  ## time -- see the documentation of merge().
+  ##     time -- see the documentation of merge().
   ##
   ## INPUT:
   ##     df.lst = list of data.frames to merge
@@ -164,7 +164,7 @@ fVarName <- function(var.dat) {
   ## Extract the name of one or more variables in a data.frame.
   ##
   ## NB: a variable can be addressed using the column number (df[1] or
-  ## df[,1]), the name (df["A"]), or the `$` operator (df$A).
+  ##     df[,1]), the name (df["A"]), or the `$` operator (df$A).
   ##
   ## INPUT:
   ##    var.dat = variable(s) in data.frame

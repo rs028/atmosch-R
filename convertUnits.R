@@ -362,6 +362,8 @@ fConvSI <- function(data.in, unit.in, unit.out) {
   return(data.out)
 }
 
+### ---------------------------------------------------------------- ###
+
 fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   ## Convert between units of concentration (gas-phase):
   ## * molecule cm-3 = "ND"

@@ -23,7 +23,7 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ##     ...              ...                ...           ...
   ##
   ## NB: date/time can be in fractional days ("FD"), in which case it
-  ## is not converted to chron.
+  ##     is not converted to chron.
   ##
   ## INPUT:
   ##     data.dir = data file directory

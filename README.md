@@ -2,8 +2,7 @@ atmosch-R
 =========
 
 atmosch-R is a collection of [R](http://www.r-project.org/) functions for
-atmospheric chemistry, mass spectrometry, data processing and analysis. It is
-compatible with the [openair](https://davidcarslaw.github.io/openair/) package.
+atmospheric chemistry, mass spectrometry, data processing and analysis.
 
 Use of this software is free (see `LICENSE.md`), but please acknowledge or cite,
 as appropriate, if you use it. Comments, suggestions, requests, reports of
@@ -21,8 +20,8 @@ and unzip it in a directory of choice (e.g., `D:\My Documents\R Code\`). This cr
 repository directory, called `atmosch-R-master`, which contains the atmosch-R files.
 Rename the repository directory to `atmosch-R/`.
 
-The `.Rprofile` file, which contains the customization settings for R, should be
-located in the home directory (e.g., `D:\My Documents\`). If `.Rprofile` does not exist, create it (see
+The `.Rprofile` file, which contains the customization settings for R, should be located
+in the home directory (e.g., `D:\My Documents\`). If `.Rprofile` does not exist, create it (see
 [this note](https://stackoverflow.com/questions/28664852/saving-a-file-as-rprofile-in-windows),
 if working on Windows).
 
@@ -51,35 +50,40 @@ function does, the input, the output, and an example of how it is used.
 ADDITIONAL PACKAGES
 -------------------
 
--  The [chron](https://cran.r-project.org/web/packages/chron/) package
-is used to handle dates and times. To install chron, type at the R prompt:
+The [chron](https://cran.r-project.org/web/packages/chron/) package is used
+to handle dates and times. To install chron, type at the R prompt:
+
 ```
 install.packages("chron")
 ```
-and follow the instructions. Add `library(chron)` to `.Rprofile`.
 
-- The [testit](https://cran.r-project.org/web/packages/testit/) package is used
+and follow the instructions. Optionally, add `library(chron)` to `.Rprofile`.
+
+The [testit](https://cran.r-project.org/web/packages/testit/) package is used
 for testing. It is not required in order to use the atmosch-R functions.
 To install testit, type at the R prompt:
+
 ```
 install.packages("testit")
 ```
+
 and follow the instructions. To run the tests, use the command:
+
 ```
 source("test_scripts/all-tests.R")
 ```
 
-**N.B.:** on some systems -- depending on the OS, the user permissions, the R
-installation, etc... -- it may be necessary to add the path of the additional R
-packages to `.Rprofile` (e.g., `.libPaths("D:\\My Documents\\R\\win-library\\3.0"`)
+**N.B.:** depending on the OS, the user permissions, the R version, etc...,
+it may be necessary to add the path of the R package library to `.Rprofile`
+(e.g., `.libPaths("D:\\My Documents\\R\\win-library\\3.0"`)
 
 
 OPENAIR
 -------
 
-atmosch-R can be used in conjunction with openair, a widely used R package for
-analysis of air quality and atmospheric composition data. To install openair,
-type at the R prompt:
+atmosch-R is compatible with [openair](https://davidcarslaw.github.io/openair/),
+a widely used R package for analysis of air quality and atmospheric composition data.
+To install openair, type at the R prompt:
 
 ```
 install.packages("openair")
@@ -87,8 +91,10 @@ install.packages("openair")
 
 and follow the instructions. Optionally, add `library(openair)` to `.Rprofile`.
 
-The openair uses the POSIX format to handle dates and times, instead of the chron format
-used in atmosch-R. In addition, several openair functions make assumptions about the
-names of some key variables, such as: date/time, wind speed, wind direction, etc...
+The openair package uses the POSIX format to handle dates and times, instead of the
+chron format used in atmosch-R. In addition, several openair functions make
+assumptions about the names of some key variables, such as: date/time, wind speed,
+wind direction, etc...
+
 The `fOpenair()` function in `processData.R` can be used to convert a _data.frame_
 to the format used by openair functions.

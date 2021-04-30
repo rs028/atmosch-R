@@ -24,6 +24,10 @@ fSolar <- function(lat, long, dt.chron) {
   ## [ from "The Atmosphere and UV-B Radiation at Ground Level" by
   ##   S. Madronich (Environmental UV Photobiology, 1993) ]
   ##
+  ## NB: by convention, latitude North is positive and latitude South
+  ##     is negative; longitude East is positive and longitude West is
+  ##     negative.
+  ##
   ## INPUT:
   ##     lat = latitude (degrees)
   ##     long = longitude (degrees)

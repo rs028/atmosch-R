@@ -112,7 +112,7 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
   ## Optional: show plots of averaged data on screen.
   ##
   ## NB: use fMakeStartStop() to generate the start/mid/stop chron
-  ## variables for data.frame `tst.df`.
+  ##     variables for data.frame `tst.df`.
   ##
   ## INPUT:
   ##     tst.orig = original chron variable ("d-m-y h:m:s")
@@ -200,7 +200,7 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   ## chron variable in "d-m-y h:m:s" format.
   ##
   ## NB: use fMakeStartStop() to generate the start/mid/stop chron
-  ## variables for data.frame `tst.df`.
+  ##     variables for data.frame `tst.df`.
   ##
   ## INPUT:
   ##     df.orig = original data.frame
