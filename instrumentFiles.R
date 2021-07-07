@@ -3,21 +3,22 @@
 ### ---------------------------------------------------------------- ###
 ### Functions to read data files from commercial instruments:
 ### - fRead_Thermo() : Thermo Scientific monitors
+### - fRead_QCL()    : Aerodyne QCL-TILDAS
 ###
-### version 1.5, Apr 2021
+### version 1.6, Jul 2021
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fRead_Thermo <- function(data.dir, data.fn, type.str, data.var=NULL) {
   ## Thermo Scientific monitors.
   ##
-  ## The Thermo Scientific monitors can log data in two ways:
-  ## 1. using the default iPort program, which exports to a delimited
-  ##    file with header.
-  ## 2. streaming to a terminal (e.g., TeraTerm), which saves to a
-  ##    delimited file without header. The default streaming variables
-  ##    are different for each monitor, but can be changed from the
-  ##    instrument control panel.
+  ## The Thermo Scientific monitors can be operated in two modes:
+  ## 1. using the default iPort program, which exports data to a
+  ##    space-delimited file with header (iPort mode).
+  ## 2. streaming to a terminal, such as TeraTerm, which saves data to
+  ##    a space-delimited file without header (streaming mode). The
+  ##    default streaming variables are different for each monitor,
+  ##    but can be changed from the instrument control panel.
   ##
   ## INPUT:
   ##     data.dir = data file directory
@@ -32,8 +33,8 @@ fRead_Thermo <- function(data.dir, data.fn, type.str, data.var=NULL) {
   ##     xx <- fRead_Thermo("directory/", "filename.dat", "49i")
   ##     xx <- fRead_Thermo("directory/", "filename.dat", "user", c("Time","Date","no","no2","nox"))
   ## ------------------------------------------------------------
-  data.file <- paste(data.dir, data.fn, sep="")
   ## import data file
+  data.file <- paste(data.dir, data.fn, sep="")
   switch(type.str,
          "iport" = {  # any monitor - iPort mode
            data.df <- read.table(data.file, header=TRUE, fill=TRUE, sep="", skip=5)
@@ -86,5 +87,40 @@ fRead_Thermo <- function(data.dir, data.fn, type.str, data.var=NULL) {
   rownames(data.time) <- NULL
   colnames(data.time) <- c("Datetime", "Date", "Time")
   data.out <- cbind(data.time, data.df[-1:-2])
+  return(data.out)
+}
+
+fRead_QCL <- function(data.dir, data.fn, diagn) {
+  ## Aerodyne QCL-TILDAS.
+  ##
+  ## The Aerodyne QCL-TILDAS saves data in two files:
+  ## * a space-delimited data file (*.str)
+  ## * a comma-delimited diagnostic file (*.stc)
+  ##
+  ## INPUT:
+  ##     data.dir = data file directory
+  ##     data.fn = name of data file
+  ##     diagn = include diagnostic variables ("yes" OR "no")
+  ## OUTPUT:
+  ##     data.out = data.frame ( date/time chron variables,
+  ##                             data variables )
+  ## EXAMPLE:
+  ##     xx <- fRead_QCL("directory/", "filename.dat", "yes")
+  ## ------------------------------------------------------------
+  ## import data file
+  data.file <- paste(data.dir, data.fn, ".str", sep="")
+  data.df <- read.table(data.file, header=FALSE, fill=TRUE, sep="", skip=1)
+  colnames(data.df) <- c("Time", "HNO3", "H2O_a", "H2O_b", "H2O_c", "HONO", "H2O_d", "N2O_a", "N2O_b", "CH4")
+  ## import diagnostic file
+  if (diagn == "yes") {
+    diagn.file <- paste(data.dir, data.fn, ".stc", sep="")
+    diagn.df <- read.table(diagn.file, header=TRUE, fill=TRUE, sep=",", skip=1)
+    colnames(diagn.df)[1] <- "Time"
+    data.out <- merge(data.df, diagn.df, by="Time")
+  } else {
+    data.out <- data.df
+  }
+  ## output data.frame
+  data.out$Datetime <- chron("01/01/1904", "00:00:00") + (data.df$Time / 86400)
   return(data.out)
 }

@@ -30,3 +30,21 @@ assert("=> fRead_Thermo() output - monitor 49i (stream)",
        nrow(df3) == 15,
        ncol(df3) == 12
        )
+
+## -----------------------------------------------
+## fRead_QCL()
+
+df1 <- fRead_QCL("../test_files/", "200917_000002", "no")
+df2 <- fRead_QCL("../test_files/", "200917_000002", "yes")
+
+assert("=> fRead_QCL() output - without diagnostics",
+       is.data.frame(df1),
+       nrow(df1) == 10,
+       ncol(df1) == 11
+       )
+
+assert("=> fRead_QCL() output - with diagnostics",
+       is.data.frame(df2),
+       nrow(df2) == 10,
+       ncol(df2) == 56
+       )
