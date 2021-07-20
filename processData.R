@@ -109,8 +109,6 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
   ## of one variable between the time intervals defined by the
   ## start/stop chron variables.
   ##
-  ## Optional: show plots of averaged data on screen.
-  ##
   ## NB: use fMakeStartStop() to generate the start/mid/stop chron
   ##     variables for data.frame `tst.df`.
   ##
@@ -171,7 +169,7 @@ fAvgStartStop <- function(tst.orig, dat.orig, tst.df, pl) {
           }
       }
     }
-    ## plot original and averaged data [optional]
+    ## plot original and averaged data
     if (pl == "yes") {
       vect.name <- fVarName(dat.orig)
       plot(tst.orig[,1], dat.orig[,1], type="l", col="red", lwd=2,
@@ -223,7 +221,7 @@ fAvgStartStopDF <- function(df.orig, tst.df, fn.str) {
   ## add start/mid/stop chron variables to output list
   lst.out <- list(tst.df[[1]], tst.df[[2]], tst.df[[3]])
   names(lst.out) <- colnames(tst.df)
-  ## open pdf file to save plots [optional]
+  ## open pdf file to save plots
   if (fn.str != "") {
     pdf(paste(fn.str, ".pdf", sep=""), paper="a4r", width=0, height=0)
   }

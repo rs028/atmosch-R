@@ -7,7 +7,7 @@
 ### - fAtchemRates() : output files (production/loss rates)
 ### - fConstrGap()   : find gaps in constrained data
 ###
-### version 1.6, Jun 2020
+### version 1.7, Jul 2021
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -38,7 +38,7 @@ fAtchemIn <- function(constr.dir, constr.df, start.str) {
   ##     constr.df = data.frame with model constraints
   ##     start.str = model start datetime string ("d-m-y h:m:s")
   ## OUTPUT:
-  ##     init = list of values at model start datetime
+  ##     init = values of constraints at model start datetime
   ##     --> constraint files saved to `constr.dir`
   ## EXAMPLE:
   ##     xx <- fAtchemIn("directory/", data_df, "21-01-15 00:00:00")
@@ -91,19 +91,19 @@ fAtchemOut <- function(output.dir, output.lst, start.str) {
     stop(paste(lst.name, "must be a list", sep=" "))
   }
   ## load output files
-  df.res <- read.table(paste(output.dir, output.lst[1], sep=""), header=TRUE, fill=TRUE, sep="")
+  output.df <- read.table(paste(output.dir, output.lst[1], sep=""), header=TRUE, fill=TRUE, sep="")
   if (length(output.lst) > 1) {
     for (i in 2:length(output.lst)) {
-      res.i <- read.table(paste(output.dir, output.lst[i], sep=""), header=TRUE, fill=TRUE, sep="")
-      df.res <- merge(df.res, res.i, by="t")
+      data.df <- read.table(paste(output.dir, output.lst[i], sep=""), header=TRUE, fill=TRUE, sep="")
+      output.df <- merge(output.df, data.df, by="t")
     }
   }
   ## model time (seconds since model start)
   model.start <- fChronStr(start.str, "d-m-y h:m:s")
-  df.out <- data.frame(SEC=df.res$t)
+  df.out <- data.frame(SEC=output.df$t)
   df.out$datetime <- df.out$SEC / 86400 + model.start
   ## output data.frame
-  df.out <- cbind(df.out, df.res[-1])
+  df.out <- cbind(df.out, output.df[-1])
   colnames(df.out) <- toupper(colnames(df.out))
   return(df.out)
 }
@@ -125,20 +125,19 @@ fAtchemRates <- function(output.dir, output.file, species.str, start.str) {
   ##     xx <- fAtchemRates("directory/", "productionRates.output", "OH", "21-01-15 00:00:00")
   ## ------------------------------------------------------------
   ## load reaction rates output file
-  df.rates <- read.table(paste(output.dir, output.file, sep=""), header=TRUE, fill=TRUE, sep="")
+  output.df <- read.table(paste(output.dir, output.file, sep=""), header=TRUE, fill=TRUE, sep="")
   ## model start time
   model.start <- fChronStr(start.str, "d-m-y h:m:s")
   ## reaction rates of target species
-  df.spec <- df.rates[which(df.rates$speciesName==species.str),
-                      c("time", "reactionNumber", "rate", "reaction")]
+  data.df <- output.df[which(output.df$speciesName == species.str),
+                       c("time", "reactionNumber", "rate", "reaction")]
   ## model time (seconds since model start)
-  df.spec$datetime <- df.spec$time / 86400 + model.start
+  data.df$datetime <- data.df$time / 86400 + model.start
   ## reactions involving the target species
-  df1 <- df.spec$time[1]
-  df.reac <- df.spec[which(df.spec$time == df1),
+  reac.df <- data.df[which(data.df$time == data.df$time[1]),
                      c("reactionNumber", "reaction")]
   ## output list
-  lst.out <- list(df.reac, df.spec)
+  lst.out <- list(reac.df, data.df)
   return(lst.out)
 }
 
@@ -164,7 +163,7 @@ fConstrGap <- function(constr.dir, constr.lst, max.gap, fn.str) {
     lst.name <- deparse(substitute(constr.lst))
     stop(paste(lst.name, "must be a list", sep=" "))
   }
-  ## open pdf file to save plots [optional]
+  ## open pdf file to save plots
   if (fn.str != "") {
     pdf(paste(fn.str, ".pdf", sep=""), paper="a4r", width=0, height=0)
   }
@@ -184,7 +183,7 @@ fConstrGap <- function(constr.dir, constr.lst, max.gap, fn.str) {
                            STOP=constr.df[flag1,1])
       data.df <- rbind(data.df, sec.df)
     }
-    ## make plot [optional]
+    ## make plot
     plot(constr.df[,1], constr.df[,2], type="b",
          main=constr, xlab="seconds", ylab="")
     points(constr.df[flag2,1], constr.df[flag2,2], pch=16, col="green", cex=2)
