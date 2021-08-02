@@ -45,7 +45,7 @@ fConstant <- function(symb.in) {
   n08 <- c("speed of light", "c0", 299792458, "m s-1")
   n09 <- c("atomic mass constant", "mu", 1.660539040e-24, "g")
   data.db <- rbind(n01, n02, n03, n04, n05, n06, n07, n08, n09)
-  ## select and output constant
+  ## select constant
   for (i in 1:nrow(data.db)) {
     if (symb.in == data.db[i,2]) {
       nn <- as.character(data.db[i,1])  # name
@@ -54,7 +54,8 @@ fConstant <- function(symb.in) {
       uu <- as.character(data.db[i,4])  # unit
     }
   }
-  data.out <- data.frame(Name=nn, Symbol=ss, Value=vv, Unit=uu)
+  ## output data.frame
+  data.out <- data.frame(Name = nn, Symbol = ss, Value = vv, Unit = uu)
   return(data.out)
 }
 
@@ -175,7 +176,7 @@ fPeriodic <- function(symb.in) {
                    n73, n74, n75, n76, n77, n78, n79, n80, n81,
                    n82, n83, n84, n85, n86, n87, n88, n89, n90,
                    n91, n92)
-  ## select and output element
+  ## select element
   for (i in 1:nrow(data.db)) {
     if (symb.in == data.db[i,2]) {
       nn <- as.character(data.db[i,1])  # name
@@ -184,6 +185,7 @@ fPeriodic <- function(symb.in) {
       aw <- as.numeric(data.db[i,4])    # atomic weight
     }
   }
-  data.out <- data.frame(Name=nn, Symbol=ss, Atomic.N=an,  Atomic.W=aw)
+  ## output data.frame
+  data.out <- data.frame(Name = nn, Symbol = ss, Atomic.N = an,  Atomic.W = aw)
   return(data.out)
 }

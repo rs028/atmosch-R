@@ -399,7 +399,7 @@ fBkgdSignal <- function(data.df) {
   }
   ## output data.frame
   data.out <- data.frame(data.bgd[-1,])
-  data.out[,1] <- as.chron(data.out[,1])
+  data.out[,1] <- chron(data.out[,1])
   colnames(data.out) <-  paste(colnames(data.df), "bgd", sep="_")
   return(data.out)
 }

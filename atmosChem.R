@@ -130,7 +130,7 @@ fParamOH <- function(jo1d) {
     aa <- as.numeric(data.db[i,2])
     bb <- as.numeric(data.db[i,3])
     cc <- as.numeric(data.db[i,4])
-    oh <- (aa * 1e6 * (jo1d / 1.0e-5) ^ bb) + (cc * 1e6)
+    oh <- (aa * 1e6 * (jo1d / 1.0e-5)^bb) + (cc * 1e6)
     df.out <- cbind(df.out, oh)
   }
   ## output data.frame
