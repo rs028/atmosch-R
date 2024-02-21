@@ -4,7 +4,7 @@
 ### Functions for atmospheric physics:
 ### - fSolar() : Earth-Sun angles
 ###
-### version 1.9, Oct 2020
+### version 2.0, Feb 2024
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -31,7 +31,7 @@ fSolar <- function(lat, long, dt.chron) {
   ## INPUT:
   ##     lat = latitude (degrees)
   ##     long = longitude (degrees)
-  ##     dt.chron = chron variable ("d-m-y h:m:s", GMT/UTC)
+  ##     dt.chron = chron variable ("d-m-y h:m:s", in GMT/UTC)
   ## OUTPUT:
   ##     df.out = data.frame ( GMT = fractional time,
   ##                           THETA = day angle,
@@ -43,19 +43,19 @@ fSolar <- function(lat, long, dt.chron) {
   ##                           LAT = latitude,
   ##                           LONG = longitude )
   ## EXAMPLE:
-  ##     xx <- fSolar(data_df$Latitude, data_df$Longitude, data_df$Datetime.GMT)
+  ##     xx <- fSolar(data_df$Latitude, data_df$Longitude, data_df$Datetime)
   ## ---------------------------------------------------------------------
   if (is.data.frame(dt.chron)) {
-    datet <- dt.chron[[1]]
+    date.gmt <- dt.chron[[1]]
   } else {
-    datet <- dt.chron
+    date.gmt <- dt.chron
   }
   ## latitude and longitude in radians
   lat.r <- fConvAngle(lat, "deg", "rad")
   long.r <- fConvAngle(long, "deg", "rad")
-  ## day of year (1 Jan = 1) and fractional time
-  jan1 <- chron(paste("01/01/", years(datet), sep=""))
-  fracd <- as.numeric(datet - jan1 + 1)
+  ## day of year (1 Jan = 1) and fractional time (in GMT)
+  jan1 <- chron(paste("01/01/", years(date.gmt), sep=""))
+  fracd <- as.numeric(date.gmt - jan1 + 1)
   doy <- floor(fracd)
   gmt <- (fracd - doy) * 24
   ## day angle
@@ -84,7 +84,9 @@ fSolar <- function(lat, long, dt.chron) {
   sza <- acos(sin(dec) * sin(lat.r) + cos(dec) * cos(lat.r) * cos(lha))
   sea <- pi/2 - sza
   ## output data.frame
-  df.out <- data.frame(datet, theta, dec, eqt, lha, sza, sea, lat.r, long.r)
-  colnames(df.out) <- c("GMT", "THETA", "DEC", "EQT", "LHA", "SZA", "SEA", "LAT", "LONG")
+  df.out <- data.frame(date.gmt, theta, dec, eqt, lha,
+                       sza, sea, lat.r, long.r)
+  colnames(df.out) <- c("GMT", "THETA", "DEC", "EQT", "LHA",
+                        "SZA", "SEA", "LAT", "LONG")
   return(df.out)
 }

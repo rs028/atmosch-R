@@ -7,7 +7,7 @@
 ### - fParamOH()  : estimate OH concentration
 ### - fPSS()      : photostationary state for O3-NOx
 ###
-### version 2.4, Feb 2021
+### version 2.5, Feb 2024
 ### author: RS
 ### credits: function fPSS() is based on code by LK (Uni Birmingham).
 ### ----------------------------------------------------------------
@@ -47,7 +47,7 @@ fFractO1D <- function(h2o, temp, press) {
   ## with water vapour to form OH radicals -- instead of being
   ## quenched by collision with atmospheric oxygen and nitrogen.
   ##
-  ## [ kinetic data from Ravishankara et al., Geophys. Res. Lett., 2002 ]
+  ## [ from Ravishankara et al., Geophys. Res. Lett., 2002 ]
   ##
   ## INPUT:
   ##     h2o = water concentration (molecule cm-3)
@@ -81,8 +81,8 @@ fFractO1D <- function(h2o, temp, press) {
 fParamOH <- function(jo1d) {
   ## Estimate the concentration of OH radicals using the empirical
   ## relationship between OH and solar UV radiation developed by
-  ## Ehhalt & Rohrer (J. Geophys. Res., 2000), Rohrer & Berresheim
-  ## (Nature, 2006).
+  ## Ehhalt & Rohrer [J. Geophys. Res., 2000], Rohrer & Berresheim
+  ## [Nature, 2006].
   ##
   ## The empirical parameters have been derived from ambient datasets
   ## in different regions and conditions:
@@ -98,7 +98,7 @@ fParamOH <- function(jo1d) {
   ## * OP3        =  tropical forest Borneo
   ## * SOS        =  coastal Cape Verde
   ##
-  ## [ empirical parameters from Stone et al., Chem Soc. Rev., 2012 ]
+  ## [ from Stone et al., Chem Soc. Rev., 2012 ]
   ##
   ## INPUT:
   ##     jo1d = photolysis rate of O3 to O1D (s-1)
@@ -111,30 +111,37 @@ fParamOH <- function(jo1d) {
   ## EXAMPLE:
   ##     xx <- fParamOH(data_df$jO1D)
   ## ------------------------------------------------------------
+  if (!is.vector(jo1d)) {
+    jo1d <- as.matrix(jo1d)
+  }
   ## empirical parameters derived from ambient datasets
-  p01 <- c("popcorn", 3.90, 0.95, 0.04)
-  p02 <- c("albatross", 1.40, 1.30, 0.20)
-  p03 <- c("berlioz", 2.00, 0.95, 0.43)
-  p04 <- c("mohp", 2.40, 0.93, 0.13)
-  p05 <- c("minos", 2.20, 0.68, 0.01)
-  p06 <- c("namblex", 1.47, 0.84, 0.44)
-  p07 <- c("torch", 1.07, 1.16, 0.62)
-  p08 <- c("chablis", 0.25, 0.74, 0.11)
-  p09 <- c("rhamble", 1.73, 0.90, 0.95)
-  p10 <- c("op3", 0.94, 0.61, 0.20)
-  p11 <- c("sos", 1.19, 0.98, 0.50)
-  data.db <- rbind(p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11)
+  param.db <- list(
+    popcorn   = c(3.90, 0.95, 0.04),
+    albatross = c(1.40, 1.30, 0.20),
+    berlioz   = c(2.00, 0.95, 0.43),
+    mohp      = c(2.40, 0.9313, 0.),
+    minos     = c(2.20, 0.68, 0.01),
+    namblex   = c(1.47, 0.84, 0.44),
+    torch     = c(1.07, 1.16, 0.62),
+    chablis   = c(0.25, 0.74, 0.11),
+    rhamble   = c(1.73, 0.90, 0.95),
+    op3       = c(0.94, 0.6120, 0.),
+    sos       = c(1.19, 0.98, 0.50)
+  )
   ## OH estimates for each ambient dataset
-  df.out <- data.frame(JO1D = jo1d)
-  for (i in 1:nrow(data.db)) {
-    aa <- as.numeric(data.db[i,2])
-    bb <- as.numeric(data.db[i,3])
-    cc <- as.numeric(data.db[i,4])
-    oh <- (aa * 1e6 * (jo1d / 1.0e-5)^bb) + (cc * 1e6)
-    df.out <- cbind(df.out, oh)
+  oh.est <- sapply(param.db, function(param) {
+    aa <- param[1]
+    bb <- param[2]
+    cc <- param[3]
+    (aa * 1e6 * (jo1d / 1.0e-5)^bb) + (cc * 1e6)
+  })
+  ## ensure correct orientation of the matrix
+  if (length(jo1d) == 1) {
+    oh.est <- t(oh.est)
   }
   ## output data.frame
-  colnames(df.out)[-1] <- paste("OH_", data.db[,1], sep="")
+  df.out <- data.frame(JO1D = jo1d, oh.est)
+  colnames(df.out)[-1] <- paste("OH_", names(param.db), sep="")
   return(df.out)
 }
 
@@ -165,23 +172,26 @@ fPSS <- function(sec, o3, no, no2, jno2, temp) {
   ## rate coefficient of O3+NO
   k.o3_no  <- fKBi(1.4e-12, -1310, temp)$k1
   ## initialize data.frame
-  pss.df <- data.frame(matrix(ncol=4, nrow=sec+1))
-  colnames(pss.df) <- c("SEC", "O3", "NO", "NO2")
-  ## set runtime  (timestep = 1 second)
-  run.time <- seq(0, sec, 1)
-  pss.df$SEC <- run.time
+  pss.df <- data.frame(
+    SEC = seq(0, sec, 1),
+    O3 = rep(NA, sec+1),
+    NO = rep(NA, sec+1),
+    NO2 = rep(NA, sec+1)
+  )
   ## initial concentrations of O3, NO, NO2
   pss.df$O3[1] <- o3
   pss.df$NO[1] <- no
   pss.df$NO2[1] <- no2
   ## calculate O3, NO, NO2 concentrations
-  for (i in 1:sec) {
-   pss.df$O3[i+1] <- pss.df$O3[i] + (jno2 * pss.df$NO2[i]) - (k.o3_no * pss.df$NO[i] * pss.df$O3[i])
-   pss.df$NO[i+1] <- pss.df$NO[i] + (jno2 * pss.df$NO2[i]) - (k.o3_no * pss.df$NO[i] * pss.df$O3[i])
-   pss.df$NO2[i+1] <- pss.df$NO2[i] - (jno2 * pss.df$NO2[i]) + (k.o3_no * pss.df$NO[i] * pss.df$O3[i])
+  for (i in 2:(sec+1)) {
+    pss.df$O3[i] <- pss.df$O3[i-1] + (jno2 * pss.df$NO2[i-1]) -
+                    (k.o3_no * pss.df$NO[i-1] * pss.df$O3[i-1])
+    pss.df$NO[i] <- pss.df$NO[i-1] + (jno2 * pss.df$NO2[i-1]) -
+                    (k.o3_no * pss.df$NO[i-1] * pss.df$O3[i-1])
+    pss.df$NO2[i] <- pss.df$NO2[i-1] - (jno2 * pss.df$NO2[i-1]) +
+                     (k.o3_no * pss.df$NO[i-1] * pss.df$O3[i-1])
   }
   ## output data.frame
-  df.out <- data.frame(pss.df, jno2, temp)
-  colnames(df.out) <- c("SEC", "O3", "NO", "NO2", "JNO2", "Temp")
+  df.out <- data.frame(pss.df, JNO2 = jno2, Temp = temp)
   return(df.out)
 }
