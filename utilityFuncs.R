@@ -8,7 +8,7 @@
 ### - fFindIdx() : find point in vector greater/less than value
 ### - fVarName() : name of variable(s) in data.frame
 ###
-### version 2.7, Apr 2021
+### version 2.8, July 2024
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -60,8 +60,8 @@ fClearWS <- function() {
 }
 
 fMergeDF <- function(df.lst, var.str, type.str, suff.lst) {
-  ## Merge two or more data.frames using a common variable and rename
-  ## the other variables.
+  ## Merge two or more data.frames by a common variable, and rename
+  ## the other variables using a list of suffixes.
   ##
   ## NB: the base function merge() only works on two data.frames at a
   ##     time -- see the documentation of merge().
@@ -73,115 +73,112 @@ fMergeDF <- function(df.lst, var.str, type.str, suff.lst) {
   ##                "NOTALL" to keep only the common rows)
   ##     suff.lst = list of suffixes to rename variables
   ## OUTPUT:
-  ##     df.merg = data.frame ( merged data )
+  ##     df.out = data.frame ( `merged data` )
   ## EXAMPLE:
   ##     xx <- fMergeDF(list(data_df1,data_df2,data_df3), "Time", "ALL", list("_a","_b","_c"))
   ## ------------------------------------------------------------
+  lst.name <- deparse(substitute(df.lst))
+  ## input validation
   if (!is.list(df.lst)) {
-    lst.name <- deparse(substitute(df.lst))
-    stop(paste(lst.name, "must be a list", sep=" "))
+    stop(paste0("INPUT ERROR: ", lst.name, " must be a list"))
   }
-  ## set type of merge
-  if (type.str == "ALL") {
-    type.all <- TRUE
-  } else {
-    type.all <- FALSE
+  if (!all(sapply(df.lst, is.data.frame))) {
+    stop(paste0("INPUT ERROR: all elements in ", lst.name, " must be data.frames"))
   }
-  if (length(df.lst) == 2) {  # two data.frames
-    df.merg <- merge(df.lst[1], df.lst[2], by=var.str, all=type.all,
-                     suffixes=unlist(suff.lst))
-  } else {                    # multiple data.frames
-    df.merg <- as.data.frame(df.lst[1])
-    var.n <- which(colnames(df.merg) == var.str)
-    colnames(df.merg)[-var.n] <- paste(colnames(df.merg)[-var.n],
-                                       suff.lst[[1]], sep="")
+  if (length(df.lst) != length(suff.lst)) {
+    stop("INPUT ERROR: number of suffixes must match number of data.frames")
+  }
+  ## set type of merge operation
+  type.all <- ifelse(type.str == "ALL", TRUE, FALSE)
+  ## merge data.frames and rename variables
+  if (length(df.lst) == 2) {   # two data.frames
+    df.out <- merge(df.lst[1], df.lst[2], by=var.str, all=type.all,
+                    suffixes=unlist(suff.lst))
+  } else {   # multiple data.frames
+    df.out <- df.lst[[1]]
+    var.n <- which(colnames(df.out) == var.str)
+    colnames(df.out)[-var.n] <- paste0(colnames(df.out)[-var.n], suff.lst[[1]])
     for (i in 2:length(df.lst)) {
-      df.i <- as.data.frame(df.lst[i])
-      colnames(df.i)[-var.n] <- paste(colnames(df.i)[-var.n],
-                                      suff.lst[[i]], sep="")
-      df.merg <- merge(df.merg, df.i, by=var.str, all=type.all)
+      df.i <- df.lst[[i]]
+      colnames(df.i)[-var.n] <- paste0(colnames(df.i)[-var.n], suff.lst[[i]])
+      df.out <- merge(df.out, df.i, by=var.str, all=type.all)
     }
   }
-  return(df.merg)
+  return(df.out)
 }
 
 fFindIdx <- function(vecd, ops, xval) {
-  ## Find the first point greater/less than a reference value in an
-  ## ordered data/chron vector.
+  ## Find the first point that is greater/less than a reference value
+  ## in an ordered data/chron vector.
   ##
   ## INPUT:
   ##     vecd = ordered data/chron vector
-  ##     ops = greater/equal ("GE") OR greater ("G") OR
-  ##           less ("L") OR less/equal ("LE")
+  ##     ops = greater/equal ("GE") OR greater ("G") OR less ("L") OR
+  ##           less/equal ("LE")
   ##     xval = reference value
   ## OUTPUT:
-  ##     xv = index of point in vector greater/less than reference value
+  ##     idx = index of first point greater/less than reference value
   ## EXAMPLE:
   ##     xx <- fFindIdx(data_df$Datetime, "GE", chron("01/21/15","10:15:30"))
   ## ------------------------------------------------------------
   vecd <- unlist(vecd, use.names=FALSE)
-  ## first and last values of data vector
+  ## length, first, last values of data/chron vector
+  vecd.n <- length(vecd)
   vecd.first <- vecd[1]
-  vecd.last <- vecd[length(vecd)]
-  switch(ops,
-         "GE" = {  # GREATER/EQUAL
-           if (xval >= vecd.last) {
-             xv <- which(vecd == vecd.last)
-           } else {
-             xv <- which(vecd >= xval)
-             xv <- xv[1]
-           }
-         },
-         "G" = {  # GREATER
-           if (xval > vecd.last) {
-             xv <- which(vecd == vecd.last)
-           } else {
-             xv <- which(vecd > xval)
-             xv <- xv[1]
-           }
-         },
-         "L" = {  # LESS
-           if (xval < vecd.first) {
-             xv <- which(vecd == vecd.first)
-           } else {
-             xv <- which(vecd < xval)
-             xv <- xv[length(xv)]
-           }
-         },
-         "LE" = {  # LESS/EQUAL
-           if (xval <= vecd.first) {
-             xv <- which(vecd == vecd.first)
-           } else {
-             xv <- which(vecd <= xval)
-             xv <- xv[length(xv)]
-           }
-         }
-         )
-  return(xv)
+  vecd.last <- vecd[vecd.n]
+  ## reference value is greater than any value in vector
+  if (ops == "GE" && xval >= vecd.last) {
+    return(vecd.n)
+  }
+  if (ops == "G" && xval > vecd.last) {
+    return(vecd.n)
+  }
+  ## reference value is less than any value in vector
+  if (ops == "LE" && xval <= vecd.first) {
+    return(1)
+  }
+  if (ops == "L" && xval < vecd.first) {
+    return(1)
+  }
+  ## index of first point in vector greater/less than reference value
+  idx <- switch(ops,
+                "GE" = head(which(vecd >= xval), 1),
+                "G"  = head(which(vecd > xval), 1),
+                "L"  = tail(which(vecd < xval), 1),
+                "LE" = tail(which(vecd <= xval), 1),
+                stop("INPUT ERROR: invalid operator")
+                )
+  return(idx)
 }
 
-fVarName <- function(var.dat) {
+fVarName <- function(var.df) {
   ## Extract the name of one or more variables in a data.frame.
   ##
-  ## NB: a variable can be addressed using the column number (df[1] or
-  ##     df[,1]), the name (df["A"]), or the `$` operator (df$A).
+  ## A variable can be addressed with:
+  ## * the column number (df[1], returning a data.frame)
+  ## * the variable name (df["A"], returning a data.frame)
+  ## * the `$` operator (df$A, returning a numeric array)
+  ##
+  ## NB: addressing a variable with the column number as df[,1] or
+  ##     df[[1]] returns a numeric array which does not contain the
+  ##     variable name.
   ##
   ## INPUT:
-  ##    var.dat = variable(s) in data.frame
+  ##    var.df = variable(s) in data.frame
   ## OUTPUT:
   ##    var.name = name of variable(s)
   ## EXAMPLE:
-  ##     xx <- fVarName(data_df$Methane.ppm)
+  ##     xx <- fVarName(data_df$A)
   ## ------------------------------------------------------------
-  if (is.data.frame(var.dat)) {              # df[1] OR df["A"]
-    var.name <- colnames(var.dat)
+  if (is.data.frame(var.df)) {   # df[1] OR df["A"]
+    var.name <- colnames(var.df)
   } else {
-    var.char <- deparse(substitute(var.dat))
-    if (grepl("$", var.char, fixed=TRUE)) {  # df$A
-      var.str <- strsplit(var.char, "$", fixed=TRUE)
+    var.dat <- deparse(substitute(var.df))
+    if (grepl("\\$", var.dat)) {   # df$A
+      var.str <- strsplit(var.dat, "\\$")
       var.name <- unlist(var.str)[2]
-    } else {                                 # df[,1]
-      var.name <- "" # !!! TODO
+    } else {
+      stop("INPUT ERROR: variable does not contain name")
     }
   }
   return(var.name)

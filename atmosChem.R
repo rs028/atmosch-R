@@ -7,11 +7,10 @@
 ### - fParamOH()  : estimate OH concentration
 ### - fPSS()      : photostationary state for O3-NOx
 ###
-### version 2.5, Feb 2024
+### version 2.6, June 2024
 ### author: RS
-### credits: function fPSS() is based on code by LK (Uni Birmingham).
-### ----------------------------------------------------------------
-### ###
+### credits: function fPSS() is based on code by LK (Uni Bham)
+### ---------------------------------------------------------------- ###
 
 fAirND <- function(temp, press) {
   ## Calculate the number density (molecule cm-3) of air, oxygen and
@@ -27,7 +26,7 @@ fAirND <- function(temp, press) {
   ##                           Temp = temperature,
   ##                           Press = pressure )
   ## EXAMPLE:
-  ##     xx <- fAirND(data_df$Temperature, data_df$Pressure)
+  ##     xx <- fAirND(data_df$Temp, data_df$Press)
   ## ------------------------------------------------------------
   ## Avogadro number, molar gas constant
   n.avog <- fConstant("Na")$Value
@@ -47,7 +46,7 @@ fFractO1D <- function(h2o, temp, press) {
   ## with water vapour to form OH radicals -- instead of being
   ## quenched by collision with atmospheric oxygen and nitrogen.
   ##
-  ## [ from Ravishankara et al., Geophys. Res. Lett., 2002 ]
+  ## [ kinetic data from Ravishankara et al, Geophys Res Lett, 2002 ]
   ##
   ## INPUT:
   ##     h2o = water concentration (molecule cm-3)
@@ -59,7 +58,7 @@ fFractO1D <- function(h2o, temp, press) {
   ##                           Temp = temperature,
   ##                           Press = pressure )
   ## EXAMPLE:
-  ##     xx <- fFractO1D(data_df$Water, data_df$Temperature, data_df$Pressure)
+  ##     xx <- fFractO1D(data_df$Water, data_df$Temp, data_df$Press)
   ## ------------------------------------------------------------
   ## number density of oxygen and nitrogen
   o2.nd <- fAirND(temp, press)$O2
@@ -81,7 +80,7 @@ fFractO1D <- function(h2o, temp, press) {
 fParamOH <- function(jo1d) {
   ## Estimate the concentration of OH radicals using the empirical
   ## relationship between OH and solar UV radiation developed by
-  ## Ehhalt & Rohrer [J. Geophys. Res., 2000], Rohrer & Berresheim
+  ## Ehhalt & Rohrer [J Geophys Res, 2000], Rohrer & Berresheim
   ## [Nature, 2006].
   ##
   ## The empirical parameters have been derived from ambient datasets
@@ -98,7 +97,7 @@ fParamOH <- function(jo1d) {
   ## * OP3        =  tropical forest Borneo
   ## * SOS        =  coastal Cape Verde
   ##
-  ## [ from Stone et al., Chem Soc. Rev., 2012 ]
+  ## [ empirical paramenters from Stone et al, Chem Soc Rev, 2012 ]
   ##
   ## INPUT:
   ##     jo1d = photolysis rate of O3 to O1D (s-1)
@@ -141,16 +140,16 @@ fParamOH <- function(jo1d) {
   }
   ## output data.frame
   df.out <- data.frame(JO1D = jo1d, oh.est)
-  colnames(df.out)[-1] <- paste("OH_", names(param.db), sep="")
+  colnames(df.out)[-1] <- paste0("OH_", names(param.db))
   return(df.out)
 }
 
 fPSS <- function(sec, o3, no, no2, jno2, temp) {
   ## Calculate the concentrations of ozone (O3) and nitrogen oxides
   ## (NO, NO2) assuming photostationary state for O3-NOx chemistry:
-  ##    [O3] = (j(NO2) * [NO2]) / (k(O3+NO) * [NO])
+  ##    O3 = (jNO2 * NO2) / (k{O3+NO} * NO)
   ##
-  ## [ kinetic data from Atkinson et al., Atmos. Chem. Phys., 2004 ]
+  ## [ kinetic data from Atkinson et al, Atmos Chem Phys, 2004 ]
   ##
   ## INPUT:
   ##     sec = number of seconds
@@ -165,31 +164,26 @@ fPSS <- function(sec, o3, no, no2, jno2, temp) {
   ##                           NO = NO concentration,
   ##                           NO2 = NO2 concentration,
   ##                           JNO2 = NO2 photolysis rate,
-  ##                           Temp = temperature)
+  ##                           Temp = temperature )
   ## EXAMPLE:
   ##     xx <- fPSS(120, 7.5e11, 2.5e12, 5e11, 1e-2, 298)
   ## ------------------------------------------------------------
   ## rate coefficient of O3+NO
   k.o3_no  <- fKBi(1.4e-12, -1310, temp)$k1
   ## initialize data.frame
-  pss.df <- data.frame(
-    SEC = seq(0, sec, 1),
-    O3 = rep(NA, sec+1),
-    NO = rep(NA, sec+1),
-    NO2 = rep(NA, sec+1)
-  )
+  pss.df <- data.frame(SEC = seq(0, sec, 1),
+                       O3 = rep(NA, sec+1),
+                       NO = rep(NA, sec+1),
+                       NO2 = rep(NA, sec+1))
   ## initial concentrations of O3, NO, NO2
   pss.df$O3[1] <- o3
   pss.df$NO[1] <- no
   pss.df$NO2[1] <- no2
   ## calculate O3, NO, NO2 concentrations
   for (i in 2:(sec+1)) {
-    pss.df$O3[i] <- pss.df$O3[i-1] + (jno2 * pss.df$NO2[i-1]) -
-                    (k.o3_no * pss.df$NO[i-1] * pss.df$O3[i-1])
-    pss.df$NO[i] <- pss.df$NO[i-1] + (jno2 * pss.df$NO2[i-1]) -
-                    (k.o3_no * pss.df$NO[i-1] * pss.df$O3[i-1])
-    pss.df$NO2[i] <- pss.df$NO2[i-1] - (jno2 * pss.df$NO2[i-1]) +
-                     (k.o3_no * pss.df$NO[i-1] * pss.df$O3[i-1])
+    pss.df$O3[i] <- pss.df$O3[i-1] + (jno2 * pss.df$NO2[i-1]) - (k.o3_no * pss.df$NO[i-1] * pss.df$O3[i-1])
+    pss.df$NO[i] <- pss.df$NO[i-1] + (jno2 * pss.df$NO2[i-1]) - (k.o3_no * pss.df$NO[i-1] * pss.df$O3[i-1])
+    pss.df$NO2[i] <- pss.df$NO2[i-1] - (jno2 * pss.df$NO2[i-1]) + (k.o3_no * pss.df$NO[i-1] * pss.df$O3[i-1])
   }
   ## output data.frame
   df.out <- data.frame(pss.df, JNO2 = jno2, Temp = temp)

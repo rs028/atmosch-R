@@ -66,7 +66,8 @@ assert("=> fFindIdx() values",
 ## fVarName()
 
 df1 <- data.frame(Temp = c(298, 300, 302),
-                  Press = c(101300, 101350, 101400))
+                  Press = c(101300, 101350, 101400),
+                  H2O = c(1e19, 2e19, 3e19))
 
 x0 <- fVarName(df1$Temp)
 
@@ -80,5 +81,6 @@ assert("=> fVarName() output",
        )
 
 assert("=> fVarName() values",
-       x0 == "Temp"
+       x0 == "Temp",
+       x0 == fVarName(df1[c(1,3)])[1]
        )

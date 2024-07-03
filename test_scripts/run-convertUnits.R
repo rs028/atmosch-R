@@ -54,28 +54,6 @@ assert("=> fConvTime() calculations",
        all.equal(fConvTime(8.25, "hr", "sec"), 29700, tolerance=1e-7)
        )
 
-x0 <- runif(10, 0, 1e5)
-x1 <- fConvSI(x0, "d", "H")
-x2 <- fConvSI(x1, "H", "m")
-x3 <- fConvSI(x2, "m", "M")
-x4 <- fConvSI(x3, "M", "n")
-x5 <- fConvSI(x4, "n", "T")
-x6 <- fConvSI(x5, "T", "f")
-x7 <- fConvSI(x6, "f", "D")
-x8 <- fConvSI(x7, "D", "c")
-x9 <- fConvSI(x8, "c", "c")
-x10 <- fConvSI(x9, "c", "K")
-x11 <- fConvSI(x10, "K", "u")
-x12 <- fConvSI(x11, "u", "G")
-x13 <- fConvSI(x12, "G", "p")
-x14 <- fConvSI(x13, "p", "P")
-x15 <- fConvSI(x14, "P", "-")
-x16 <- fConvSI(x15, "-", "d")
-assert("=> fConvSI() calculations",
-       all.equal(x16, x0, tolerance=1e-7),
-       all.equal(fConvSI(101325, "-", "H"), 1013.25, tolerance=1e-7)
-       )
-
 ## -----------------------------------------------
 ## fConcGas()
 
@@ -93,8 +71,8 @@ x5 <- fConcGas(x4, "UG", "UG", df1$Temp, df1$Press, 48)
 x6 <- fConcGas(x5, "UG", "ppt", df1$Temp, df1$Press, 48)
 x7 <- fConcGas(x6, "ppt", "ppb", df1$Temp, df1$Press)
 assert("=> fConcGas() calculations",
-      all.equal(x7, df1$O3, tolerance=1e-7)
-      )
+       all.equal(x7, df1$O3, tolerance=1e-7)
+       )
 
 assert("=> fConcGas() input",
        x0 == fConcGas(df1["O3"], "ppb", "ND", df1["Temp"], df1["Press"]),
@@ -103,13 +81,14 @@ assert("=> fConcGas() input",
        )
 
 assert("=> fConcGas() values",
-      fConcGas(3, "ppb", "ND", 300, 101350) == fConcGas(df1[3:4], "ppb", "ND", df1$Temp, df1$Press)[2,2],
-      fConcGas(3, "ppb", "ND", 300, 101350) == fConcGas(df1[3:4], "ppb", "ND", df1$Temp, 101350)[2,2],
-      fConcGas(3, "ppb", "ND", 300, 101350) == fConcGas(df1[3:4], "ppb", "ND", 300, df1$Press)[2,2],
-      fConcGas(3, "ppb", "ND", 300, 101350) == fConcGas(3, "ppb", "ND", df1$Temp, df1$Press)[2],
-      fConcGas(3, "ppb", "UG", 300, 101350, 30) == fConcGas(df1[3:4], "ppb", "UG", df1$Temp, df1$Press, c(48, 30))[2,2],
-      fConcGas(3, "ppb", "UG", 300, 101350, 30) == fConcGas(df1[3:4], "ppb", "UG", 300, 101350, c(48, 30))[2,2]
-      )
+       fConcGas(3, "ppb", "ND", 300, 101350) == fConcGas(df1[3:4], "ppb", "ND", df1$Temp, df1$Press)[2,2],
+       fConcGas(3, "ppb", "ND", 300, 101350) == fConcGas(df1[3:4], "ppb", "ND", df1$Temp, 101350)[2,2],
+       fConcGas(3, "ppb", "ND", 300, 101350) == fConcGas(df1[3:4], "ppb", "ND", 300, df1$Press)[2,2],
+       fConcGas(3, "ppb", "ND", 300, 101350) == fConcGas(3, "ppb", "ND", df1$Temp, df1$Press)[2],
+       fConcGas(3, "ppb", "UG", 300, 101350, 30) == fConcGas(df1[c("O3","NO")], "ppb", "UG", df1$Temp, df1$Press, c(48, 30))[2,2],
+       fConcGas(3, "ppb", "UG", 300, 101350, 30) == fConcGas(df1[3:4], "ppb", "UG", df1$Temp, df1$Press, c(48, 30))[2,2],
+       fConcGas(3, "ppb", "UG", 300, 101350, 30) == fConcGas(df1[3:4], "ppb", "UG", 300, 101350, c(48, 30))[2,2]
+       )
 
 ## -----------------------------------------------
 ## fConcAq()
@@ -121,10 +100,9 @@ x0 <- fConcAq(df1$NO3, "M", "UG", 62)
 x1 <- fConcAq(x0, "UG", "MD", 62)
 x2 <- fConcAq(x1, "MD", "MD")
 x3 <- fConcAq(x2, "MD", "M")
-
 assert("=> fConcAq() calculations",
-      all.equal(x3, df1$NO3, tolerance=1e-7)
-      )
+       all.equal(x3, df1$NO3, tolerance=1e-7)
+       )
 
 assert("=> fConcAq() input",
        x0 == fConcAq(df1["NO3"], "M", "UG", 62)
@@ -147,7 +125,6 @@ x2 <- fHumid(x1, "AH", "MR", df1$Temp)
 x3 <- fHumid(x2, "MR", "MR", df1$Temp)
 x4 <- fHumid(x3, "MR", "SH", df1$Temp)
 x5 <- fHumid(x4, "SH", "RH", df1$Temp)
-
 assert("=> fHumid() calculations",
       all.equal(x5, df1$RH, tolerance=1e-7)
       )

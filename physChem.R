@@ -8,17 +8,15 @@
 ### - fKTer()   : rate coefficient of termolecular reactions
 ### - fLifeT()  : chemical lifetime and half-life
 ###
-### version 2.4, Oct 2020
+### version 2.5, July 2024
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fGasLaw <- function(press, vol, mol, temp) {
-  ## Solve the equation of state of a gas using the ideal gas law:
+  ## Solve the equation of state of a gas using the Ideal Gas Law:
   ##    PV = nRT
   ##
-  ## NB: use "?" to indicate the unknown variable.
-  ##
-  ## INPUT:
+  ## INPUT:     [ "?" for the unknown variable ]
   ##     press = pressure (Pa)
   ##     vol = volume (m3; 1 m3 = 1000 L)
   ##     mol = number of moles
@@ -29,18 +27,23 @@ fGasLaw <- function(press, vol, mol, temp) {
   ##                          Mol = number of moles,
   ##                          Temp = temperature )
   ## EXAMPLE:
-  ##     xx <- fGasLaw(data_df$Pressure, data_df$Volume, "?", data_df$Temperature)
+  ##     xx <- fGasLaw(data_df$Press, data_df$Vol, "?", data_df$Temp)
   ## ------------------------------------------------------------
+  args <- list(press, vol, mol, temp)
+  unknwn <- which(sapply(args, function(x) is.character(x) && x == "?"))
+  if (length(unknwn) != 1) {
+    stop("INPUT ERROR: only one unknown variable allowed")
+  }
   ## molar gas constant
   r.gas <- fConstant("R")$Value
   ## calculate unknown variable
-  if (all(press == "?")) {        # pressure
+  if (unknwn == 1) {   # pressure
     press <- (mol * r.gas * temp) / vol
-  } else if (all(vol == "?")) {   # volume
+  } else if (unknwn == 2) {   # volume
     vol <- (mol * r.gas * temp) / press
-  } else if (all(mol == "?")) {   # n. of moles
+  } else if (unknwn == 3) {   # number of moles
     mol <- (press * vol) / (r.gas * temp)
-  } else if (all(temp == "?")) {  # temperature
+  } else if (unknwn == 4) {   # temperature
     temp <- (press * vol) / (mol * r.gas)
   }
   ## output data.frame
@@ -50,8 +53,9 @@ fGasLaw <- function(press, vol, mol, temp) {
 }
 
 fKBi <- function(aa, ea.r, temp) {
-  ## Calculate the rate coefficient (cm3 molecule-1 s-1) of
-  ## bimolecular reactions using the Arrhenius equation:
+  ## Calculate the rate coefficient (cm3 molecule-1 s-1) of one or
+  ## more bimolecular reactions over a range of temperatures, using
+  ## the standard Arrhenius equation:
   ##    k = A * exp(-Ea/RT)
   ##
   ## INPUT:
@@ -62,28 +66,32 @@ fKBi <- function(aa, ea.r, temp) {
   ##     df.out = data.frame ( rate coeff 1, rate coeff 2, ...,
   ##                           temperature )
   ## EXAMPLE:
-  ##     xx <- fKBi(1.85e-12, -1690, data_df$Temperature)
+  ##     xx <- fKBi(1.85e-12, -1690, data_df$Temp)
   ## ------------------------------------------------------------
-  aa <- as.matrix(aa)
-  ea.r <- as.matrix(ea.r)
-  temp <- as.matrix(temp)
-  ## rate coefficient (standard Arrhenius)
-  kt <- sapply(temp, function(x) aa * exp(ea.r / x))
-  kt <- as.matrix(kt)
-  ## output data.frame
-  if (dim(aa)[1] != 1) {
-    df.out <- data.frame(t(kt), temp)
-  } else {
-    df.out <- data.frame(kt, temp)
+  aa <- as.data.frame(aa)
+  ea.r <- as.data.frame(ea.r)
+  temp <- as.data.frame(temp)
+  nr <- nrow(aa)
+  if (nr != nrow(ea.r)) {
+    stop("INPUT ERROR: mismatched kinetic parameters")
   }
-  nr <- ncol(df.out) - 1
-  colnames(df.out) <- c(paste("k", seq(1, nr, by=1), sep=""), "Temp")
+  ## rate coefficient (standard Arrhenius)
+  df.coeff <- matrix(nrow = nrow(temp), ncol = nr)
+  for (k in 1:ncol(df.coeff)) {
+    for (t in 1:nrow(df.coeff)) {
+      df.coeff[t,k] <- aa[k,1] * exp(ea.r[k,1] / temp[t,1])
+    }
+  }
+  ## output data.frame
+  df.out <- data.frame(df.coeff, temp)
+  colnames(df.out) <- c(paste0("k", seq_len(nr)), "Temp")
   return(df.out)
 }
 
 fKBix <- function(aa, t0, nn, ea.r, temp) {
-  ## Calculate the rate coefficient (cm3 molecule-1 s-1) of
-  ## bimolecular reactions using the expanded Arrhenius equation:
+  ## Calculate the rate coefficient (cm3 molecule-1 s-1) of one or
+  ## more bimolecular reactions over a range of temperatures, using
+  ## the expanded Arrhenius equation:
   ##    k = A * (T/T0)^n * exp(-Ea/RT)
   ##
   ## INPUT:
@@ -96,35 +104,38 @@ fKBix <- function(aa, t0, nn, ea.r, temp) {
   ##     df.out = data.frame ( rate coeff 1, rate coeff 2, ...,
   ##                           temperature )
   ## EXAMPLE:
-  ##     xx <- fKBix(2.8e-14, 1, 0.667, -1575, data_df$Temperature)
+  ##     xx <- fKBix(2.8e-14, 1, 0.667, -1575, data_df$Temp)
   ## ------------------------------------------------------------
-  aa <- as.matrix(aa)
-  t0 <- as.matrix(t0)
-  nn <- as.matrix(nn)
-  ea.r <- as.matrix(ea.r)
-  temp <- as.matrix(temp)
-  ## rate coefficient (expanded Arrhenius)
-  kt <- sapply(temp, function(x) aa * (x / t0)^nn * exp(ea.r / x))
-  kt <- as.matrix(kt)
-  ## output data.frame
-  if (dim(aa)[1] != 1) {
-    df.out <- data.frame(t(kt), temp)
-  } else {
-    df.out <- data.frame(kt, temp)
+  aa <- as.data.frame(aa)
+  t0 <- as.data.frame(t0)
+  nn <- as.data.frame(nn)
+  ea.r <- as.data.frame(ea.r)
+  temp <- as.data.frame(temp)
+  nr <- nrow(aa)
+  if (nr != nrow(t0) || nr != nrow(nn) || nr != nrow(ea.r)) {
+    stop("INPUT ERROR: mismatched kinetic parameters")
   }
-  nr <- ncol(df.out) - 1
-  colnames(df.out) <- c(paste("k", seq(1, nr, by=1), sep=""), "Temp")
+  ## rate coefficient (expanded Arrhenius)
+  df.coeff <- matrix(nrow = nrow(temp), ncol = nr)
+  for (k in 1:ncol(df.coeff)) {
+    for (t in 1:nrow(df.coeff)) {
+      df.coeff[t,k] <- aa[k,1] * (temp[t,1] / t0[k,1])^nn[k,1] * exp(ea.r[k,1] / temp[t,1])
+    }
+  }
+  ## output data.frame
+  df.out <- data.frame(df.coeff, temp)
+  colnames(df.out) <- c(paste0("k", seq_len(nr)), "Temp")
   return(df.out)
 }
 
-fKTer <- function(k.zero, k.inf, fc, temp, press, ref.fc) {
+fKTer <- function(k.zero, k.inf, fc, temp, press, ref.fc="iupac") {
   ## Calculate the rate coefficient (cm3 molecule-1 s-1) of a
-  ## termolecular reaction at given temperature and pressure using the
-  ## Troe parametrization:
+  ## termolecular reaction over a range of temperatures and pressures,
+  ## using the Troe parametrization:
   ##    k = F (k0 * ki) / (k0 + ki)
   ##
-  ## NB: use fKBi() or fKBix() to calculate the rate coefficients
-  ##     `k.zero` and `k.inf`.
+  ## NB: use fKBi() or fKBix() to calculate the low and high pressure
+  ##     limit rate coefficients `k.zero` and `k.inf`.
   ##
   ## INPUT:
   ##     k.zero = low pressure limit rate coefficient (cm3 molecule-1 s-1)
@@ -132,28 +143,37 @@ fKTer <- function(k.zero, k.inf, fc, temp, press, ref.fc) {
   ##     fc = falloff curve factor
   ##     temp = temperature (K)
   ##     press = pressure (Pa)
-  ##     ref.fc = "iupac" OR "jpl" convention
+  ##     ref.fc = "iupac" OR "jpl" convention     [ OPTIONAL, default="iupac"]
   ## OUTPUT:
   ##     df.out = data.frame ( rate coeff, temperature, pressure )
   ## EXAMPLE:
-  ##     xx <- fKTer(fKBix(3.6e-30, 300, -4.1, 0, data_df$Temperature)$k1,
-  ##                 fKBix(1.9e-12, 300, 0.2, 0, data_df$Temperature)$k1,
-  ##                 0.35, data_df$Temperature, data_df$Pressure, "iupac")
+  ##     xx <- fKTer(fKBix(3.6e-30, 300, -4.1, 0, data_df$Temp)$k1,
+  ##                 fKBix(1.9e-12, 300, 0.2, 0, data_df$Temp)$k1,
+  ##                 0.35, data_df$Temp, data_df$Press, "iupac")
   ## ------------------------------------------------------------
-  ## air number density
-  mm <- fAirND(temp, press)$M
+  k.zero <- as.data.frame(k.zero)
+  k.inf <- as.data.frame(k.inf)
+  fc <- as.data.frame(fc)
+  temp <- as.data.frame(temp)
+  press <- as.data.frame(press)
+  if (nrow(k.zero) != nrow(k.inf) || nrow(k.zero) != nrow(fc)) {
+    stop("INPUT ERROR: mismatched kinetic parameters")
+  }
+  if (nrow(k.zero) != nrow(temp)) {
+    stop("INPUT ERROR: mismatched temperature and kinetic parameters")
+  }
+  ## number density of air
+  m.air <- fAirND(temp[,1], press[,1])$M
   ## falloff curve parameters
-  if (ref.fc == "iupac") {       # IUPAC convention
+  if (ref.fc == "iupac") {   # IUPAC convention
     fc <- fc
     nn <- 0.75 - 1.27 * log10(fc)
-  } else if (ref.fc == "jpl") {  # JPL convention
+  } else if (ref.fc == "jpl") {   # JPL convention
     fc <- 0.6
     nn <- 1.0
-  } else {
-    stop("INPUT ERROR: select 'iupac' or 'jpl' convention")
   }
-  ## broadening factor F
-  kr <-  (k.zero * mm) / k.inf
+  ## broadening factor (F)
+  kr <-  (k.zero * m.air) / k.inf
   ff <- 10^( log10(fc) / (1 + (log10(kr) / nn)^2) )
   ## rate coefficient (Troe parametrization)
   kt <- ff * (kr / (1 + kr)) * k.inf

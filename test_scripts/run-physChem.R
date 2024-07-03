@@ -129,10 +129,7 @@ assert("=> fKTer() output",
 
 assert("=> fKTer() values",
        fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101350, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, df1$Temp, df1$Press, "iupac")[2,],
-       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101350, "iupac") == fKTer(8.6e-29, 9.0e-12, 0.48, df1$Temp, df1$Press, "iupac")[2,],
-       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101350, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, 300, df1$Press, "iupac")[2,],
-       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101350, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, df1$Temp, 101350, "iupac")[2,],
-       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101350, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, 300, 101350, "iupac")[2,]
+       fKTer(8.6e-29, 9.0e-12, 0.48, 300, 101350, "iupac") == fKTer(df3$K0, df3$KI, df3$FC, df1$Temp, 101350, "iupac")[2,]
 )
 
 ## -----------------------------------------------

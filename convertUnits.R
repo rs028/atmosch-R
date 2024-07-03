@@ -6,7 +6,6 @@
 ### - fConvPress() : pressure
 ### - fConvAngle() : angle
 ### - fConvTime()  : time
-### - fConvSI()    : multiples of SI units
 ### - fConcGas()   : concentration (gas-phase)
 ### - fConcAq()    : concentration (aqueous-phase)
 ### - fHumid()     : humidity/water
@@ -14,7 +13,7 @@
 ### Conversion factors from WolframAlpha:
 ###   https://www.wolframalpha.com/
 ###
-### version 2.3, Feb 2021
+### version 2.4, March 2024
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -26,40 +25,34 @@ fConvTemp <- function(data.in, unit.in, unit.out) {
   ##
   ## INPUT:
   ##     data.in = data in original unit
-  ##     unit.in = original measurement unit
-  ##     unit.out = final measurement unit
+  ##     unit.in = original unit
+  ##     unit.out = final unit
   ## OUTPUT:
   ##     data.out = data in final unit
   ## EXAMPLE:
   ##     xx <- fConvTemp(298, "K", "C")
   ## ------------------------------------------------------------
-  ## data in original unit to reference unit (K)
-  switch(unit.in,
-         "K" = {
-           data.ref <- data.in
-         },
-         "C" = {
-           data.ref <- data.in + 273.15
-         },
-         "F" = {
-           data.ref <- (data.in + 459.67) * 5 / 9
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## data in reference unit (K) to final unit
-  switch(unit.out,
-         "K" = {
-           data.out <- data.ref
-         },
-         "C" = {
-           data.out <- data.ref - 273.15
-         },
-         "F" = {
-           data.out <- (data.ref * 9 / 5) - 459.67
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## data in final unit
+  ## from original unit to reference unit (K)
+  convert_to_K <- function(data, unit) {
+    switch(unit,
+           "K" = data,
+           "C" = data + 273.15,
+           "F" = (data + 459.67) * 5/9,
+           stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## from reference unit (K) to final unit
+  convert_from_K <- function(data, unit) {
+    switch(unit,
+           "K" = data,
+           "C" = data - 273.15,
+           "F" = (data * 9/5) - 459.67,
+           stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## convert data from original unit to final unit
+  data.ref <- convert_to_K(data.in, unit.in)
+  data.out <- convert_from_K(data.ref, unit.out)
   return(data.out)
 }
 
@@ -75,64 +68,42 @@ fConvPress <- function(data.in, unit.in, unit.out) {
   ##
   ## INPUT:
   ##     data.in = data in original unit
-  ##     unit.in = original measurement unit
-  ##     unit.out = final measurement unit
+  ##     unit.in = original unit
+  ##     unit.out = final unit
   ## OUTPUT:
   ##     data.out = data in final unit
   ## EXAMPLE:
   ##     xx <- fConvPress(1013, "mbar", "torr")
   ## ------------------------------------------------------------
-  ## data in original unit to reference unit (Pa)
-  switch(unit.in,
-         "Pa" = {
-           data.ref <- data.in
-         },
-         "hPa" = {
-           data.ref <- data.in * 1.0e+02
-         },
-         "atm" = {
-           data.ref <- data.in * 1.01325e+05
-         },
-         "torr" = {
-           data.ref <- data.in * (20265 / 152)
-         },
-         "bar" = {
-           data.ref <- data.in * 1.0e+05
-         },
-         "mbar" = {
-           data.ref <- data.in * 1.0e+02
-         },
-         "psi" = {
-           data.ref <- data.in * (8896443230521 / 1290320000)
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## data in reference unit (Pa) to final unit
-  switch(unit.out,
-         "Pa" = {
-           data.out <- data.ref
-         },
-         "hPa" = {
-           data.out <- data.ref / 1.0e+02
-         },
-         "atm" = {
-           data.out <- data.ref / 1.01325e+05
-         },
-         "torr" = {
-           data.out <- data.ref * (152 / 20265)
-         },
-         "bar" = {
-           data.out <- data.ref / 1.0e+05
-         },
-         "mbar" = {
-           data.out <- data.ref / 1.0e+02
-         },
-         "psi" = {
-           data.out <- data.ref * (1290320000 / 8896443230521)
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## data in final unit
+  ## from original unit to reference unit (Pa)
+  convert_to_Pa <- function(data, unit) {
+    switch(unit,
+           "Pa" = data,
+           "hPa" = data * 1.0e+02,
+           "atm" = data * 1.01325e+05,
+           "torr" = data * (20265 / 152),
+           "bar" = data * 1.0e+05,
+           "mbar" = data * 1.0e+02,
+           "psi" = data * (8896443230521 / 1290320000),
+           stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## from reference unit (Pa) to final unit
+  convert_from_Pa <- function(data, unit) {
+    switch(unit,
+           "Pa" = data,
+           "hPa" = data / 1.0e+02,
+           "atm" = data / 1.01325e+05,
+           "torr" = data * (152 / 20265),
+           "bar" = data / 1.0e+05,
+           "mbar" = data / 1.0e+02,
+           "psi" = data * (1290320000 / 8896443230521),
+           stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## convert data from original unit to final unit
+  data.ref <- convert_to_Pa(data.in, unit.in)
+  data.out <- convert_from_Pa(data.ref, unit.out)
   return(data.out)
 }
 
@@ -143,34 +114,32 @@ fConvAngle <- function(data.in, unit.in, unit.out) {
   ##
   ## INPUT:
   ##     data.in = data in original unit
-  ##     unit.in = original measurement unit
-  ##     unit.out = final measurement unit
+  ##     unit.in = original unit
+  ##     unit.out = final unit
   ## OUTPUT:
   ##     data.out = data in final unit
   ## EXAMPLE:
   ##     xx <- fConvAngle(33, "deg", "rad")
   ## ------------------------------------------------------------
-  ## data in original unit to reference unit (rad)
-  switch(unit.in,
-         "rad" = {
-           data.ref <- data.in
-         },
-         "deg" = {
-           data.ref <- data.in * (pi / 180)
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## data in reference unit (rad) to final unit
-  switch(unit.out,
-         "rad" = {
-           data.out <- data.ref
-         },
-         "deg" = {
-           data.out <- data.ref * (180 / pi)
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## data in final unit
+  ## from original unit to reference unit (rad)
+  convert_to_rad <- function(data, unit) {
+    switch(unit,
+           "rad" = data,
+           "deg" = data * (pi / 180),
+           stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## from reference unit (rad) to final unit
+  convert_from_rad <- function(data, unit) {
+    switch(unit,
+           "rad" = data,
+           "deg" = data * (180 / pi),
+           stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## convert data from original unit to final unit
+  data.ref <- convert_to_rad(data.in, unit.in)
+  data.out <- convert_from_rad(data.ref, unit.out)
   return(data.out)
 }
 
@@ -184,181 +153,38 @@ fConvTime <- function(data.in, unit.in, unit.out) {
   ##
   ## INPUT:
   ##     data.in = data in original unit
-  ##     unit.in = original measurement unit
-  ##     unit.out = final measurement unit
+  ##     unit.in = original unit
+  ##     unit.out = final unit
   ## OUTPUT:
   ##     data.out = data in final unit
   ## EXAMPLE:
   ##     xx <- fConvTime(2, "day", "sec")
   ## ------------------------------------------------------------
-  ## data in original unit to reference unit (sec)
-  switch(unit.in,
-         "sec" = {
-           data.ref <- data.in
-         },
-         "min" = {
-           data.ref <- data.in * 60
-         },
-         "hr" = {
-           data.ref <- data.in * 3600
-         },
-         "day" = {
-           data.ref <- data.in * 86400
-         },
-         "wk" = {
-           data.ref <- data.in * (86400 * 7)
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## data in reference unit (sec) to final unit
-  switch(unit.out,
-         "sec" = {
-           data.out <- data.ref
-         },
-         "min" = {
-           data.out <- data.ref / 60
-         },
-         "hr" = {
-           data.out <- data.ref / 3600
-         },
-         "day" = {
-           data.out <- data.ref / 86400
-         },
-         "wk" = {
-           data.out <- data.ref / (86400 * 7)
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## data in final unit
-  return(data.out)
-}
-
-fConvSI <- function(data.in, unit.in, unit.out) {
-  ## Convert between multiples and fractions of SI units:
-  ## * peta      = "P"
-  ## * tera      = "T"
-  ## * giga      = "G"
-  ## * mega      = "M"
-  ## * kilo      = "K"
-  ## * hecto     = "H"
-  ## * deca      = "D"
-  ## * base unit = "-"
-  ## * deci      = "d"
-  ## * centi     = "c"
-  ## * milli     = "m"
-  ## * micro     = "u"
-  ## * nano      = "n"
-  ## * pico      = "p"
-  ## * femto     = "f"
-  ##
-  ## INPUT:
-  ##     data.in = data in original unit
-  ##     unit.in = original measurement unit
-  ##     unit.out = final measurement unit
-  ## OUTPUT:
-  ##     data.out = data in final unit
-  ## EXAMPLE:
-  ##     xx <- fConvSI(4321, "u", "-")
-  ## ------------------------------------------------------------
-  ## data in original unit to reference unit (base unit)
-  switch(unit.in,
-         "P" = {
-           data.ref <- data.in * 1.0e+15
-         },
-         "T" = {
-           data.ref <- data.in * 1.0e+12
-         },
-         "G" = {
-           data.ref <- data.in * 1.0e+09
-         },
-         "M" = {
-           data.ref <- data.in * 1.0e+06
-         },
-         "K" = {
-           data.ref <- data.in * 1.0e+03
-         },
-         "H" = {
-           data.ref <- data.in * 1.0e+02
-         },
-         "D" = {
-           data.ref <- data.in * 1.0e+01
-         },
-         "-" = {
-           data.ref <- data.in
-         },
-         "d" = {
-           data.ref <- data.in * 1.0e-01
-         },
-         "c" = {
-           data.ref <- data.in * 1.0e-02
-         },
-         "m" = {
-           data.ref <- data.in * 1.0e-03
-         },
-         "u" = {
-           data.ref <- data.in * 1.0e-06
-         },
-         "n" = {
-           data.ref <- data.in * 1.0e-09
-         },
-         "p" = {
-           data.ref <- data.in * 1.0e-12
-         },
-         "f" = {
-           data.ref <- data.in * 1.0e-15
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## data in reference unit (base unit) to final unit
-  switch(unit.out,
-         "P" = {
-           data.out <- data.ref / 1.0e+15
-         },
-         "T" = {
-           data.out <- data.ref / 1.0e+12
-         },
-         "G" = {
-           data.out <- data.ref / 1.0e+09
-         },
-         "M" = {
-           data.out <- data.ref / 1.0e+06
-         },
-         "K" = {
-           data.out <- data.ref / 1.0e+03
-         },
-         "H" = {
-           data.out <- data.ref / 1.0e+02
-         },
-         "D" = {
-           data.out <- data.ref / 1.0e+01
-         },
-         "-" = {
-           data.out <- data.ref
-         },
-         "d" = {
-           data.out <- data.ref / 1.0e-01
-         },
-         "c" = {
-           data.out <- data.ref / 1.0e-02
-         },
-         "m" = {
-           data.out <- data.ref / 1.0e-03
-         },
-         "u" = {
-           data.out <- data.ref / 1.0e-06
-         },
-         "n" = {
-           data.out <- data.ref / 1.0e-09
-         },
-         "p" = {
-           data.out <- data.ref / 1.0e-12
-         },
-         "f" = {
-           data.out <- data.ref / 1.0e-15
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## data in final unit
+  ## from original unit to reference unit (sec)
+  convert_to_sec <- function(data, unit) {
+    switch(unit,
+           "sec" = data,
+           "min" = data * 60,
+           "hr" = data * 3600,
+           "day" = data * 86400,
+           "wk" = data * (86400 * 7),
+           stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## from reference unit (sec) to final unit
+  convert_from_sec <- function(data, unit) {
+    switch(unit,
+           "sec" = data,
+           "min" = data / 60,
+           "hr" = data / 3600,
+           "day" = data / 86400,
+           "wk" = data / (86400 * 7),
+           stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## convert data from original unit to final unit
+  data.ref <- convert_to_sec(data.in, unit.in)
+  data.out <- convert_from_sec(data.ref, unit.out)
   return(data.out)
 }
 
@@ -386,11 +212,10 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   ## OUTPUT:
   ##     data.out = data in final concentration unit
   ## EXAMPLE:
-  ##     xx <- fConcGas(data_df$O3, "ppb", "MD", data_df$Temperature, data_df$Pressure)
-  ##     xx <- fConcGas(data_df$O3, "ppb", "UG", data_df$Temperature, data_df$Pressure, 48)
+  ##     xx <- fConcGas(data_df$O3, "ppb", "MD", data_df$Temp, data_df$Press)
   ## ------------------------------------------------------------
   ## check molar mass input
-  if (unit.in == "UG" | unit.out == "UG") {
+  if (unit.in == "UG" || unit.out == "UG") {
     if (is.null(m.mass)) {
       stop("INPUT ERROR: molar mass needed")
     }
@@ -398,67 +223,49 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
   ## Avogadro number, number density of air
   n.avog <- fConstant("Na")$Value
   m.air <- fAirND(temp, press)$M
-  ## original unit to reference unit (ND)
-  switch(unit.in,
-         "ND" = {
-           data.ref <- data.in
-         },
-         "ppth" = {
-           data.ref <- data.in * (m.air * 1.0e-03)
-         },
-         "ppm" = {
-           data.ref <- data.in * (m.air * 1.0e-06)
-         },
-         "ppb" = {
-           data.ref <- data.in * (m.air * 1.0e-09)
-         },
-         "ppt" = {
-           data.ref <- data.in * (m.air * 1.0e-12)
-         },
-         "MD" = {
-           data.ref <- data.in * (n.avog * 1.0e-06)
-         },
-         "UG" = {
-           data.conv <- (data.in / 1.0e+06) * (n.avog * 1.0e-06)
-           if (length(m.mass) == 1) {
-             data.ref <- data.conv / m.mass
-           } else {
-             data.ref <- t(apply(data.conv, 1, function(x) x / m.mass))
-           }
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## reference unit (ND) to final unit
-  switch(unit.out,
-         "ND" = {
-           data.out <- data.ref
-         },
-         "ppth" = {
-           data.out <- data.ref / (m.air * 1.0e-03)
-         },
-         "ppm" = {
-           data.out <- data.ref / (m.air * 1.0e-06)
-         },
-         "ppb" = {
-           data.out <- data.ref / (m.air * 1.0e-09)
-         },
-         "ppt" = {
-           data.out <- data.ref / (m.air * 1.0e-12)
-         },
-         "MD" = {
-           data.out <- data.ref / (n.avog * 1.0e-06)
-         },
-         "UG" = {
-           data.conv <- (data.ref * 1.0e+06) / (n.avog * 1.0e-06)
-           if (length(m.mass) == 1) {
-             data.out <- data.conv * m.mass
-           } else {
-             data.out <- t(apply(data.conv, 1, function(x) x * m.mass))
-           }
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## data in final concentration unit
+  ## from original unit to reference unit (ND)
+  convert_to_ND <- function(data, unit) {
+    switch(unit,
+           "ND" = data,
+           "ppth" = data * (m.air * 1.0e-03),
+           "ppm" = data * (m.air * 1.0e-06),
+           "ppb" = data * (m.air * 1.0e-09),
+           "ppt" = data * (m.air * 1.0e-12),
+           "MD" = data * (n.avog * 1.0e-06),
+           "UG" = {
+             data.tmp <- data * (n.avog * 1.0e-12)
+             if (length(m.mass) == 1) {
+               data.tmp / m.mass
+             } else {
+               t(apply(data.tmp, 1, function(x) x / m.mass))
+             }
+           },
+           stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## from reference unit (ND) to final unit
+  convert_from_ND <- function(data, unit) {
+    switch(unit,
+           "ND" = data,
+           "ppth" = data / (m.air * 1.0e-03),
+           "ppm" = data / (m.air * 1.0e-06),
+           "ppb" = data / (m.air * 1.0e-09),
+           "ppt" = data / (m.air * 1.0e-12),
+           "MD" = data / (n.avog * 1.0e-06),
+           "UG" = {
+             data.tmp <- data / (n.avog * 1.0e-12)
+             if (length(m.mass) == 1) {
+               data.tmp * m.mass
+             } else {
+               t(apply(data.tmp, 1, function(x) x * m.mass))
+             }
+           },
+             stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## convert concentration from original unit to final unit
+  data.ref <- convert_to_ND(data.in, unit.in)
+  data.out <- convert_from_ND(data.ref, unit.out)
   return(data.out)
 }
 
@@ -478,52 +285,49 @@ fConcAq <- function(data.in, unit.in, unit.out, m.mass=NULL) {
   ## OUTPUT:
   ##     data.out = data in final concentration unit
   ## EXAMPLE:
-  ##     xx <- fConcAq(data_df$NO3, "M", "MD")
   ##     xx <- fConcAq(data_df$NO3, "M", "UG", 62)
   ## -------------------------------------------------------------
   ## check molar mass input
-  if (unit.in == "UG" | unit.out == "UG") {
+  if (unit.in == "UG" || unit.out == "UG") {
     if (is.null(m.mass)) {
       stop("INPUT ERROR: molar mass needed")
     }
   }
-  ## original unit to reference unit (M)
-  switch(unit.in,
-         "M" = {
-           data.ref <- data.in
-         },
-         "MD" = {
-           data.ref <- data.in * 1.0e-03
-         },
-         "UG" = {
-           data.conv <- (data.in * 1.0e-03) * 1.0e-06
-           if (length(m.mass) == 1) {
-             data.ref <- data.conv / m.mass
-           } else {
-             data.ref <- t(apply(data.conv, 1, function(x) x / m.mass))
-           }
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## reference unit (M) to final unit
-  switch(unit.out,
-         "M" = {
-           data.out <- data.ref
-         },
-         "MD" = {
-           data.out <- data.ref / 1.0e-03
-         },
-         "UG" = {
-           data.conv <- (data.ref / 1.0e-03) / 1.0e-06
-           if (length(m.mass) == 1) {
-             data.out <- data.conv * m.mass
-           } else {
-             data.out <- t(apply(data.conv, 1, function(x) x * m.mass))
-           }
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## data in final concentration unit
+  ## from original unit to reference unit (M)
+  convert_to_M <- function(data, unit) {
+    switch(unit,
+           "M" = data,
+           "MD" = data * 1.0e-03,
+           "UG" = {
+             data.tmp <- data * 1.0e-09
+             if (length(m.mass) == 1) {
+               data.tmp / m.mass
+             } else {
+               t(apply(data.tmp, 1, function(x) x / m.mass))
+             }
+           },
+           stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## from reference unit (M) to final unit
+  convert_from_M <- function(data, unit) {
+    switch(unit,
+           "M" = data,
+           "MD" = data / 1.0e-03,
+           "UG" = {
+             data.tmp <- data / 1.0e-09
+             if (length(m.mass) == 1) {
+               data.tmp * m.mass
+             } else {
+               t(apply(data.tmp, 1, function(x) x * m.mass))
+             }
+           },
+           stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## convert concentration from original unit to final unit
+  data.ref <- convert_to_M(data.in, unit.in)
+  data.out <- convert_from_M(data.ref, unit.out)
   return(data.out)
 }
 
@@ -541,66 +345,52 @@ fHumid <- function(data.in, unit.in, unit.out, temp, press=101325) {
   ## * parts per million = "PPM"
   ##   volume of water vapour per volume of dry air (ppm)
   ##
-  ## [ from "Humidity Conversion Formulas" published by Vaisala:
+  ## [ from "Humidity Conversion Formulas", published by Vaisala:
   ##   https://www.vaisala.com/ ]
   ##
   ## NB: pressure is required only for conversions to/from "PPM".
+  ##     If not specified, it is assumed to be 1 atm.
   ##
   ## INPUT:
   ##     data.in = data in original humidity unit
   ##     unit.in = original humidity unit
   ##     unit.out = final humidity unit
   ##     temp = temperature (K)
-  ##     press = pressure (Pa)     [ OPTIONAL, DEFAULT = 1 atm ]
+  ##     press = pressure (Pa)     [ OPTIONAL, default=101325 ]
   ## OUTPUT:
   ##     data.out = data in final humidity unit
   ## EXAMPLE:
-  ##     xx <- fHumid(data_df, "AH", "RH", data_df$Temperature)
-  ##     xx <- fHumid(data_df, "AH", "PPM", data_df$Temperature, data_df$Pressure)
+  ##     xx <- fHumid(data_df, "AH", "RH", data_df$Temp)
   ## ------------------------------------------------------------
-  ## convert temperature and pressure
+  ## convert temperature to C, pressure to hPa
   temp.c <- fConvTemp(temp, "K", "C")
-  press.h <- fConvPress(press, "Pa", "hPa")
+  press.hpa <- fConvPress(press, "Pa", "hPa")
   ## water vapour saturation pressure (hPa)
   pws <- 6.116441 * 10^( (7.591386 * temp.c) / (temp.c + 240.7263) )
-  ## water vapour pressure (hPa) from original humidity unit
-  switch(unit.in,
-         "AH" = {
-           pw <- 1.0e-02 * (data.in * temp) / 2.16679
-         },
-         "SH" = {
-           pw <- 1.0e-03 * (data.in * press.h) / 0.622
-         },
-         "MR" = {
-           pw <- (data.in * press.h) / (621.9907 + data.in)
-         },
-         "RH" = {
-           pw <- data.in * pws / 100
-         },
-         "PPM" = {
-           pw <- (data.in * 1.0e-06 * press.h) / (1 + data.in * 1.0e-06)
-         },
-         stop("INPUT ERROR: unit not found")
-         )
-  ## final humidity unit from water vapour pressure (hPa)
-  switch(unit.out,
-         "AH" = {
-           data.out <- 1.0e+02 * (pw * 2.16679) / temp
-         },
-         "SH" = {
-           data.out <- 1.0e+03 * (pw * 0.622) / press.h
-         },
-         "MR" = {
-           data.out <- (621.9907 * pw) / (press.h - pw)
-         },
-         "RH" = {
-           data.out <- 100 * pw / pws
-         },
-         "PPM" = {
-           data.out <- 1.0e+06 * pw / (press.h - pw)
-         },
-         stop("INPUT ERROR: unit not found")
-  )
-  ## data in final humidity unit
+  ## from original humidity to water vapour pressure (hPa)
+  convert_to_pw <- function(data, unit) {
+    switch(unit,
+           "AH" = 1.0e-02 * (data * temp.c) / 2.16679,
+           "SH" = 1.0e-03 * (data * press.hpa) / 0.622,
+           "MR" = (data * press.hpa) / (621.9907 + data),
+           "RH" = data * pws / 100,
+           "PPM" = (data * 1.0e-06 * press.hpa) / (1 + data * 1.0e-06),
+           stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## from water vapour pressure (hPa) to final humidity
+  convert_from_pw <- function(data, unit) {
+    switch(unit,
+           "AH" = 1.0e+02 * (data * 2.16679) / temp.c,
+           "SH" = 1.0e+03 * (data * 0.622) / press.hpa,
+           "MR" = (621.9907 * data) / (press.hpa - data),
+           "RH" = 100 * data / pws,
+           "PPM" = 1.0e+06 * data / (press.hpa - data),
+           stop("INPUT ERROR: unit not found")
+           )
+  }
+  ## convert humidity from original unit to final unit
+  data.ref <- convert_to_pw(data.in, unit.in)
+  data.out <- convert_from_pw(data.ref, unit.out)
   return(data.out)
 }

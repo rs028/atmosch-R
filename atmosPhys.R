@@ -4,7 +4,7 @@
 ### Functions for atmospheric physics:
 ### - fSolar() : Earth-Sun angles
 ###
-### version 2.0, Feb 2024
+### version 2.1, June 2024
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -43,7 +43,7 @@ fSolar <- function(lat, long, dt.chron) {
   ##                           LAT = latitude,
   ##                           LONG = longitude )
   ## EXAMPLE:
-  ##     xx <- fSolar(data_df$Latitude, data_df$Longitude, data_df$Datetime)
+  ##     xx <- fSolar(data_df$Lat, data_df$Long, data_df$Datetime)
   ## ---------------------------------------------------------------------
   if (is.data.frame(dt.chron)) {
     date.gmt <- dt.chron[[1]]
@@ -54,7 +54,7 @@ fSolar <- function(lat, long, dt.chron) {
   lat.r <- fConvAngle(lat, "deg", "rad")
   long.r <- fConvAngle(long, "deg", "rad")
   ## day of year (1 Jan = 1) and fractional time (in GMT)
-  jan1 <- chron(paste("01/01/", years(date.gmt), sep=""))
+  jan1 <- chron(paste0("01/01/", years(date.gmt)))
   fracd <- as.numeric(date.gmt - jan1 + 1)
   doy <- floor(fracd)
   gmt <- (fracd - doy) * 24
