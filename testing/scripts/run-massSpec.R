@@ -9,6 +9,14 @@ require(testit)
 ## -----------------------------------------------
 ## fLoadTOF()
 
+df1 <-fLoadTOF("../test_files/", "ptr-tof-ms.csv")
+
+assert("=> fLoadTOF() output",
+       is.data.frame(df1),
+       nrow(df1) == 299,
+       ncol(df1) == 10
+       )
+
 ## -----------------------------------------------
 ## fNormTOF()
 

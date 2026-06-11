@@ -58,4 +58,7 @@ assert("=> fAtchemRates() output - loss rates file",
        )
 
 ## -----------------------------------------------
+## fPlotAtchem()
+
+## -----------------------------------------------
 ## fConstrGap()
