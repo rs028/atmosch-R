@@ -9,9 +9,9 @@ require(testit)
 ## -----------------------------------------------
 ## fImportTXT()
 
-df1 <- fImportTXT("../test_files/", "chlorine.csv", ",", "-9999", "d-m-y h:m:s")
-df2 <- fImportTXT("../test_files/", "chlorine.dat", " ", NaN, "d-m-y", "h:m:s")
-df3 <- fImportTXT("../test_files/", "chlorine.txt", "", "", "FD")
+df1 <- fImportTXT("data/", "chlorine.csv", ",", "-9999", "d-m-y h:m:s")
+df2 <- fImportTXT("data/", "chlorine.dat", " ", NaN, "d-m-y", "h:m:s")
+df3 <- fImportTXT("data/", "chlorine.txt", "", "", "FD")
 
 assert("=> fImportTXT() output - comma delimited file",
        is.data.frame(df1),

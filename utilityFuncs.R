@@ -80,10 +80,10 @@ fMergeDF <- function(df.lst, var.str, type.str, suff.lst) {
   lst.name <- deparse(substitute(df.lst))
   ## input validation
   if (!is.list(df.lst)) {
-    stop(paste0("INPUT ERROR: ", lst.name, " must be a list"))
+    stop("INPUT ERROR: ", lst.name, " must be a list")
   }
   if (!all(sapply(df.lst, is.data.frame))) {
-    stop(paste0("INPUT ERROR: all elements in ", lst.name, " must be data.frames"))
+    stop("INPUT ERROR: all elements in ", lst.name, " must be data.frames")
   }
   if (length(df.lst) != length(suff.lst)) {
     stop("INPUT ERROR: number of suffixes must match number of data.frames")

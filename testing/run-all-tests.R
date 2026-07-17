@@ -24,9 +24,9 @@ cat("\n[*] convertUnits.R")
 source("scripts/run-convertUnits.R")
 cat("\n    ..... OK")
 
-#cat("* testing: fileUtils.R")
-#source("run-fileUtils.R")
-#cat("\n    ..... OK")
+cat("\n[*] fileUtils.R")
+source("scripts/run-fileUtils.R")
+cat("\n    ..... OK")
 
 ## cat("* testing: instrumentFiles.R")
 ## source("run-instrumentFiles.R")

@@ -4,17 +4,16 @@
 ### Functions to import/export data files:
 ### - fImportTXT() : delimited text files
 ###
-### version 1.4, Apr 2021
+### version 1.5, Feb 2026
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
 fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
-  ## Import data from a delimited text file (tab, space, comma,
-  ## etc...), convert the date/time variables to chron, and replace
-  ## missing data points with NA.
+  ## Import data from a delimited text file (tab, space, comma), convert
+  ## date/time variables to chron, replace NaN and missing data points with NA.
   ##
-  ## The data files must have no header, except one row with the names
-  ## of the variables, and must have one or more date/time variables:
+  ## The data file must have one header row with variable names and one or more
+  ## date/time variables in the first columns:
   ##
   ##   date variable    time variable    variable 1    variable 2
   ##     12-01-2009       12:00:00           10            25
@@ -22,8 +21,7 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ##     12-01-2009       13:00:00           40            55
   ##     ...              ...                ...           ...
   ##
-  ## NB: date/time can be in fractional days ("FD"), in which case it
-  ##     is not converted to chron.
+  ## NB: date/time is not converted to chron if it is in fractional days ("FD").
   ##
   ## INPUT:
   ##     data.dir = data file directory
@@ -37,35 +35,39 @@ fImportTXT <- function(data.dir, data.fn, data.sep, data.miss, ...) {
   ##                             data variables )
   ## EXAMPLE:
   ##     xx <- fImportTXT("directory/", "filename.csv", ",", "-9999", "d-m-y", "h:m:s")
-  ## ------------------------------------------------------------
-  ## load data file
-  data.file <- paste(data.dir, data.fn, sep="")
+  ## ---------------------------------------------------------------------
+  data.file <- file.path(data.dir, data.fn)
+  if (!file.exists(data.file)) {
+    stop("INPUT ERROR: file ", data.file, " does not exist")
+  }
+  ## read data file
   if (data.sep == " ") {
     data.df <- read.delim(data.file, header=TRUE, fill=TRUE, sep="")
   } else {
     data.df <- read.delim(data.file, header=TRUE, fill=TRUE, sep=data.sep)
   }
-  ## format of date/time variables
+  ## date/time variable formats
   time.fmt <- list(...)
   n.time <- length(time.fmt)
-  time.df <- data.frame(F1 = rep(NA,nrow(data.df)))
-  ## convert date/time variables to chron
-  for (t in 1:n.time) {
-    if (time.fmt[t] == "FD") {  # fractional days
-      time.vec <- data.df[[t]]
-    } else {                    # date/time
-      time.vec <- fChronStr(data.df[[t]], time.fmt[[t]])
-    }
-    time.df <- cbind(time.df, time.vec)
+  if (n.time == 0) {
+    stop("INPUT ERROR: date/time format must be provided")
   }
-  ## rename time variables
-  time.df <- time.df[-1]
-  colnames(time.df) <- colnames(data.df[1:n.time])
-  ## set missing values to NA
-  data.filt <- data.df[(n.time+1):ncol(data.df)]
-  data.filt[data.filt == data.miss] <- NA
-  data.filt[is.na(data.filt)] <- NA
+  ## convert date/time variables to chron
+  time.lst <- vector("list", n.time)
+  for (t in seq_len(n.time)) {
+    if (time.fmt[[t]] == "FD") {
+      time.lst[[t]] <- data.df[[t]]
+    } else {
+      time.lst[[t]] <- fChronStr(data.df[[t]], time.fmt[[t]])
+    }
+  }
+  time.df <- as.data.frame(time.lst)
+  colnames(time.df) <- colnames(data.df)[1:n.time]
+  ## replace missing values with NA and convert NaN to NA
+  data.clean <- data.df[(n.time+1):ncol(data.df)]
+  data.clean[data.clean == data.miss] <- NA
+  data.clean[is.na(data.clean)] <- NA
   ## output data.frame
-  data.out <- cbind(time.df, data.filt)
+  data.out <- cbind(time.df, data.clean)
   return(data.out)
 }
