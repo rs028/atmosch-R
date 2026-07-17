@@ -9,7 +9,7 @@
 ###   https://www.nist.gov/pml/fundamental-physical-constants
 ###   https://www.nist.gov/pml/elemental-data-index
 ###
-### version 3.6, February 2024
+### version 3.7, July 2026
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
@@ -54,10 +54,6 @@ fConstant <- function(symb.in) {
                            Value = as.numeric(data.db[[symb.in]][2]),
                            Unit = data.db[[symb.in]][3])
   } else {
-    data.out <- data.frame(Name = NA,
-                           Symbol = symb.in,
-                           Value = NA,
-                           Unit = NA)
     stop("INPUT ERROR: symbol not found")
   }
   return(data.out)
@@ -178,10 +174,6 @@ fPeriodic <- function(symb.in) {
                            Atomic.N = as.numeric(data.db[[symb.in]][2]),
                            Atomic.W = as.numeric(data.db[[symb.in]][3]))
   } else {
-    data.out <- data.frame(Name = NA,
-                           Symbol = symb.in,
-                           Atomic.N = NA,
-                           Atomic.W = NA)
     stop("INPUT ERROR: symbol not found")
   }
   return(data.out)

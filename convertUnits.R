@@ -21,7 +21,7 @@ fConvTemp <- function(data.in, unit.in, unit.out) {
   ## Convert between units of temperature:
   ## * kelvin    = "K"
   ## * celsius   = "C"
-  ## * fahreneit = "F"
+  ## * fahrenheit = "F"
   ##
   ## INPUT:
   ##     data.in = data in original unit
@@ -260,7 +260,7 @@ fConcGas <- function(data.in, unit.in, unit.out, temp, press, m.mass=NULL) {
                t(apply(data.tmp, 1, function(x) x * m.mass))
              }
            },
-             stop("INPUT ERROR: unit not found")
+           stop("INPUT ERROR: unit not found")
            )
   }
   ## convert concentration from original unit to final unit

@@ -4,11 +4,11 @@
 ### Functions for atmospheric physics:
 ### - fSolar() : Earth-Sun angles
 ###
-### version 2.1, June 2024
+### version 2.2, July 2026
 ### author: RS
 ### ---------------------------------------------------------------- ###
 
-fSolar <- function(lat, long, dt.chron) {
+fSolar <- function(lat.deg, long.deg, dt.chron) {
   ## Calculate Earth-Sun angles (in radians):
   ## * day angle = "THETA"
   ## * sun declination = "DEC"
@@ -29,8 +29,8 @@ fSolar <- function(lat, long, dt.chron) {
   ##     negative.
   ##
   ## INPUT:
-  ##     lat = latitude (degrees)
-  ##     long = longitude (degrees)
+  ##     lat.deg = latitude (degrees)
+  ##     long.deg = longitude (degrees)
   ##     dt.chron = chron variable ("d-m-y h:m:s", in GMT/UTC)
   ## OUTPUT:
   ##     df.out = data.frame ( GMT = fractional time,
@@ -51,8 +51,8 @@ fSolar <- function(lat, long, dt.chron) {
     date.gmt <- dt.chron
   }
   ## latitude and longitude in radians
-  lat.r <- fConvAngle(lat, "deg", "rad")
-  long.r <- fConvAngle(long, "deg", "rad")
+  lat.rad <- fConvAngle(lat.deg, "deg", "rad")
+  long.rad <- fConvAngle(long.deg, "deg", "rad")
   ## day of year (1 Jan = 1) and fractional time (in GMT)
   jan1 <- chron(paste0("01/01/", years(date.gmt)))
   fracd <- as.numeric(date.gmt - jan1 + 1)
@@ -79,13 +79,13 @@ fSolar <- function(lat, long, dt.chron) {
   c4 <- -0.040849
   eqt <- c0 + c1 * cos(theta) + c2 * sin(theta) + c3 * cos(2 * theta) +
          c4 * sin(2 * theta)
-  lha <- pi * (gmt / 12 - (1 + long / 180)) + eqt
+  lha <- pi * (gmt / 12 - (1 + long.deg / 180)) + eqt
   ## solar zenith angle, solar elevation angle
-  sza <- acos(sin(dec) * sin(lat.r) + cos(dec) * cos(lat.r) * cos(lha))
+  sza <- acos(sin(dec) * sin(lat.rad) + cos(dec) * cos(lat.rad) * cos(lha))
   sea <- pi/2 - sza
   ## output data.frame
   df.out <- data.frame(date.gmt, theta, dec, eqt, lha,
-                       sza, sea, lat.r, long.r)
+                       sza, sea, lat.rad, long.rad)
   colnames(df.out) <- c("GMT", "THETA", "DEC", "EQT", "LHA",
                         "SZA", "SEA", "LAT", "LONG")
   return(df.out)
